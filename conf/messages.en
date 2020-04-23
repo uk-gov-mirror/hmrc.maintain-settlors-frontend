@@ -1,12 +1,109 @@
-checkYourAnswers.title = Check Your Answers
-checkYourAnswers.heading = Check Your Answers
-checkYourAnswers.guidance = Guidance for check your answers
 
-date.day = Day
-date.month = Month
-date.year = Year
+site.back = Back
+site.delete = Remove
+site.edit = Change
+site.hidden-delete = Delete {0}
+site.hidden-edit = Change {0}
+site.change.details = Change details
+site.no = No
+site.yes = Yes
+site.continue = Continue
+site.service_name = Register and Maintain a Trust
+site.textarea.char_limit = (Limit is {0} characters)
+site.sign_out = Sign out
+site.save.continue = Save and continue
+site.date.hint = For example, 31 3 1980
+site.inprogress = In Progress
+site.complete = Completed
+
+site.return.link = Return to add a beneficiary
+site.beneficiary.defaultText = the beneficiary
+
+site.address.uk.title = What is the address?
+site.address.uk.heading = What is {0}’s address?
+site.address.uk.line1 = Address line 1
+site.address.uk.line2 = Address line 2
+site.address.uk.line3 = Address line 3 (optional)
+site.address.uk.line4 = Address line 4 (optional)
+site.address.uk.postcode = Postcode
+site.address.uk.postcode.hint = For example AB1 1AB
+
+address.country.select = Select a country
+site.address.nonUk.title = What is the address?
+site.address.nonUk.heading = What is {0}’s address?
+site.address.nonUk.line1 = Address line 1
+site.address.nonUk.line2 = Address line 2
+site.address.nonUk.line3 = Address line 3 (optional)
+site.address.nonUk.country = Country
+
+timeout.title=Your application will time out soon
+timeout.message=We will reset your application if you do not respond in
+timeout.keep-alive-button=Continue application
+
+agentNotAuthorised.title = Sorry, you cannot access this trust
+agentNotAuthorised.heading = Sorry, you cannot access this trust
+agentNotAuthorised.subheading = This trust’s UTR: {0}
+agentNotAuthorised.p1 = The trustee who claimed the trust needs to give you authorisation.
+agentNotAuthorised.p2 = You can create an authorisation link to send to the trustee through
+agentNotAuthorised.p2.a = Agent Services.
+agentNotAuthorised.p3 = The trustee who claimed the trust must use the same Government Gateway account to approve your request.
+agentNotAuthorised.p4 = If you need help with this service
+agentNotAuthorised.p4.a = contact the trusts helpline (opens in a new window or tab).
+agentNotAuthorised.p5 = You can
+agentNotAuthorised.p5.a = return to register and maintain a trust for a client.
+
+createAgentServicesAccount.title = Create an agent services account
+createAgentServicesAccount.heading = Create an agent services account
+createAgentServicesAccount.paragraph1 = Before you can register a trust you will need to create an agent services account. You can do this now.
+createAgentServicesAccount.insetText = You need to be the person responsible for your firm’s tax or administrative matters. The account gives you administrative control over your firm’s access to new HMRC online services.
+createAgentServicesAccount.link = Check the guidance
+createAgentServicesAccount.paragraph2 = to find out what you will need to create an agent services account.
+createAgentServicesAccount.paragraph3 = Once you have created your agent services account, you can carry on with your trust registration.
+createAgentServicesAccount.cta = Create an agent services account
+
+trustNotClaimed.title = Sorry, you cannot access this trust
+trustNotClaimed.heading = Sorry, you cannot access this trust
+trustNotClaimed.subheading = This trust’s UTR: {0}
+trustNotClaimed.p1 = One of the trustees will need to complete the next two steps so you can maintain the trust online on their behalf.
+trustNotClaimed.bullet.1.title = Trustee needs to claim the trust
+trustNotClaimed.bullet.1.p1 = A trustee needs to log onto the Trust Registration Service using their Government Gateway account. The account they use must be an organisation account, not an individual account.
+trustNotClaimed.bullet.1.p2 = If they do not have an account, they can
+trustNotClaimed.bullet.1.p2.a = register for one here (opens in a new tab).
+trustNotClaimed.bullet.1.p3 = The trustee needs to correctly answer questions about the trust so HMRC can prove the connection between the trustee and the trust.
+trustNotClaimed.bullet.1.p4 = The trustee must complete this step before you can request authorisation from them to maintain the trust.
+trustNotClaimed.bullet.2.title = Trustee needs to authorise your online access the trust
+trustNotClaimed.bullet.2.p1 = Through Agent Services you can create an authorisation link to send to the trustee.
+trustNotClaimed.bullet.2.p2 = The trustee needs to use the same Government Gateway organisation account used to claim the trust to approve your request.
+trustNotClaimed.bullet.2.p3 = If you need help with the service
+trustNotClaimed.bullet.2.p3.a = contact the trusts helpline (opens in a new window or tab).
+trustNotClaimed.bullet.2.p4 = You can
+trustNotClaimed.bullet.2.p4.a = return to register and maintain a trust for a client.
+
+ukAddress.error.line1.required = Enter address line 1
+ukAddress.error.line2.required = Enter address line 2
+ukAddress.error.postcode.required = Enter a postcode
+ukAddress.error.line1.length = Address line 1 must be 35 characters or less
+ukAddress.error.line2.length = Address line 2 must be 35 characters or less
+ukAddress.error.line3.length = Address line 3 must be 35 characters or less
+ukAddress.error.line4.length = Address line 4 must be 35 characters or less
+ukAddress.error.line1.invalidCharacters = Address line 1 must only include letters a to z, numbers, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+ukAddress.error.line2.invalidCharacters = Address line 2 must only include letters a to z, numbers, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+ukAddress.error.line3.invalidCharacters = Address line 3 must only include letters a to z, numbers, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+ukAddress.error.line4.invalidCharacters = Address line 4 must only include letters a to z, numbers, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+ukAddress.error.postcode.invalidCharacters = Enter a real postcode
+
+nonUkAddress.error.line1.required = Enter address line 1
+nonUkAddress.error.line2.required = Enter address line 2
+nonUkAddress.error.country.required = Select a country
+nonUkAddress.error.line1.length = Address line 1 must be 35 characters or less
+nonUkAddress.error.line2.length = Address line 2 must be 35 characters or less
+nonUkAddress.error.line3.length = Address line 3 must be 35 characters or less
+nonUkAddress.error.line1.invalidCharacters = Address line 1 must only include letters a to z, numbers, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+nonUkAddress.error.line2.invalidCharacters = Address line 2 must only include letters a to z, numbers, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+nonUkAddress.error.line3.invalidCharacters = Address line 3 must only include letters a to z, numbers, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
 
 error.browser.title.prefix = Error:
+
 error.boolean = Please give an answer
 error.invalid_date = Give a correct date
 error.date.day_blank = Enter a day
@@ -20,25 +117,40 @@ error.non_numeric = Give a value using only numbers
 error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
+error.postcodeInvalid = Enter a real postcode
 
-index.title = maintain-settlors-frontend
-index.heading = maintain-settlors-frontend
-index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
+checkYourAnswers.title = Check Your Answers
+checkYourAnswers.heading = Check Your Answers
+
+date.day = Day
+date.month = Month
+date.year = Year
+date.hidden =  in numbers
 
 session_expired.title = For your security, this service has been reset
 session_expired.heading = For your security, this service has been reset
 session_expired.guidance = The details you have given have been deleted because you did not continue the service for 15 minutes.
 
-site.back = Back
-site.delete = Remove
-site.edit = Change
-site.hidden-delete = Delete {0}
-site.hidden-edit = Change {0}
-site.no = No
-site.yes = Yes
-site.continue = Continue
-site.service_name = maintain-settlors-frontend
-site.textarea.char_limit = (Limit is {0} characters)
-
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
+
+featureNotAvailable.title = This part of the online service is not available yet
+featureNotAvailable.heading = This part of the online service is not available yet
+featureNotAvailable.p1 = If you need to make any changes to the trust you can
+featureNotAvailable.link = contact our trusts helpline (opens in a new window or tab)
+featureNotAvailable.p2 = You will be able to update these details online in the future.
+
+livingSettlor.name.checkYourAnswersLabel = What is the name of the settlor?
+livingSettlor.name.title = What is the name of the settlor?
+livingSettlor.name.heading = What is the name of the settlor?
+livingSettlor.name.firstName = First name
+livingSettlor.name.middleName = Middle names (optional)
+livingSettlor.name.lastName = Last name
+livingSettlor.name.error.firstName.required = Enter the settlor’s first name
+livingSettlor.name.error.lastName.required = Enter the settlor’s last name
+livingSettlor.name.error.firstName.length = Settlor’s first name must be 35 characters or less
+livingSettlor.name.error.middleName.length = Settlor’s middle names must be 35 characters or less
+livingSettlor.name.error.lastName.length = Settlor’s last name must be 35 characters or less
+livingSettlor.name.error.firstName.invalid = Settlor’s first name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+livingSettlor.name.error.middleName.invalid = Settlor’s middle name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+livingSettlor.name.error.lastName.invalid = Settlor’s last name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
