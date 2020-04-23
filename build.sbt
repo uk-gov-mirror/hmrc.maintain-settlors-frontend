@@ -18,6 +18,7 @@ lazy val root = (project in file("."))
     RoutesKeys.routesImport += "models._",
     TwirlKeys.templateImports ++= Seq(
       "play.twirl.api.HtmlFormat",
+//      overrides
       "play.twirl.api.HtmlFormat._",
       "uk.gov.hmrc.play.views.html.helpers._",
       "uk.gov.hmrc.play.views.html.layouts._",
@@ -62,4 +63,4 @@ lazy val testSettings: Seq[Def.Setting[_]] = Seq(
   )
 )
 
-dependencyOverrides ++= AppDependencies.overrides
+//dependencyOverrides ++= AppDependencies.overrides
