@@ -14,10 +14,21 @@
  * limitations under the License.
  */
 
-package models.requests
+package utils
 
-import play.api.mvc.{Request, WrappedRequest}
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
-case class IdentifierRequest[A](request: Request[A],
-                                user: User
-                               ) extends WrappedRequest[A](request)
+import com.google.inject.Inject
+import config.FrontendAppConfig
+
+class DateFormatter @Inject()(config: FrontendAppConfig) {
+
+  private val format = "d MMMM yyyy"
+
+  def formatDate(dateTime: LocalDateTime): String = {
+    val dateFormatter = DateTimeFormatter.ofPattern(format)
+    dateTime.format(dateFormatter)
+  }
+
+}

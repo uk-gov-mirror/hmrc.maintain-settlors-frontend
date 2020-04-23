@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-package models.requests
+package models
 
-import play.api.mvc.{Request, WrappedRequest}
+import play.api.libs.json.{Format, Json}
 
-case class IdentifierRequest[A](request: Request[A],
-                                user: User
-                               ) extends WrappedRequest[A](request)
+case class TrustDetails(startDate: String, typeOfTrust: TypeOfTrust)
+
+object TrustDetails {
+
+  implicit val formats: Format[TrustDetails] = Json.format[TrustDetails]
+
+}

@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
-package models.requests
+package pages.living
 
-import play.api.mvc.{Request, WrappedRequest}
+import models.Name
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-case class IdentifierRequest[A](request: Request[A],
-                                user: User
-                               ) extends WrappedRequest[A](request)
+case object NamePage extends QuestionPage[Name] {
+
+  override def path: JsPath = basePath \ toString
+
+  override def toString: String = "name"
+}

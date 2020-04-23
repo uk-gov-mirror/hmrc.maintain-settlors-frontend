@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package models.requests
+package pages
 
-import play.api.mvc.{Request, WrappedRequest}
+import play.api.libs.json.JsPath
 
-case class IdentifierRequest[A](request: Request[A],
-                                user: User
-                               ) extends WrappedRequest[A](request)
+package object living {
+  val basePath: JsPath = JsPath \ 'living
+}

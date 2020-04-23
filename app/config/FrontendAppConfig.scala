@@ -39,6 +39,25 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val loginUrl: String = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
 
+  lazy val agentsSubscriptionsUrl: String = configuration.get[String]("urls.agentSubscriptions")
+  lazy val agentServiceRegistrationUrl = s"$agentsSubscriptionsUrl?continue=$loginContinueUrl"
+  lazy val agentInvitationsUrl: String = configuration.get[String]("urls.agentInvitations")
+
+  def claimATrustUrl(utr: String) =
+    configuration.get[Service]("microservice.services.claim-a-trust-frontend").baseUrl + s"/claim-a-trust/save/$utr"
+
+  def verifyIdentityForATrustUrl(utr: String) =
+    configuration.get[Service]("microservice.services.verify-your-identity-for-a-trust-frontend").baseUrl + s"/verify-your-identity-for-a-trust/save/$utr"
+
+  lazy val relationshipName: String =
+    configuration.get[String]("microservice.services.self.relationship-establishment.name")
+  lazy val relationshipIdentifier: String =
+    configuration.get[String]("microservice.services.self.relationship-establishment.identifier")
+
+  lazy val enrolmentStoreProxyUrl: String = configuration.get[Service]("microservice.services.enrolment-store-proxy").baseUrl
+
+  lazy val trustsUrl: String = configuration.get[Service]("microservice.services.trusts").baseUrl
+
   lazy val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("microservice.services.features.welsh-translation")
 

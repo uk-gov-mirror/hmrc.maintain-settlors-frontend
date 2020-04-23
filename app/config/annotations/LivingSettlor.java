@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-package models.requests
+package config.annotations;
 
-import play.api.mvc.{Request, WrappedRequest}
+import com.google.inject.BindingAnnotation;
 
-case class IdentifierRequest[A](request: Request[A],
-                                user: User
-                               ) extends WrappedRequest[A](request)
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
+@BindingAnnotation
+public @interface LivingSettlor {}
