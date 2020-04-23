@@ -17,20 +17,20 @@
 package controllers.living
 
 import base.SpecBase
-import config.annotations.AmendIndividualBeneficiary
+import config.annotations.LivingSettlor
 import forms.NameFormProvider
-import models.Name
+import models.{Name, NormalMode}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
-import pages.individualbeneficiary.NamePage
+import pages.living.NamePage
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import views.html.individualbeneficiary.amend.NameView
+import views.html.living.NameView
 
 import scala.concurrent.Future
 
@@ -39,7 +39,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new NameFormProvider()
-  val form = formProvider.withPrefix("individualBeneficiary.name")
+  val form = formProvider.withPrefix("livingSettlor.name")
   val trusteeName = Name("FirstName", None, "LastName")
 
   lazy val nameRoute = routes.NameController.onPageLoad().url
@@ -59,7 +59,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form)(request, messages).toString
+        view(form, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -77,7 +77,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(Name("FirstName", None, "LastName")))(fakeRequest, messages).toString
+        view(form.fill(Name("FirstName", None, "LastName")), NormalMode)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -91,7 +91,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].qualifiedWith(classOf[AmendIndividualBeneficiary]).toInstance(new FakeNavigator(onwardRoute))
+            bind[Navigator].qualifiedWith(classOf[LivingSettlor]).toInstance(new FakeNavigator(onwardRoute))
           )
           .build()
 
@@ -126,7 +126,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm)(fakeRequest, messages).toString
+        view(boundForm, NormalMode)(fakeRequest, messages).toString
 
       application.stop()
     }

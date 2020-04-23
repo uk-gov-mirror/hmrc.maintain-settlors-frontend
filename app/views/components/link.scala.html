@@ -14,14 +14,6 @@
  * limitations under the License.
  *@
 
-@(overrideMessage : Option[String] = None, submitClass: Option[String] = None)(implicit messages: Messages)
+@(href : String, id : String = "", key : String, openInNewWindow: Boolean = false)(implicit messages: Messages)
 
-<div class="section">
- <button id="submit" class="button  @if(submitClass.nonEmpty){@{submitClass.get}}">
-  @if(overrideMessage.isEmpty) {
-  @messages("site.continue")
-  } else {
-  @messages(overrideMessage.get)
-  }
- </button>
-</div>
+<a id="@id" href="@href" @if(openInNewWindow) {target="_blank"}>@messages(key)</a>

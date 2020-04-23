@@ -14,14 +14,11 @@
  * limitations under the License.
  *@
 
-@(overrideMessage : Option[String] = None, submitClass: Option[String] = None)(implicit messages: Messages)
+@import viewmodels.AnswerRow
 
-<div class="section">
- <button id="submit" class="button  @if(submitClass.nonEmpty){@{submitClass.get}}">
-  @if(overrideMessage.isEmpty) {
-  @messages("site.continue")
-  } else {
-  @messages(overrideMessage.get)
-  }
- </button>
-</div>
+@(row: AnswerRow)(implicit messages: Messages)
+
+<li>
+    <div class="cya-question">@row.label</div>
+    <div class="cya-answer">@row.answer</div>
+</li>

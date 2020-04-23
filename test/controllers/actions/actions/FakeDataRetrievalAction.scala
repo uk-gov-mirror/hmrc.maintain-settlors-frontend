@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package controllers.actions.actions
 
-import javax.inject.Inject
-import models.requests.IdentifierRequest
-import play.api.mvc._
+import controllers.actions.DataRetrievalAction
+import models.UserAnswers
+import models.requests.{IdentifierRequest, OptionalDataRequest}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeIdentifierAction @Inject()(bodyParsers: PlayBodyParsers) extends IdentifierAction {
+class FakeDataRetrievalAction(dataToReturn: Option[UserAnswers]) extends DataRetrievalAction {
 
-  override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] =
-    block(IdentifierRequest(request, "id"))
+  override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
+    dataToReturn match {
+      case None =>
+        Future(OptionalDataRequest(request.request, None, request.user))
+      case Some(userAnswers) =>
+        Future(OptionalDataRequest(request.request, Some(userAnswers), request.user))
+    }
 
-  override def parser: BodyParser[AnyContent] =
-    bodyParsers.default
-
-  override protected def executionContext: ExecutionContext =
+  override protected implicit val executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global
 }

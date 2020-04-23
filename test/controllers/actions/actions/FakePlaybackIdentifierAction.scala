@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@(overrideMessage : Option[String] = None, submitClass: Option[String] = None)(implicit messages: Messages)
+package controllers.actions.actions
 
-<div class="section">
- <button id="submit" class="button  @if(submitClass.nonEmpty){@{submitClass.get}}">
-  @if(overrideMessage.isEmpty) {
-  @messages("site.continue")
-  } else {
-  @messages(overrideMessage.get)
-  }
- </button>
-</div>
+import com.google.inject.Inject
+import controllers.actions.PlaybackIdentifierAction
+import models.requests.DataRequest
+import play.api.mvc.Result
+
+import scala.concurrent.{ExecutionContext, Future}
+
+class FakePlaybackIdentifierAction @Inject()(
+                                              implicit val executionContext: ExecutionContext
+                                            ) extends PlaybackIdentifierAction {
+
+  override def refine[A](request: DataRequest[A]): Future[Either[Result, DataRequest[A]]] = Future.successful(Right(request))
+
+}

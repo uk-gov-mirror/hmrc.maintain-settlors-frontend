@@ -14,14 +14,18 @@
  * limitations under the License.
  *@
 
-@(overrideMessage : Option[String] = None, submitClass: Option[String] = None)(implicit messages: Messages)
+@import viewmodels.Link
 
-<div class="section">
- <button id="submit" class="button  @if(submitClass.nonEmpty){@{submitClass.get}}">
-  @if(overrideMessage.isEmpty) {
-  @messages("site.continue")
-  } else {
-  @messages(overrideMessage.get)
+@(
+    hint: Option[String] = None,
+    readerHint: Option[String] = None,
+    link: Option[Link] = None
+)(implicit messages: Messages)
+
+@if(hint.nonEmpty) {
+  <span id="form-hint" class="form-hint" @if(readerHint.nonEmpty){aria-label="@readerHint"}>@hint
+  @link.map { l =>
+    <a id="link" href="@l.url" target="_blank">@l.text</a>
   }
- </button>
-</div>
+  </span>
+}
