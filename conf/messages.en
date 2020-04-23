@@ -16,8 +16,8 @@ site.date.hint = For example, 31 3 1980
 site.inprogress = In Progress
 site.complete = Completed
 
-site.return.link = Return to add a beneficiary
-site.beneficiary.defaultText = the beneficiary
+site.return.link = Return to add a settlor
+site.beneficiary.defaultText = the settlor
 
 site.address.uk.title = What is the address?
 site.address.uk.heading = What is {0}’s address?
@@ -35,6 +35,8 @@ site.address.nonUk.line1 = Address line 1
 site.address.nonUk.line2 = Address line 2
 site.address.nonUk.line3 = Address line 3 (optional)
 site.address.nonUk.country = Country
+
+entities.settlor = Settlors
 
 timeout.title=Your application will time out soon
 timeout.message=We will reset your application if you do not respond in
