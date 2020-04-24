@@ -1,0 +1,3 @@
+
+GET         /change-name                       controllers.living.NameController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-name                       controllers.living.NameController.onSubmit(mode: Mode = CheckMode)

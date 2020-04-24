@@ -16,27 +16,19 @@
 
 package utils
 
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-import controllers.routes
-import models.{CheckMode, UserAnswers}
-import pages._
-import play.api.i18n.Messages
-import play.twirl.api.{Html, HtmlFormat}
-import viewmodels.AnswerRow
-import CheckYourAnswersHelper._
+import com.google.inject.Inject
+import config.FrontendAppConfig
 
-class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
+class DateFormatter @Inject()(config: FrontendAppConfig) {
 
-  private def yesOrNo(answer: Boolean)(implicit messages: Messages): Html =
-    if (answer) {
-      HtmlFormat.escape(messages("site.yes"))
-    } else {
-      HtmlFormat.escape(messages("site.no"))
-    }
-}
+  private val format = "d MMMM yyyy"
 
-object CheckYourAnswersHelper {
+  def formatDate(dateTime: LocalDateTime): String = {
+    val dateFormatter = DateTimeFormatter.ofPattern(format)
+    dateTime.format(dateFormatter)
+  }
 
-  private val dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
 }
