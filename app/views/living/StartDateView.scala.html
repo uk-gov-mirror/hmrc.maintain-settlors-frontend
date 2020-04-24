@@ -27,7 +27,7 @@
     title = s"${errorPrefix(form)} ${messages("livingSettlor.startDate.title", name)}"
 ) {
 
-    @formHelper(action = StartDateController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = StartDateController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 
