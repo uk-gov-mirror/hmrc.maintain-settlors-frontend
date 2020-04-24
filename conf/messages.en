@@ -142,6 +142,13 @@ featureNotAvailable.p1 = If you need to make any changes to the trust you can
 featureNotAvailable.link = contact our trusts helpline (opens in a new window or tab)
 featureNotAvailable.p2 = You will be able to update these details online in the future.
 
+addASettlor.heading = Add a settlor
+addASettlor.singular.heading = Add a settlor
+addASettlor.count.heading = The trust has {0} settlors
+
+whatTypeOfSettlor.individual = Individual
+whatTypeOfSettlor.business = Business
+
 livingSettlor.name.checkYourAnswersLabel = What is the name of the settlor?
 livingSettlor.name.title = What is the name of the settlor?
 livingSettlor.name.heading = What is the name of the settlor?
@@ -161,3 +168,5 @@ livingSettlor.dateOfBirthYesNo.checkYourAnswersLabel = Do you know {0}’s date 
 livingSettlor.dateOfBirthYesNo.title = Do you know the settlor’s date of birth?
 livingSettlor.dateOfBirthYesNo.heading = Do you know {0}’s date of birth?
 livingSettlor.dateOfBirthYesNo.error.required = Select yes if you know the settlor’s date of birth
+
+removeSettlor.error.required = Select yes if you want to remove the settlor

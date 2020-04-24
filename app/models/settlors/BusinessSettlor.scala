@@ -1,0 +1,64 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package models.settlors
+
+import java.time.LocalDate
+
+import models.{Address, CompanyType, IndividualIdentification, Name}
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, JsSuccess, Reads, Writes, __}
+
+final case class BusinessSettlor(name: String,
+                                 companyType: Option[CompanyType],
+                                 companyTime: Option[Boolean],
+                                 utr: Option[String],
+                                 address: Option[Address],
+                                 entityStart: LocalDate,
+                                 provisional : Boolean) extends Settlor
+
+object BusinessSettlor {
+
+  implicit val reads: Reads[BusinessSettlor] =
+    ((__ \ 'name).read[String] and
+      (__ \ 'companyType).readNullable[CompanyType] and
+      (__ \ 'companyTime).readNullable[Boolean] and
+      __.lazyRead(readNullableAtSubPath[String](__ \ 'identification \ 'utr)) and
+      __.lazyRead(readNullableAtSubPath[Address](__ \ 'identification \ 'address)) and
+      (__ \ "entityStart").read[LocalDate] and
+      (__ \ "provisional").readWithDefault(false)).tupled.map {
+
+      case (name, companyType, companyTime, utr, address, entityStart, provisional) =>
+        BusinessSettlor(name, companyType, companyTime, utr, address, entityStart, provisional)
+    }
+
+  implicit val writes: Writes[BusinessSettlor] =
+    ((__ \ 'name).write[String] and
+      (__ \ 'companyType).writeNullable[CompanyType] and
+      (__ \ 'companyTime).writeNullable[Boolean] and
+      (__ \ 'identification \ 'utr).writeNullable[String] and
+      (__ \ 'identification \ 'address).writeNullable[Address] and
+      (__ \ "entityStart").write[LocalDate] and
+      (__ \ "provisional").write[Boolean]
+      ).apply(unlift(BusinessSettlor.unapply))
+
+  def readNullableAtSubPath[T:Reads](subPath : JsPath) : Reads[Option[T]] = Reads (
+    _.transform(subPath.json.pick)
+      .flatMap(_.validate[T])
+      .map(Some(_))
+      .recoverWith(_ => JsSuccess(None))
+  )
+}
