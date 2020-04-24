@@ -88,6 +88,13 @@ trait ViewSpecBase extends SpecBase {
     }
   }
 
+  def assertContainsHint(doc: Document, forElement: String, expectedHintText: Option[String]) = {
+    if (expectedHintText.isDefined) {
+      assert(doc.getElementsByClass("form-hint").first.text == expectedHintText.get,
+        s"\n\nLabel for $forElement did not contain hint text $expectedHintText")
+    }
+  }
+
   def assertElementHasClass(doc: Document, id: String, expectedClass: String) = {
     assert(doc.getElementById(id).hasClass(expectedClass), s"\n\nElement $id does not have class $expectedClass")
   }

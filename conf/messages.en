@@ -169,4 +169,15 @@ livingSettlor.dateOfBirthYesNo.title = Do you know the settlor’s date of birth
 livingSettlor.dateOfBirthYesNo.heading = Do you know {0}’s date of birth?
 livingSettlor.dateOfBirthYesNo.error.required = Select yes if you know the settlor’s date of birth
 
+livingSettlor.startDate.checkYourAnswersLabel = When was {0} added as a settlor?
+livingSettlor.startDate.title = When was the settlor added as a beneficiary?
+livingSettlor.startDate.heading = When was {0} added as a settlor?
+livingSettlor.startDate.hint = Check the trust deed or the power of appointment document. For example, 31 3 1980
+livingSettlor.startDate.error.required.all = Enter the date the settlor was added to the trust
+livingSettlor.startDate.error.required.two = The date the settlor was added to the trust must include a {0} and a {1}
+livingSettlor.startDate.error.required = The date the settlor was added to the trust must include a {0}
+livingSettlor.startDate.error.invalid = Enter a real date
+livingSettlor.startDate.error.future = The date the settlor was added to the trust must be today or in the past
+livingSettlor.startDate.error.past = The date the settlor was added to the trust cannot be before the start date of the trust
+
 removeSettlor.error.required = Select yes if you want to remove the settlor
