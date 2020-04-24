@@ -36,8 +36,8 @@ class TrustServiceImpl @Inject()(connector: TrustConnector) extends TrustService
   override def getBusinessSettlor(utr: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[BusinessSettlor] =
     getSettlors(utr).map(_.settlorCompany(index))
 
-  override def removeSettlor(utr: String, beneficiary: RemoveSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-    connector.removeSettlor(utr, beneficiary)
+  override def removeSettlor(utr: String, settlor: RemoveSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    connector.removeSettlor(utr, settlor)
 
 }
 
@@ -50,5 +50,5 @@ trait TrustService {
 
   def getBusinessSettlor(utr: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[BusinessSettlor]
 
-  def removeSettlor(utr: String, beneficiary: RemoveSettlor)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[HttpResponse]
+  def removeSettlor(utr: String, settlor: RemoveSettlor)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[HttpResponse]
 }
