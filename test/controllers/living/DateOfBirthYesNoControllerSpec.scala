@@ -45,7 +45,7 @@ class DateOfBirthYesNoControllerSpec extends SpecBase with MockitoSugar {
   override val emptyUserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
 
-  "Individual Beneficiary DateOfBirthYesNoPage Controller" must {
+  "Living Settlor DateOfBirthYesNoPage Controller" must {
 
     "return OK and the correct view for a GET" in {
 
