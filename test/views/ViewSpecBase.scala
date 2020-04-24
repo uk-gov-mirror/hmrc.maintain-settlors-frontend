@@ -21,6 +21,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.twirl.api.Html
 import base.SpecBase
+import org.scalatest.Assertion
 
 import scala.reflect.ClassTag
 
@@ -35,8 +36,8 @@ trait ViewSpecBase extends SpecBase {
 
   def asDocument(html: Html): Document = Jsoup.parse(html.toString())
 
-  def assertEqualsMessage(doc: Document, cssSelector: String, expectedMessageKey: String) =
-    assertEqualsValue(doc, cssSelector, messages(expectedMessageKey))
+  def assertEqualsMessage(doc: Document, cssSelector: String, expectedMessageKey: String, args: Any*): Assertion =
+    assertEqualsValue(doc, cssSelector, messages(expectedMessageKey, args: _*))
 
   def assertEqualsValue(doc : Document, cssSelector : String, expectedValue: String) = {
     val elements = doc.select(cssSelector)
