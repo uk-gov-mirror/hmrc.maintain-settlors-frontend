@@ -142,6 +142,13 @@ featureNotAvailable.p1 = If you need to make any changes to the trust you can
 featureNotAvailable.link = contact our trusts helpline (opens in a new window or tab)
 featureNotAvailable.p2 = You will be able to update these details online in the future.
 
+addASettlor.heading = Add a settlor
+addASettlor.singular.heading = Add a settlor
+addASettlor.count.heading = The trust has {0} settlors
+
+whatTypeOfSettlor.individual = Individual
+whatTypeOfSettlor.business = Business
+
 livingSettlor.name.checkYourAnswersLabel = What is the name of the settlor?
 livingSettlor.name.title = What is the name of the settlor?
 livingSettlor.name.heading = What is the name of the settlor?
@@ -156,3 +163,5 @@ livingSettlor.name.error.lastName.length = Settlor’s last name must be 35 char
 livingSettlor.name.error.firstName.invalid = Settlor’s first name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
 livingSettlor.name.error.middleName.invalid = Settlor’s middle name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
 livingSettlor.name.error.lastName.invalid = Settlor’s last name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+
+removeSettlor.error.required = Select yes if you want to remove the settlor
