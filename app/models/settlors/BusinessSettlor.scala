@@ -18,12 +18,12 @@ package models.settlors
 
 import java.time.LocalDate
 
-import models.{Address, IndividualIdentification, Name}
+import models.{Address, CompanyType, IndividualIdentification, Name}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, JsSuccess, Reads, Writes, __}
 
 final case class BusinessSettlor(name: String,
-                                 companyType: Option[String],
+                                 companyType: Option[CompanyType],
                                  companyTime: Option[Boolean],
                                  utr: Option[String],
                                  address: Option[Address],
@@ -34,7 +34,7 @@ object BusinessSettlor {
 
   implicit val reads: Reads[BusinessSettlor] =
     ((__ \ 'name).read[String] and
-      (__ \ 'companyType).readNullable[String] and
+      (__ \ 'companyType).readNullable[CompanyType] and
       (__ \ 'companyTime).readNullable[Boolean] and
       __.lazyRead(readNullableAtSubPath[String](__ \ 'identification \ 'utr)) and
       __.lazyRead(readNullableAtSubPath[Address](__ \ 'identification \ 'address)) and
@@ -47,7 +47,7 @@ object BusinessSettlor {
 
   implicit val writes: Writes[BusinessSettlor] =
     ((__ \ 'name).write[String] and
-      (__ \ 'companyType).writeNullable[String] and
+      (__ \ 'companyType).writeNullable[CompanyType] and
       (__ \ 'companyTime).writeNullable[Boolean] and
       (__ \ 'identification \ 'utr).writeNullable[String] and
       (__ \ 'identification \ 'address).writeNullable[Address] and
