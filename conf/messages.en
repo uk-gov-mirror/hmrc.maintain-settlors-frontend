@@ -160,4 +160,10 @@ livingSettlor.startDate.error.invalid = Enter a real date
 livingSettlor.startDate.error.future = The date the settlor was added to the trust must be today or in the past
 livingSettlor.startDate.error.past = The date the settlor was added to the trust cannot be before the start date of the trust
 
-removeSettlor.error.required = Select yes if you want to remove the settlor
+removeIndividualSettlor.title = Are you sure you want to remove the individual settlor?
+removeIndividualSettlor.heading = Are you sure you want to remove {0}?
+removeIndividualSettlor.error.required = Select yes if you want to remove the individual settlor
+
+removeBusinessSettlor.title = Are you sure you want to remove the business settlor?
+removeBusinessSettlor.heading = Are you sure you want to remove {0}?
+removeBusinessSettlor.error.required = Select yes if you want to remove the business settlor

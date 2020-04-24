@@ -1,0 +1,2 @@
+GET        /:index/remove           controllers.individual.living.remove.RemoveIndividualSettlorController.onPageLoad(index: Int)
+POST       /:index/remove           controllers.individual.living.remove.RemoveIndividualSettlorController.onSubmit(index: Int)
