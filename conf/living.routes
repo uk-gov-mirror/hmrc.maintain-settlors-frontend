@@ -1,3 +1,6 @@
 
-GET         /change-name                       controllers.living.NameController.onPageLoad(mode: Mode = CheckMode)
-POST        /change-name                       controllers.living.NameController.onSubmit(mode: Mode = CheckMode)
+GET        /change-name                       controllers.living.NameController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-name                       controllers.living.NameController.onSubmit(mode: Mode = CheckMode)
+
+GET        /change-know-date-of-birth                      controllers.living.DateOfBirthYesNoController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-know-date-of-birth                      controllers.living.DateOfBirthYesNoController.onSubmit(mode: Mode = CheckMode)
