@@ -142,6 +142,13 @@ featureNotAvailable.p1 = If you need to make any changes to the trust you can
 featureNotAvailable.link = contact our trusts helpline (opens in a new window or tab)
 featureNotAvailable.p2 = You will be able to update these details online in the future.
 
+addASettlor.heading = Add a settlor
+addASettlor.singular.heading = Add a settlor
+addASettlor.count.heading = The trust has {0} settlors
+
+whatTypeOfSettlor.individual = Individual
+whatTypeOfSettlor.business = Business
+
 livingSettlor.name.checkYourAnswersLabel = What is the name of the settlor?
 livingSettlor.name.title = What is the name of the settlor?
 livingSettlor.name.heading = What is the name of the settlor?
@@ -171,3 +178,16 @@ livingSettlor.dateOfBirth.error.required = Date of birth must include a {0}
 livingSettlor.dateOfBirth.error.invalid = Enter a real date of birth
 livingSettlor.dateOfBirth.error.future = Date of birth must be today or in the past
 livingSettlor.dateOfBirth.error.past = Date of birth must be after 31 December 1499
+
+livingSettlor.startDate.checkYourAnswersLabel = When was {0} added as a settlor?
+livingSettlor.startDate.title = When was the settlor added as a beneficiary?
+livingSettlor.startDate.heading = When was {0} added as a settlor?
+livingSettlor.startDate.hint = Check the trust deed or the power of appointment document. For example, 31 3 1980
+livingSettlor.startDate.error.required.all = Enter the date the settlor was added to the trust
+livingSettlor.startDate.error.required.two = The date the settlor was added to the trust must include a {0} and a {1}
+livingSettlor.startDate.error.required = The date the settlor was added to the trust must include a {0}
+livingSettlor.startDate.error.invalid = Enter a real date
+livingSettlor.startDate.error.future = The date the settlor was added to the trust must be today or in the past
+livingSettlor.startDate.error.past = The date the settlor was added to the trust cannot be before the start date of the trust
+
+removeSettlor.error.required = Select yes if you want to remove the settlor

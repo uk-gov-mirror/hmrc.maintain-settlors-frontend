@@ -18,9 +18,10 @@ package connectors
 
 import config.FrontendAppConfig
 import javax.inject.Inject
-import models.TrustDetails
-import play.api.libs.json.{JsString, JsValue, Json, Writes}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
+import models.settlors.Settlors
+import models.{RemoveSettlor, TrustDetails}
+import play.api.libs.json.{JsValue, Json}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,5 +32,17 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
 
   def getTrustDetails(utr: String)(implicit hc: HeaderCarrier, ex: ExecutionContext):  Future[TrustDetails] = {
     http.GET[TrustDetails](getTrustDetailsUrl(utr))
+  }
+
+  private def getSettlorsUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/transformed/settlors"
+
+  def getSettlors(utr: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[Settlors] = {
+    http.GET[Settlors](getSettlorsUrl(utr))
+  }
+
+  private def removeSettlorUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/settlors/remove"
+
+  def removeSettlor(utr: String, beneficiary: RemoveSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    http.PUT[JsValue, HttpResponse](removeSettlorUrl(utr), Json.toJson(beneficiary))
   }
 }
