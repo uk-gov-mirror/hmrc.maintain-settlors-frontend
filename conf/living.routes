@@ -4,3 +4,6 @@ POST       /change-name                       controllers.living.NameController.
 
 GET        /change-know-date-of-birth                      controllers.living.DateOfBirthYesNoController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-know-date-of-birth                      controllers.living.DateOfBirthYesNoController.onSubmit(mode: Mode = CheckMode)
+
+GET        /change-date-of-birth                            controllers.living.DateOfBirthController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-date-of-birth                            controllers.living.DateOfBirthController.onSubmit(mode: Mode = CheckMode)
