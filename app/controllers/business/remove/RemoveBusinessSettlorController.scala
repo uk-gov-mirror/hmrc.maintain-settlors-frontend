@@ -47,8 +47,12 @@ class RemoveBusinessSettlorController @Inject()(
     implicit request =>
 
       trustService.getBusinessSettlor(request.userAnswers.utr, index).map {
-        beneficiary =>
-          Ok(view(form, index, beneficiary.name))
+        settlor =>
+          if (settlor.provisional) {
+            Ok(view(form, index, settlor.name))
+          } else {
+            Redirect(controllers.routes.AddASettlorController.onPageLoad().url)
+          }
       }
 
   }
@@ -59,8 +63,8 @@ class RemoveBusinessSettlorController @Inject()(
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
           trustService.getBusinessSettlor(request.userAnswers.utr, index).map {
-            beneficiary =>
-              BadRequest(view(formWithErrors, index, beneficiary.name))
+            settlor =>
+              BadRequest(view(formWithErrors, index, settlor.name))
           }
         },
         value => {

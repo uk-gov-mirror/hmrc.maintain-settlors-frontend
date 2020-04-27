@@ -16,12 +16,13 @@
 
 package forms.behaviours
 
+import org.scalacheck.Gen
 import forms.Validation
 import play.api.data.{Form, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
 import uk.gov.hmrc.domain.Nino
 
-trait StringFieldBehaviours extends FieldBehaviours {
+trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours {
 
   def fieldWithMaxLength(form: Form[_],
                          fieldName: String,
@@ -50,6 +51,22 @@ trait StringFieldBehaviours extends FieldBehaviours {
     }
   }
 
+  def fieldWithRegexpWithGenerator(form: Form[_],
+                                   fieldName: String,
+                                   regexp: String,
+                                   generator: Gen[String],
+                                   error: FormError): Unit = {
+
+    s"not bind strings which do not match $regexp" in {
+      forAll(generator) {
+        string =>
+          whenever(!string.matches(regexp) && string.nonEmpty) {
+            val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+            result.errors shouldEqual Seq(error)
+          }
+      }
+    }
+  }
   def ninoField(form: Form[_],
                 fieldName: String,
                 requiredError: FormError): Unit = {

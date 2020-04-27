@@ -30,7 +30,7 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
 
   private def getTrustDetailsUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/trust-details"
 
-  def getTrustDetails(utr: String)(implicit hc: HeaderCarrier, ex: ExecutionContext):  Future[TrustDetails] = {
+  def getTrustDetails(utr: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[TrustDetails] = {
     http.GET[TrustDetails](getTrustDetailsUrl(utr))
   }
 
@@ -42,7 +42,7 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
 
   private def removeSettlorUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/settlors/remove"
 
-  def removeSettlor(utr: String, beneficiary: RemoveSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    http.PUT[JsValue, HttpResponse](removeSettlorUrl(utr), Json.toJson(beneficiary))
+  def removeSettlor(utr: String, settlor: RemoveSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    http.PUT[JsValue, HttpResponse](removeSettlorUrl(utr), Json.toJson(settlor))
   }
 }

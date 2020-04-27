@@ -60,6 +60,6 @@ case class Settlors(settlor: List[IndividualSettlor],
 object Settlors {
   implicit val reads: Reads[Settlors] =
     ((__ \ "settlors" \ "settlor").readWithDefault[List[IndividualSettlor]](Nil)
-      and (__ \ "settlors" \ "companySettlor").readWithDefault[List[BusinessSettlor]](Nil)
+      and (__ \ "settlors" \ "settlorCompany").readWithDefault[List[BusinessSettlor]](Nil)
       ).apply(Settlors.apply _)
 }

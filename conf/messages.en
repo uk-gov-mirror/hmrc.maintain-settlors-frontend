@@ -37,6 +37,8 @@ site.address.nonUk.line3 = Address line 3 (optional)
 site.address.nonUk.country = Country
 
 entities.settlor = Settlors
+entities.settlor.individual = Individual settlor
+entities.settlor.business = Business settlor
 
 timeout.title=Your application will time out soon
 timeout.message=We will reset your application if you do not respond in
@@ -115,6 +117,18 @@ featureNotAvailable.p2 = You will be able to update these details online in the 
 addASettlor.heading = Add a settlor
 addASettlor.singular.heading = Add a settlor
 addASettlor.count.heading = The trust has {0} settlors
+addASettlor.details = Why you cannot remove some settlors
+addASettlor.details.text = You will be unable to remove a settlor after you make a declaration. If you have declared a settlor by mistake you can
+addASettlor.details.text.link = contact the trusts helpline (opens in a new window or tab)
+addASettlor.additional-content = Do you want to add a new settlor?
+addASettlor.add-them-now = Yes, I want to add them now
+addASettlor.add-them-later = No, not now
+addASettlor.no-complete = No, all the settlors are up to date
+addASettlor.error.required = Select yes if you want to add a new settlor
+addASettlor.maxedOut.just1 = You cannot add another {0} as you have entered a maximum of 25.
+addASettlor.maxedOut.just1.paragraph = Check the settlors you have added. If you have further settlors to add within this type, write to HMRC with their details.
+addASettlor.maxedOut.all = You cannot enter another settlor as you have entered a maximum of 50.
+addASettlor.maxedOut.all.paragraph = Check the settlors you have added. If you have further settlors to add, write to HMRC with their details.
 
 whatTypeOfSettlor.individual = Individual
 whatTypeOfSettlor.business = Business
@@ -165,6 +179,25 @@ livingSettlor.addressYesNo.checkYourAnswersLabel = Do you know {0}’s address?
 livingSettlor.addressYesNo.title = Do you know the settlor’s address?
 livingSettlor.addressYesNo.heading = Do you know {0}’s address?
 livingSettlor.addressYesNo.error.required = Select yes if you know the settlor’s address
+
+livingSettlor.liveInTheUkYesNo.checkYourAnswersLabel = Does {0} live in the UK?
+livingSettlor.liveInTheUkYesNo.title = Does the settlor live in the UK?
+livingSettlor.liveInTheUkYesNo.heading = Does {0} live in the UK?
+livingSettlor.liveInTheUkYesNo.error.required = Select yes if the settlor lives in the UK
+
+livingSettlor.ukAddress.checkYourAnswersLabel = What is {0}’s address?
+livingSettlor.ukAddress.title = What is the settlor’s address?
+livingSettlor.ukAddress.heading = What is {0}’s address?
+livingSettlor.ukAddress.line1 = Address line 1
+livingSettlor.ukAddress.line2 = Address line 2
+livingSettlor.ukAddress.line3 = Address line 3 (optional)
+livingSettlor.ukAddress.line4 = Address line 4 (optional)
+livingSettlor.ukAddress.postcode = Postcode
+livingSettlor.ukAddress.postcode.hint = For example AB1 1AB
+
+livingSettlor.nonUkAddress.checkYourAnswersLabel = What is {0}’s address?
+livingSettlor.nonUkAddress.title = What is the settlor’s address?
+livingSettlor.nonUkAddress.heading = What is {0}’s address?
 
 livingSettlor.passportDetailsYesNo.checkYourAnswersLabel = Do you know {0}’s passport details?
 livingSettlor.passportDetailsYesNo.title = Do you know the settlor’s passport details?
