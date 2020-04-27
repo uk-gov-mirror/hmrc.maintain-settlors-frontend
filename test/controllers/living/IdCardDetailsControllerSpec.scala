@@ -26,7 +26,7 @@ import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.living.{IdCardDetailsPage, NamePage}
+import pages.individual.living.{IdCardDetailsPage, NamePage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest

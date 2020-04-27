@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages.living
+package pages.individual.living
 
 import models.UserAnswers
 import pages.QuestionPage

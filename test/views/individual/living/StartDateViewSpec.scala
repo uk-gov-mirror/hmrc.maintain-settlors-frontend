@@ -14,47 +14,44 @@
  * limitations under the License.
  */
 
-package views
+package views.individual.living
 
 import java.time.LocalDate
 
-import forms.DateOfBirthFormProvider
+import forms.DateAddedToTrustFormProvider
 import models.{Name, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.QuestionViewBehaviours
-import views.html.living.DateOfBirthView
+import views.html.individual.living.StartDateView
 
-class DateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
+class StartDateViewSpec extends QuestionViewBehaviours[LocalDate] {
 
-  val messageKeyPrefix = "livingSettlor.dateOfBirth"
+  val messageKeyPrefix = "livingSettlor.startDate"
+  val date: LocalDate = LocalDate.parse("2019-02-03")
+  val form: Form[LocalDate] = new DateAddedToTrustFormProvider().withPrefixAndTrustStartDate(messageKeyPrefix, date)
+  val view: StartDateView = viewFor[StartDateView](Some(emptyUserAnswers))
   val name: Name = Name("First", Some("Middle"), "Last")
 
-  override val form: Form[LocalDate] = new DateOfBirthFormProvider().withPrefix(messageKeyPrefix)
-
-  "DateOfBirth view" must {
-
-    val view = viewFor[DateOfBirthView](Some(emptyUserAnswers))
-
+  "StartDate view" must {
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, name.displayName, NormalMode)(fakeRequest, messages)
-    
+
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 
     behave like pageWithBackLink(applyView(form))
 
-    "fields" must {
+    behave like pageWithHint(form, applyView, messageKeyPrefix + ".hint")
 
-      behave like pageWithDateFields(
-        form,
-        applyView,
-        messageKeyPrefix,
-        "value",
-        name.displayName
-      )
-    }
+    behave like pageWithDateFields(
+      form,
+      applyView,
+      messageKeyPrefix,
+      "value"
+    )
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

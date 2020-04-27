@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.living
+package controllers.individual.living
 
 import config.annotations.LivingSettlor
 import controllers.actions.StandardActionSets
@@ -22,13 +22,13 @@ import forms.NameFormProvider
 import javax.inject.Inject
 import models.{Mode, Name}
 import navigation.Navigator
-import pages.living.NamePage
+import pages.individual.living.NamePage
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.living.NameView
+import views.html.individual.living.NameView
 
 import scala.concurrent.{ExecutionContext, Future}
 

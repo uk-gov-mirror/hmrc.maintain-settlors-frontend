@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package views
+package views.individual.living
 
-import java.time.LocalDate
-
-import forms.DateAddedToTrustFormProvider
+import controllers.individual.living.routes
+import forms.YesNoFormProvider
 import models.{Name, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.QuestionViewBehaviours
-import views.html.living.StartDateView
+import views.behaviours.YesNoViewBehaviours
+import views.html.individual.living.DateOfBirthYesNoView
 
-class StartDateViewSpec extends QuestionViewBehaviours[LocalDate] {
+class DateOfBirthYesNoViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "livingSettlor.startDate"
-  val date: LocalDate = LocalDate.parse("2019-02-03")
-  val form: Form[LocalDate] = new DateAddedToTrustFormProvider().withPrefixAndTrustStartDate(messageKeyPrefix, date)
-  val view: StartDateView = viewFor[StartDateView](Some(emptyUserAnswers))
+  val messageKeyPrefix = "livingSettlor.dateOfBirthYesNo"
   val name: Name = Name("First", Some("Middle"), "Last")
 
-  "StartDate view" must {
+  val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
+
+  "DateOfBirthYesNo view" must {
+
+    val view = viewFor[DateOfBirthYesNoView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, name.displayName, NormalMode)(fakeRequest, messages)
@@ -42,16 +42,8 @@ class StartDateViewSpec extends QuestionViewBehaviours[LocalDate] {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like pageWithHint(form, applyView, messageKeyPrefix + ".hint")
-
-    behave like pageWithDateFields(
-      form,
-      applyView,
-      messageKeyPrefix,
-      "value"
-    )
+    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName), routes.DateOfBirthYesNoController.onSubmit().url)
 
     behave like pageWithASubmitButton(applyView(form))
   }
-
 }

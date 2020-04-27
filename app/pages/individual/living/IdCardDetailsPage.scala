@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package pages.living
+package pages.individual.living
 
-import java.time.LocalDate
-
+import models.IdCard
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object DateOfBirthPage extends QuestionPage[LocalDate] {
+case object IdCardDetailsPage extends QuestionPage[IdCard] {
 
   override def path: JsPath = basePath \ toString
 
-  override def toString: String = "dateOfBirth"
+  override def toString: String = "idCardDetails"
+
 }

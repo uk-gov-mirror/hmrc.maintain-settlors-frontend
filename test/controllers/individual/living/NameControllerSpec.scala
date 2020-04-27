@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.living
+package controllers.individual.living
 
 import base.SpecBase
 import config.annotations.LivingSettlor
@@ -24,13 +24,13 @@ import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
-import pages.living.NamePage
+import pages.individual.living.NamePage
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import views.html.living.NameView
+import views.html.individual.living.NameView
 
 import scala.concurrent.Future
 

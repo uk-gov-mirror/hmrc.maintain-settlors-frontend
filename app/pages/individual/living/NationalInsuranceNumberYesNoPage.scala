@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package pages.living
-
-import java.time.LocalDate
+package pages.individual.living
 
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object StartDatePage extends QuestionPage[LocalDate] {
+case object NationalInsuranceNumberYesNoPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = basePath \ toString
 
-  override def toString: String = "startDate"
+  override def toString: String = "nationalInsuranceNumberYesNo"
+
 }

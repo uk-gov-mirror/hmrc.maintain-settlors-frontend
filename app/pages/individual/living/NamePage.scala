@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package pages.living
+package pages.individual.living
 
-import models.IdCard
+import models.Name
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object IdCardDetailsPage extends QuestionPage[IdCard] {
+case object NamePage extends QuestionPage[Name] {
 
   override def path: JsPath = basePath \ toString
 
-  override def toString: String = "idCardDetails"
-
+  override def toString: String = "name"
 }
