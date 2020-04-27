@@ -48,7 +48,11 @@ class RemoveIndividualSettlorController @Inject()(
 
       trustService.getIndividualSettlor(request.userAnswers.utr, index).map {
         settlor =>
-          Ok(view(form, index, settlor.name.displayName))
+          if (settlor.provisional) {
+            Ok(view(form, index, settlor.name.displayName))
+          } else {
+            Redirect(controllers.routes.AddASettlorController.onPageLoad().url)
+          }
       }
 
   }

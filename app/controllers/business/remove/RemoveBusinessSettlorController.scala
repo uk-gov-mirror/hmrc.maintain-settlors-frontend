@@ -48,7 +48,11 @@ class RemoveBusinessSettlorController @Inject()(
 
       trustService.getBusinessSettlor(request.userAnswers.utr, index).map {
         settlor =>
-          Ok(view(form, index, settlor.name))
+          if (settlor.provisional) {
+            Ok(view(form, index, settlor.name))
+          } else {
+            Redirect(controllers.routes.AddASettlorController.onPageLoad().url)
+          }
       }
 
   }
