@@ -47,8 +47,8 @@ class RemoveIndividualSettlorController @Inject()(
     implicit request =>
 
       trustService.getIndividualSettlor(request.userAnswers.utr, index).map {
-        beneficiary =>
-          Ok(view(form, index, beneficiary.name.displayName))
+        settlor =>
+          Ok(view(form, index, settlor.name.displayName))
       }
 
   }
@@ -59,8 +59,8 @@ class RemoveIndividualSettlorController @Inject()(
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
           trustService.getIndividualSettlor(request.userAnswers.utr, index).map {
-            beneficiary =>
-              BadRequest(view(formWithErrors, index, beneficiary.name.displayName))
+            settlor =>
+              BadRequest(view(formWithErrors, index, settlor.name.displayName))
           }
         },
         value => {

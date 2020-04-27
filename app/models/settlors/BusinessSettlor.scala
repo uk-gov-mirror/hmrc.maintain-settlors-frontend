@@ -18,9 +18,9 @@ package models.settlors
 
 import java.time.LocalDate
 
-import models.{Address, CompanyType, IndividualIdentification, Name}
+import models.{Address, CompanyType}
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, JsSuccess, Reads, Writes, __}
+import play.api.libs.json._
 
 final case class BusinessSettlor(name: String,
                                  companyType: Option[CompanyType],

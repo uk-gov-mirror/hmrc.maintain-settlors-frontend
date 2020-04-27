@@ -89,7 +89,7 @@ class RemoveBusinessSettlorControllerSpec extends SpecBase with ScalaCheckProper
       application.stop()
     }
 
-    "not removing the beneficiary" must {
+    "not removing the settlor" must {
 
       "redirect to the add to page when valid data is submitted" in {
 
@@ -113,9 +113,9 @@ class RemoveBusinessSettlorControllerSpec extends SpecBase with ScalaCheckProper
       }
     }
 
-    "removing a new beneficiary" must {
+    "removing a new settlor" must {
 
-      "redirect to the add to page, removing the beneficiary" in {
+      "redirect to the add to page, removing the settlor" in {
 
         val index = 2
 
