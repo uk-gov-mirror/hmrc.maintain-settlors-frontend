@@ -33,19 +33,18 @@
             </a>
         </dd>
     }
-    @{
-        data.removeUrl match {
-            case Some(removeUrl) =>
-                <dd class="hmrc-add-to-a-list__identifier hmrc-add-to-a-list__remove">
+    <dd class="hmrc-add-to-a-list__identifier hmrc-add-to-a-list__remove">
+        @{
+            data.removeUrl match {
+                case Some(removeUrl) =>
                     <a href={removeUrl}>
                         <span aria-hidden="true">{data.removeLabel}</span>
                         <span class="visually-hidden">{messages("site.hidden-delete", data.name)}</span>
                     </a>
-                </dd>
-            case None =>
-                <dd class="hmrc-add-to-a-list__identifier hmrc-add-to-a-list__remove">
+                case None =>
                     <span class="visually-hidden">{messages("site.hidden-cannot-delete", data.name)}</span>
-                </dd>
+                }
         }
-    }
+    </dd>
+
 </div>
