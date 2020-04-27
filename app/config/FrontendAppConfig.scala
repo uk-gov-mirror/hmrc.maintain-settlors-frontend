@@ -46,6 +46,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val agentsSubscriptionsUrl: String = configuration.get[String]("urls.agentSubscriptions")
   lazy val agentServiceRegistrationUrl = s"$agentsSubscriptionsUrl?continue=$loginContinueUrl"
 
+  lazy val locationCanonicalList: String = configuration.get[String]("location.canonical.list.all")
+  lazy val locationCanonicalListNonUK: String = configuration.get[String]("location.canonical.list.nonUK")
+
   lazy val logoutUrl: String = configuration.get[String]("urls.logout")
 
   lazy val languageTranslationEnabled: Boolean =

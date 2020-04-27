@@ -150,7 +150,7 @@ livingSettlor.dateOfBirth.error.future = Date of birth must be today or in the p
 livingSettlor.dateOfBirth.error.past = Date of birth must be after 31 December 1499
 
 livingSettlor.startDate.checkYourAnswersLabel = When was {0} added as a settlor?
-livingSettlor.startDate.title = When was the settlor added as a beneficiary?
+livingSettlor.startDate.title = When was the settlor added to the trust?
 livingSettlor.startDate.heading = When was {0} added as a settlor?
 livingSettlor.startDate.hint = Check the trust deed or the power of appointment document. For example, 31 3 1980
 livingSettlor.startDate.error.required.all = Enter the date the settlor was added to the trust
