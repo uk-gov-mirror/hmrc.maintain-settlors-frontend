@@ -149,6 +149,56 @@ livingSettlor.dateOfBirth.error.invalid = Enter a real date of birth
 livingSettlor.dateOfBirth.error.future = Date of birth must be today or in the past
 livingSettlor.dateOfBirth.error.past = Date of birth must be after 31 December 1499
 
+livingSettlor.passportDetailsYesNo.checkYourAnswersLabel = Do you know {0}’s passport details?
+livingSettlor.passportDetailsYesNo.title = Do you know the settlor’s passport details?
+livingSettlor.passportDetailsYesNo.heading = Do you know {0}’s passport details?
+livingSettlor.passportDetailsYesNo.error.required = Select yes if you know the settlor’s passport details
+
+livingSettlor.passportDetails.checkYourAnswersLabel = What are {0}’s passport details?
+livingSettlor.passportDetails.title = What are the settlor’s passport details?
+livingSettlor.passportDetails.heading = What are {0}’s passport details?
+livingSettlor.passportDetails.country = Passport country of issue
+livingSettlor.passportDetails.country.error.required = Enter the settlor’s passport country of issue
+livingSettlor.passportDetails.country.error.length = The settlor’s passport country must be 100 characters or less
+livingSettlor.passportDetails.number = Passport number
+livingSettlor.passportDetails.number.hint = For example, 502135326
+livingSettlor.passportDetails.number.error.required = Enter the settlor’s passport number
+livingSettlor.passportDetails.number.error.length = The settlor’s passport number must be 30 characters or less
+livingSettlor.passportDetails.number.error.invalid = Passport number can only include letters and numbers
+livingSettlor.passportDetails.expiryDate = Expiry date
+livingSettlor.passportDetails.expiryDate.hint = Expiry date can be in the past. For example, 31 3 1980
+livingSettlor.passportDetails.expiryDate.error.required.all = Enter the passport expiry date
+livingSettlor.passportDetails.expiryDate.error.required.two = Passport expiry date must include a {0} and {1}
+livingSettlor.passportDetails.expiryDate.error.required = Passport expiry date must include {0}
+livingSettlor.passportDetails.expiryDate.error.invalid = Enter a real date when the individual’s passport expires
+livingSettlor.passportDetails.expiryDate.error.future = Passport expiry date must be after 31 December 1499 and before 01 January 2100
+livingSettlor.passportDetails.expiryDate.error.past = Passport expiry date must be after 31 December 1499 and before 01 January 2100
+
+livingSettlor.idCardDetailsYesNo.checkYourAnswersLabel = Do you know {0}’s ID card details?
+livingSettlor.idCardDetailsYesNo.title = Do you know the settlor’s ID card details?
+livingSettlor.idCardDetailsYesNo.heading = Do you know {0}’s ID card details?
+livingSettlor.idCardDetailsYesNo.error.required = Select yes if you know the settlor’s ID card details
+
+livingSettlor.idCardDetails.checkYourAnswersLabel = What are {0}’s ID card details?
+livingSettlor.idCardDetails.title = What are the settlor’s ID card details?
+livingSettlor.idCardDetails.heading = What are {0}’s ID card details?
+livingSettlor.idCardDetails.country = ID card country of issue
+livingSettlor.idCardDetails.country.error.required = Enter the settlor’s ID card country of issue
+livingSettlor.idCardDetails.country.error.length = The settlor’s ID card country must be 100 characters or less
+livingSettlor.idCardDetails.number = ID card number
+livingSettlor.idCardDetails.number.hint = For example, 502135326
+livingSettlor.idCardDetails.number.error.required = Enter the settlor’s ID card number
+livingSettlor.idCardDetails.number.error.length = The settlor’s ID card number must be 30 characters or less
+livingSettlor.idCardDetails.number.error.invalid = ID card number can only include letters and numbers
+livingSettlor.idCardDetails.expiryDate = Expiry date
+livingSettlor.idCardDetails.expiryDate.hint = Expiry date can be in the past. For example, 31 3 1980
+livingSettlor.idCardDetails.expiryDate.error.required.all = Enter the ID card expiry date
+livingSettlor.idCardDetails.expiryDate.error.required.two = ID card expiry date must include a {0} and {1}
+livingSettlor.idCardDetails.expiryDate.error.required = ID card expiry date must include a {0}
+livingSettlor.idCardDetails.expiryDate.error.invalid = Enter a real date when the individual’s ID card expires
+livingSettlor.idCardDetails.expiryDate.error.future = ID card expiry date must be after 31 December 1499 and before 01 January 2100
+livingSettlor.idCardDetails.expiryDate.error.past = ID card expiry date must be after 31 December 1499 and before 01 January 2100
+
 livingSettlor.startDate.checkYourAnswersLabel = When was {0} added as a settlor?
 livingSettlor.startDate.title = When was the settlor added to the trust?
 livingSettlor.startDate.heading = When was {0} added as a settlor?
