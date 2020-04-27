@@ -149,6 +149,11 @@ livingSettlor.dateOfBirth.error.invalid = Enter a real date of birth
 livingSettlor.dateOfBirth.error.future = Date of birth must be today or in the past
 livingSettlor.dateOfBirth.error.past = Date of birth must be after 31 December 1499
 
+livingSettlor.nationalInsuranceNumberYesNo.checkYourAnswersLabel = Do you know {0}’s National Insurance number?
+livingSettlor.nationalInsuranceNumberYesNo.title = Do you know the individual’s National Insurance number?
+livingSettlor.nationalInsuranceNumberYesNo.heading = Do you know {0}’s National Insurance number?
+livingSettlor.nationalInsuranceNumberYesNo.error.required = Select yes if you know the settlor’s National Insurance number
+
 livingSettlor.startDate.checkYourAnswersLabel = When was {0} added as a settlor?
 livingSettlor.startDate.title = When was the settlor added as a beneficiary?
 livingSettlor.startDate.heading = When was {0} added as a settlor?

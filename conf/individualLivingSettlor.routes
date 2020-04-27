@@ -14,5 +14,8 @@ POST       /change-know-date-of-birth               controllers.individual.livin
 GET        /change-has-national-insurance-number            controllers.individual.living.NationalInsuranceNumberYesNoController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-has-national-insurance-number            controllers.individual.living.NationalInsuranceNumberYesNoController.onSubmit(mode: Mode = CheckMode)
 
+GET        /change-national-insurance-number               controllers.individual.living.NationalInsuranceNumberController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-national-insurance-number               controllers.individual.living.NationalInsuranceNumberController.onSubmit(mode: Mode = CheckMode)
+
 GET        /start-date                              controllers.individual.living.StartDateController.onPageLoad(mode: Mode = NormalMode)
 POST       /start-date                              controllers.individual.living.StartDateController.onSubmit(mode: Mode = NormalMode)
