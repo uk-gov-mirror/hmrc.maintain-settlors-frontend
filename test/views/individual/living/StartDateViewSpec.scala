@@ -19,7 +19,7 @@ package views.individual.living
 import java.time.LocalDate
 
 import forms.DateAddedToTrustFormProvider
-import models.{Name, NormalMode}
+import models.Name
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.QuestionViewBehaviours
@@ -36,7 +36,7 @@ class StartDateViewSpec extends QuestionViewBehaviours[LocalDate] {
   "StartDate view" must {
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, name.displayName, NormalMode)(fakeRequest, messages)
+      view.apply(form, name.displayName)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 

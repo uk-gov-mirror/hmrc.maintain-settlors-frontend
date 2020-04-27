@@ -21,7 +21,7 @@ import controllers.actions.StandardActionSets
 import controllers.actions.living.NameRequiredAction
 import forms.DateAddedToTrustFormProvider
 import javax.inject.Inject
-import models.Mode
+import models.{Mode, NormalMode}
 import navigation.Navigator
 import pages.individual.living.StartDatePage
 import play.api.i18n.I18nSupport
@@ -44,7 +44,7 @@ class StartDateController @Inject()(
 
   private val prefix: String = "livingSettlor.startDate"
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
 
       val form = formProvider.withPrefixAndTrustStartDate(prefix, request.userAnswers.whenTrustSetup)
@@ -54,23 +54,23 @@ class StartDateController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.settlorName, mode))
+      Ok(view(preparedForm, request.settlorName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
+  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
       val form = formProvider.withPrefixAndTrustStartDate(prefix, request.userAnswers.whenTrustSetup)
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.settlorName, mode))),
+          Future.successful(BadRequest(view(formWithErrors, request.settlorName))),
 
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(StartDatePage, value))
             _              <- playbackRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(StartDatePage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(StartDatePage, NormalMode, updatedAnswers))
       )
   }
 }

@@ -43,7 +43,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
 
   val trusteeName = Name("FirstName", None, "LastName")
 
-  lazy val nationalInsuranceNumberRoute = routes.NationalInsuranceNumberController.onPageLoad().url
+  lazy val nationalInsuranceNumberRoute = routes.NationalInsuranceNumberController.onPageLoad(NormalMode).url
 
   "NationalInsuranceNumber Controller" must {
 

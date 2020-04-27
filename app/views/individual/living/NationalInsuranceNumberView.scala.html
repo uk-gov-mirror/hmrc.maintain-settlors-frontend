@@ -27,7 +27,7 @@
     title = s"${errorPrefix(form)} ${messages("livingSettlor.nationalInsuranceNumber.title")}"
 ) {
 
-    @formHelper(action = NationalInsuranceNumberController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = NationalInsuranceNumberController.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.back_link()
 

@@ -49,7 +49,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
   override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), TypeOfTrust.WillTrustOrIntestacyTrust)
     .set(NamePage, name).success.value
 
-  val idCardDetailsRoute: String = routes.IdCardDetailsController.onPageLoad().url
+  val idCardDetailsRoute: String = routes.IdCardDetailsController.onPageLoad(NormalMode).url
 
   val getRequest = FakeRequest(GET, idCardDetailsRoute)
 
