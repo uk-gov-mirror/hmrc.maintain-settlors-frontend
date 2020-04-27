@@ -71,3 +71,10 @@ POST       /change-id-card                                  controllers.individu
 
 GET        /start-date                                      controllers.individual.living.StartDateController.onPageLoad()
 POST       /start-date                                      controllers.individual.living.StartDateController.onSubmit()
+
+GET        /:index/check-details                            controllers.individual.living.amend.CheckDetailsController.extractAndRender(index: Int)
+GET        /:index/updated-details                          controllers.individual.living.amend.CheckDetailsController.renderFromUserAnswers(index: Int)
+POST       /:index/check-details                            controllers.individual.living.amend.CheckDetailsController.onSubmit(index: Int)
+
+GET        /:index/remove                                    controllers.individual.living.remove.RemoveIndividualSettlorController.onPageLoad(index: Int)
+POST       /:index/remove                                   controllers.individual.living.remove.RemoveIndividualSettlorController.onSubmit(index: Int)
