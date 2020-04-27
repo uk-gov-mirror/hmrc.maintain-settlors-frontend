@@ -52,7 +52,7 @@ class PassportDetailsViewSpec extends QuestionViewBehaviours[Passport] {
         form,
         applyView,
         messageKeyPrefix,
-        routes.PassportDetailsController.onSubmit().url,
+        routes.PassportDetailsController.onSubmit(NormalMode).url,
         Seq(("country", None), ("number", None)),
         "expiryDate",
         name.displayName

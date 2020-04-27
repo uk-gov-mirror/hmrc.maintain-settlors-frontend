@@ -16,70 +16,53 @@
 
 package controllers.individual.living
 
-import java.time.{LocalDate, ZoneOffset}
-
 import base.SpecBase
 import config.annotations.LivingSettlor
-import forms.DateAddedToTrustFormProvider
-import models.{Name, NormalMode, TypeOfTrust, UserAnswers}
+import forms.NationalInsuranceNumberFormProvider
+import models.{Name, NormalMode}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.individual.living.{NamePage, StartDatePage}
-import play.api.data.Form
+import pages.individual.living.{NamePage, NationalInsuranceNumberPage}
 import play.api.inject.bind
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import views.html.individual.living.StartDateView
+import views.html.individual.living.NationalInsuranceNumberView
 
 import scala.concurrent.Future
 
-class StartDateControllerSpec extends SpecBase with MockitoSugar {
-
-  val formProvider = new DateAddedToTrustFormProvider()
-  private val date: LocalDate = LocalDate.parse("2019-02-03")
-  private def form: Form[LocalDate] = formProvider.withPrefixAndTrustStartDate("livingSettlor.startDate", date)
+class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val validAnswer = LocalDate.now(ZoneOffset.UTC)
+  val formProvider = new NationalInsuranceNumberFormProvider()
+  val form = formProvider.withPrefix("livingSettlor.nationalInsuranceNumber")
 
-  lazy val startDateRoute = routes.StartDateController.onPageLoad().url
+  val trusteeName = Name("FirstName", None, "LastName")
 
-  val name = Name("New", None, "Beneficiary")
+  lazy val nationalInsuranceNumberRoute = routes.NationalInsuranceNumberController.onPageLoad(NormalMode).url
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", date, TypeOfTrust.WillTrustOrIntestacyTrust)
-    .set(NamePage, name)
-    .success.value
-
-  def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
-    FakeRequest(GET, startDateRoute)
-
-  def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
-    FakeRequest(POST, startDateRoute)
-      .withFormUrlEncodedBody(
-        "value.day"   -> validAnswer.getDayOfMonth.toString,
-        "value.month" -> validAnswer.getMonthValue.toString,
-        "value.year"  -> validAnswer.getYear.toString
-      )
-
-  "Living Settlor Start Date Controller" must {
+  "NationalInsuranceNumber Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val userAnswers = emptyUserAnswers.set(NamePage, trusteeName).success.value
 
-      val result = route(application, getRequest()).value
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val view = application.injector.instanceOf[StartDateView]
+      val request = FakeRequest(GET, nationalInsuranceNumberRoute)
+
+      val result = route(application, request).value
+
+      val view = application.injector.instanceOf[NationalInsuranceNumberView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name.displayName)(fakeRequest, messages).toString
+        view(form, trusteeName.displayName, NormalMode)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -87,19 +70,21 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(StartDatePage, validAnswer).success.value
-        .set(NamePage, name).success.value
+        .set(NamePage, trusteeName).success.value
+        .set(NationalInsuranceNumberPage, "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val view = application.injector.instanceOf[StartDateView]
+      val request = FakeRequest(GET, nationalInsuranceNumberRoute)
 
-      val result = route(application, getRequest()).value
+      val view = application.injector.instanceOf[NationalInsuranceNumberView]
+
+      val result = route(application, request).value
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), name.displayName)(getRequest(), messages).toString
+        view(form.fill("answer"), trusteeName.displayName, NormalMode)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -117,10 +102,13 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
           )
           .build()
 
-      val result = route(application, postRequest()).value
+      val request =
+        FakeRequest(POST, nationalInsuranceNumberRoute)
+          .withFormUrlEncodedBody(("value", "AA000000A"))
+
+      val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual onwardRoute.url
 
       application.stop()
@@ -128,22 +116,24 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val userAnswers = emptyUserAnswers.set(NamePage, trusteeName).success.value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       val request =
-        FakeRequest(POST, startDateRoute)
-          .withFormUrlEncodedBody(("value", "invalid value"))
+        FakeRequest(POST, nationalInsuranceNumberRoute)
+          .withFormUrlEncodedBody(("value", ""))
 
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val boundForm = form.bind(Map("value" -> ""))
 
-      val view = application.injector.instanceOf[StartDateView]
+      val view = application.injector.instanceOf[NationalInsuranceNumberView]
 
       val result = route(application, request).value
 
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name.displayName)(fakeRequest, messages).toString
+        view(boundForm, trusteeName.displayName, NormalMode)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -152,9 +142,12 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val result = route(application, getRequest()).value
+      val request = FakeRequest(GET, nationalInsuranceNumberRoute)
+
+      val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
 
       application.stop()
@@ -164,7 +157,11 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val result = route(application, postRequest()).value
+      val request =
+        FakeRequest(POST, nationalInsuranceNumberRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
+
+      val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 

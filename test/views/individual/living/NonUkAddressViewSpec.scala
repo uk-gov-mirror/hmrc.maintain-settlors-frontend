@@ -49,7 +49,7 @@ class NonUkAddressViewSpec extends NonUkAddressViewBehaviours {
     behave like nonUkAddressPage(
       applyView,
       Some(messageKeyPrefix),
-      routes.NonUkAddressController.onSubmit().url,
+      routes.NonUkAddressController.onSubmit(NormalMode).url,
       name.displayName
     )
 

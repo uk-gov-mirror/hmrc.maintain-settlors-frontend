@@ -49,7 +49,7 @@ class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {
   override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), TypeOfTrust.WillTrustOrIntestacyTrust)
     .set(NamePage, name).success.value
 
-  val passportDetailsRoute: String = routes.PassportDetailsController.onPageLoad().url
+  val passportDetailsRoute: String = routes.PassportDetailsController.onPageLoad(NormalMode).url
 
   val getRequest = FakeRequest(GET, passportDetailsRoute)
 

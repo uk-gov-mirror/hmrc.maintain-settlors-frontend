@@ -18,37 +18,37 @@ package controllers.individual.living
 
 import config.annotations.LivingSettlor
 import controllers.actions._
-import controllers.actions.living.NameRequiredAction
-import forms.YesNoFormProvider
+import forms.NationalInsuranceNumberFormProvider
 import javax.inject.Inject
+import controllers.actions.living.NameRequiredAction
 import models.Mode
 import navigation.Navigator
-import pages.individual.living.IdCardDetailsYesNoPage
+import pages.individual.living.NationalInsuranceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.individual.living.IdCardDetailsYesNoView
+import views.html.individual.living.NationalInsuranceNumberView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IdCardDetailsYesNoController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         sessionRepository: PlaybackRepository,
-                                         @LivingSettlor navigator: Navigator,
-                                         standardActionSets: StandardActionSets,
-                                         nameAction: NameRequiredAction,
-                                         formProvider: YesNoFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: IdCardDetailsYesNoView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class NationalInsuranceNumberController @Inject()(
+                                                   override val messagesApi: MessagesApi,
+                                                   sessionRepository: PlaybackRepository,
+                                                   @LivingSettlor navigator: Navigator,
+                                                   standardActionSets: StandardActionSets,
+                                                   nameAction: NameRequiredAction,
+                                                   formProvider: NationalInsuranceNumberFormProvider,
+                                                   val controllerComponents: MessagesControllerComponents,
+                                                   view: NationalInsuranceNumberView
+                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("livingSettlor.idCardDetailsYesNo")
+  val form = formProvider.withPrefix("livingSettlor.nationalInsuranceNumber")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(IdCardDetailsYesNoPage) match {
+      val preparedForm = request.userAnswers.get(NationalInsuranceNumberPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -65,9 +65,9 @@ class IdCardDetailsYesNoController @Inject()(
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(IdCardDetailsYesNoPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalInsuranceNumberPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(IdCardDetailsYesNoPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(NationalInsuranceNumberPage, mode, updatedAnswers))
       )
   }
 }
