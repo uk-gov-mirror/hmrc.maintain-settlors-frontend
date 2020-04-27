@@ -33,6 +33,11 @@ final case class UserAnswers(
                               updatedAt: LocalDateTime = LocalDateTime.now
                             ) {
 
+  def cleanup : Try[UserAnswers] = {
+    this
+      .deleteAtPath(pages.individual.living.basePath)
+  }
+
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] = {
     Reads.at(page.path).reads(data) match {
       case JsSuccess(value, _) => Some(value)

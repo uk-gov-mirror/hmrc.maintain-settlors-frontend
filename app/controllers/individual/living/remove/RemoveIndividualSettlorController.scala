@@ -47,8 +47,12 @@ class RemoveIndividualSettlorController @Inject()(
     implicit request =>
 
       trustService.getIndividualSettlor(request.userAnswers.utr, index).map {
-        beneficiary =>
-          Ok(view(form, index, beneficiary.name.displayName))
+        settlor =>
+          if (settlor.provisional) {
+            Ok(view(form, index, settlor.name.displayName))
+          } else {
+            Redirect(controllers.routes.AddASettlorController.onPageLoad().url)
+          }
       }
 
   }
@@ -59,8 +63,8 @@ class RemoveIndividualSettlorController @Inject()(
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
           trustService.getIndividualSettlor(request.userAnswers.utr, index).map {
-            beneficiary =>
-              BadRequest(view(formWithErrors, index, beneficiary.name.displayName))
+            settlor =>
+              BadRequest(view(formWithErrors, index, settlor.name.displayName))
           }
         },
         value => {
