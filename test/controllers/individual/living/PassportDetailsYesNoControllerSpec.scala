@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.living
+package controllers.individual.living
 
 import java.time.LocalDate
 
@@ -32,7 +32,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import views.html.living.PassportDetailsYesNoView
+import views.html.individual.living.PassportDetailsYesNoView
 
 import scala.concurrent.Future
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.living.routes._
+@import controllers.individual.living.routes._
 @import utils.InputOption
 
 @this(
@@ -25,19 +25,19 @@
 @(form: Form[_], countryOptions: Seq[InputOption], name: String, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("livingSettlor.passportDetails.title")}"
+    title = s"${errorPrefix(form)} ${messages("livingSettlor.idCardDetails.title")}"
 ) {
 
-    @formHelper(action = PassportDetailsController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = IdCardDetailsController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 
         @components.error_summary(form.errors)
 
-        @components.heading("livingSettlor.passportDetails.heading", Some(name))
+        @components.heading("livingSettlor.idCardDetails.heading", Some(name))
 
         @components.select(field = form("country"),
-            label = messages("livingSettlor.passportDetails.country"),
+            label = messages("livingSettlor.idCardDetails.country"),
             labelClasses = Set("form-control-1-2 bold"),
             options = countryOptions,
             placeholder = Some("address.country.select"),
@@ -47,15 +47,15 @@
 
         @components.input_text(
             field = form("number"),
-            label = messages("livingSettlor.passportDetails.number"),
-            hint = Some(messages("livingSettlor.passportDetails.number.hint"))
+            label = messages("livingSettlor.idCardDetails.number"),
+            hint = Some(messages("livingSettlor.idCardDetails.number.hint"))
         )
 
         @components.input_date(
             field = form("expiryDate"),
-            legend = messages("livingSettlor.passportDetails.expiryDate"),
+            legend = messages("livingSettlor.idCardDetails.expiryDate"),
             legendClass = "bold",
-            hint = Some(messages("livingSettlor.passportDetails.expiryDate.hint")),
+            hint = Some(messages("livingSettlor.idCardDetails.expiryDate.hint")),
             headingIsLegend = false
         )
 

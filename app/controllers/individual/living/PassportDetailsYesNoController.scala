@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package controllers.living
+package controllers.individual.living
 
 import config.annotations.LivingSettlor
-import controllers.actions._
-import controllers.actions.NameRequiredAction
+import controllers.actions.{NameRequiredAction, _}
 import forms.YesNoFormProvider
 import javax.inject.Inject
 import models.Mode
@@ -28,7 +27,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.living.PassportDetailsYesNoView
+import views.html.individual.living.PassportDetailsYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
 
