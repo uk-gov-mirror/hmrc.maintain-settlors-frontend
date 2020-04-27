@@ -18,7 +18,7 @@ package generators
 
 import org.scalacheck.Arbitrary
 import pages._
-import pages.living.NamePage
+import pages.individual.living.NamePage
 
 trait PageGenerators {
 

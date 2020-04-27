@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package pages.individual.living
 
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-package object living {
-  val basePath: JsPath = JsPath \ 'living
+case object NationalInsuranceNumberYesNoPage extends QuestionPage[Boolean] {
+
+  override def path: JsPath = basePath \ toString
+
+  override def toString: String = "nationalInsuranceNumberYesNo"
+
 }

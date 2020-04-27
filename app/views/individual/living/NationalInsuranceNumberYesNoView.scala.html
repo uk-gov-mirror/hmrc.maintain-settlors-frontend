@@ -14,30 +14,29 @@
  * limitations under the License.
  *@
 
-@import controllers.living.routes._
+@import controllers.individual.living.routes._
 
 @this(
         main_template: MainTemplate,
         formHelper: FormWithCSRF
 )
 
-@(form: Form[_], name: String, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], trusteeName: String, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("livingSettlor.startDate.title", name)}"
+    title = s"${errorPrefix(form)} ${messages("livingSettlor.nationalInsuranceNumberYesNo.title")}"
 ) {
 
-    @formHelper(action = StartDateController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = NationalInsuranceNumberYesNoController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 
         @components.error_summary(form.errors)
 
-        @components.input_date(
+        @components.input_yes_no(
             field = form("value"),
-            legend = messages("livingSettlor.startDate.heading", name),
-            headingIsLegend = true,
-            hint = Some(messages("livingSettlor.startDate.hint"))
+            legend = messages("livingSettlor.nationalInsuranceNumberYesNo.heading", trusteeName),
+            headingIsLegend = true
         )
 
         @components.submit_button()

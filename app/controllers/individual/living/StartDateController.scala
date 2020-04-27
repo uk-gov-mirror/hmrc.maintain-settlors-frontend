@@ -14,42 +14,41 @@
  * limitations under the License.
  */
 
-package controllers.living
+package controllers.individual.living
 
 import config.annotations.LivingSettlor
-import controllers.actions.StandardActionSets
-import controllers.actions.living.NameRequiredAction
-import forms.DateOfBirthFormProvider
+import controllers.actions.{NameRequiredAction, StandardActionSets}
+import forms.DateAddedToTrustFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.living.DateOfBirthPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import pages.individual.living.StartDatePage
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.living.DateOfBirthView
+import views.html.individual.living.StartDateView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DateOfBirthController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       sessionRepository: PlaybackRepository,
-                                       @LivingSettlor navigator: Navigator,
-                                       standardActionSets: StandardActionSets,
-                                       nameAction: NameRequiredAction,
-                                       formProvider: DateOfBirthFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: DateOfBirthView
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class StartDateController @Inject()(
+                                     playbackRepository: PlaybackRepository,
+                                     @LivingSettlor navigator: Navigator,
+                                     standardActionSets: StandardActionSets,
+                                     nameAction: NameRequiredAction,
+                                     formProvider: DateAddedToTrustFormProvider,
+                                     val controllerComponents: MessagesControllerComponents,
+                                     view: StartDateView
+                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("livingSettlor.dateOfBirth")
-
+  private val prefix: String = "livingSettlor.startDate"
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(DateOfBirthPage) match {
+      val form = formProvider.withPrefixAndTrustStartDate(prefix, request.userAnswers.whenTrustSetup)
+
+      val preparedForm = request.userAnswers.get(StartDatePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -60,14 +59,17 @@ class DateOfBirthController @Inject()(
   def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
+      val form = formProvider.withPrefixAndTrustStartDate(prefix, request.userAnswers.whenTrustSetup)
+
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, request.settlorName, mode))),
+
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(DateOfBirthPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(DateOfBirthPage, mode, updatedAnswers))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(StartDatePage, value))
+            _              <- playbackRepository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(StartDatePage, mode, updatedAnswers))
       )
   }
 }
