@@ -65,7 +65,7 @@ class RemoveBusinessSettlorControllerSpec extends SpecBase with ScalaCheckProper
 
     "return OK and the correct view for a GET" in {
 
-      val index = 0
+      val index = 1
 
       implicit val hc : HeaderCarrier = HeaderCarrier()
 
@@ -85,6 +85,30 @@ class RemoveBusinessSettlorControllerSpec extends SpecBase with ScalaCheckProper
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual view(form, index, name)(fakeRequest, messages).toString
+
+      application.stop()
+    }
+
+    "redirect to the add to page when settlor is not provisional" in {
+
+      val index = 0
+
+      implicit val hc : HeaderCarrier = HeaderCarrier()
+
+      when(mockConnector.getSettlors(any())(any(), any()))
+        .thenReturn(Future.successful(Settlors(Nil, settlors)))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustConnector].toInstance(mockConnector))
+        .build()
+
+      val request = FakeRequest(GET, routes.RemoveBusinessSettlorController.onPageLoad(index).url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual controllers.routes.AddASettlorController.onPageLoad().url
 
       application.stop()
     }

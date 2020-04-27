@@ -65,7 +65,7 @@ class RemoveIndividualSettlorControllerSpec extends SpecBase with ScalaCheckProp
 
     "return OK and the correct view for a GET" in {
 
-      val index = 0
+      val index = 1
 
       implicit val hc : HeaderCarrier = HeaderCarrier()
 
@@ -85,6 +85,30 @@ class RemoveIndividualSettlorControllerSpec extends SpecBase with ScalaCheckProp
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual view(form, index, name.displayName)(fakeRequest, messages).toString
+
+      application.stop()
+    }
+
+    "redirect to the add to page when settlor is not provisional" in {
+
+      val index = 0
+
+      implicit val hc : HeaderCarrier = HeaderCarrier()
+
+      when(mockConnector.getSettlors(any())(any(), any()))
+        .thenReturn(Future.successful(Settlors(settlors, Nil)))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustConnector].toInstance(mockConnector))
+        .build()
+
+      val request = FakeRequest(GET, routes.RemoveIndividualSettlorController.onPageLoad(index).url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual controllers.routes.AddASettlorController.onPageLoad().url
 
       application.stop()
     }
