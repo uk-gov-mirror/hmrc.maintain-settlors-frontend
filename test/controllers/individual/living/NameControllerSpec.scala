@@ -42,7 +42,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
   val form = formProvider.withPrefix("livingSettlor.name")
   val trusteeName = Name("FirstName", None, "LastName")
 
-  lazy val nameRoute = routes.NameController.onPageLoad().url
+  lazy val nameRoute = routes.NameController.onPageLoad(NormalMode).url
 
   "Name Controller" must {
 

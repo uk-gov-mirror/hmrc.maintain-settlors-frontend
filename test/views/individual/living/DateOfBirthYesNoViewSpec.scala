@@ -42,7 +42,7 @@ class DateOfBirthYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName), routes.DateOfBirthYesNoController.onSubmit().url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName), routes.DateOfBirthYesNoController.onSubmit(NormalMode).url)
 
     behave like pageWithASubmitButton(applyView(form))
   }

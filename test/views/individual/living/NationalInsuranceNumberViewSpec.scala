@@ -16,24 +16,23 @@
 
 package views.individual.living
 
-import controllers.individual.living.routes
-import forms.YesNoFormProvider
+import forms.NationalInsuranceNumberFormProvider
 import models.{Name, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.YesNoViewBehaviours
-import views.html.individual.living.IdCardDetailsYesNoView
+import views.behaviours.QuestionViewBehaviours
+import views.html.individual.living.NationalInsuranceNumberView
 
-class IdCardDetailsYesNoViewSpec extends YesNoViewBehaviours {
+class NationalInsuranceNumberViewSpec extends QuestionViewBehaviours[String] {
 
-  val messageKeyPrefix = "livingSettlor.idCardDetailsYesNo"
+  val messageKeyPrefix = "livingSettlor.nationalInsuranceNumber"
   val name: Name = Name("First", Some("Middle"), "Last")
 
-  val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
+  override val form: Form[String] = new NationalInsuranceNumberFormProvider().withPrefix(messageKeyPrefix)
 
-  "IdCardDetailsYesNo view" must {
+  "NationalInsuranceNumber view" must {
 
-    val view = viewFor[IdCardDetailsYesNoView](Some(emptyUserAnswers))
+    val view = viewFor[NationalInsuranceNumberView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, name.displayName, NormalMode)(fakeRequest, messages)
@@ -42,8 +41,13 @@ class IdCardDetailsYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName), routes.IdCardDetailsYesNoController.onSubmit(NormalMode).url)
+    behave like pageWithTextFields(form, applyView,
+      messageKeyPrefix,
+      Some(name.displayName),
+      ""
+    )
 
     behave like pageWithASubmitButton(applyView(form))
+
   }
 }

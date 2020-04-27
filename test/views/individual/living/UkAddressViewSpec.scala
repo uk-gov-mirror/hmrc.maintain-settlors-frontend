@@ -45,7 +45,7 @@ class UkAddressViewSpec extends UkAddressViewBehaviours {
     behave like ukAddressPage(
       applyView,
       Some(messageKeyPrefix),
-      routes.UkAddressController.onSubmit().url,
+      routes.UkAddressController.onSubmit(NormalMode).url,
       name.displayName
     )
 

@@ -38,7 +38,7 @@ class DateOfBirthYesNoControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new YesNoFormProvider()
   val form = formProvider.withPrefix("livingSettlor.dateOfBirthYesNo")
 
-  lazy val dateOfBirthYesNoRoute = routes.DateOfBirthYesNoController.onPageLoad().url
+  lazy val dateOfBirthYesNoRoute = routes.DateOfBirthYesNoController.onPageLoad(NormalMode).url
 
   val name = Name("New", None, "Beneficiary")
 

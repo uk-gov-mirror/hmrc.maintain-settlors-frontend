@@ -17,7 +17,8 @@
 package controllers.individual.living
 
 import config.annotations.LivingSettlor
-import controllers.actions.{NameRequiredAction, StandardActionSets}
+import controllers.actions.StandardActionSets
+import controllers.actions.living.NameRequiredAction
 import forms.YesNoFormProvider
 import javax.inject.Inject
 import models.Mode

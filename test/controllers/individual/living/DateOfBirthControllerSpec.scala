@@ -48,7 +48,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
   val name = Name("FirstName", None, "LastName")
   val index: Int = 0
 
-  lazy val dateOfBirthRoute = routes.DateOfBirthController.onPageLoad().url
+  lazy val dateOfBirthRoute = routes.DateOfBirthController.onPageLoad(NormalMode).url
 
   val userAnswersWithName = emptyUserAnswers.set(NamePage, name)
     .success.value
