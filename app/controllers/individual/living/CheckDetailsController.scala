@@ -19,11 +19,13 @@ package controllers.individual.living
 import config.FrontendAppConfig
 import connectors.TrustConnector
 import controllers.actions._
+import controllers.actions.living.NameRequiredAction
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.mappers.IndividualSettlorMapper
+import utils.print.IndividualSettlorPrintHelper
 import viewmodels.AnswerSection
 import views.html.individual.living.CheckDetailsView
 
@@ -36,16 +38,15 @@ class CheckDetailsController @Inject()(
                                         view: CheckDetailsView,
                                         connector: TrustConnector,
                                         val appConfig: FrontendAppConfig,
-                                        playbackRepository: PlaybackRepository,
-                                        printHelper: IndividualBeneficiaryPrintHelper,
-                                        mapper: IndividualBeneficiaryMapper,
+                                        printHelper: IndividualSettlorPrintHelper,
+                                        mapper: IndividualSettlorMapper,
                                         nameAction: NameRequiredAction
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
-      val section: AnswerSection = printHelper(request.userAnswers, request.settlorName)
+      val section: AnswerSection = printHelper(request.userAnswers, provisional = true, request.settlorName)
       Ok(view(section))
   }
 

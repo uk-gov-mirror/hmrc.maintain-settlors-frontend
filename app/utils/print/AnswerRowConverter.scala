@@ -19,14 +19,14 @@ package utils.print
 import java.time.LocalDate
 
 import com.google.inject.Inject
-import models.{Address, CombinedPassportOrIdCard, IdCard, Name, Passport, UserAnswers}
+import models.{Address, IdCard, Name, Passport, UserAnswers}
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
 import play.twirl.api.HtmlFormat
 import queries.Gettable
 import utils.countryOptions.CountryOptions
-import viewmodels.AnswerRow
 import utils.print.CheckAnswersFormatters._
+import viewmodels.AnswerRow
 
 class AnswerRowConverter @Inject()() {
 
@@ -42,30 +42,6 @@ class AnswerRowConverter @Inject()() {
         AnswerRow(
           HtmlFormat.escape(messages(s"$labelKey.checkYourAnswersLabel")),
           HtmlFormat.escape(x.displayFullName),
-          changeUrl
-        )
-      }
-    }
-
-    def stringQuestion(query: Gettable[String],
-                     labelKey: String,
-                     changeUrl: String): Option[AnswerRow] = {
-      userAnswers.get(query) map {x =>
-        AnswerRow(
-          HtmlFormat.escape(messages(s"$labelKey.checkYourAnswersLabel", name)),
-          HtmlFormat.escape(x),
-          changeUrl
-        )
-      }
-    }
-
-    def intQuestion(query: Gettable[Int],
-                       labelKey: String,
-                       changeUrl: String): Option[AnswerRow] = {
-      userAnswers.get(query) map {x =>
-        AnswerRow(
-          HtmlFormat.escape(messages(s"$labelKey.checkYourAnswersLabel", name)),
-          HtmlFormat.escape(x.toString),
           changeUrl
         )
       }
@@ -115,30 +91,6 @@ class AnswerRowConverter @Inject()() {
         AnswerRow(
           HtmlFormat.escape(messages(s"$labelKey.checkYourAnswersLabel", name)),
           formatAddress(x, countryOptions),
-          changeUrl
-        )
-      }
-    }
-
-    def identificationOptionsQuestion(query: Gettable[IdentificationDetailOptions],
-                                      labelKey: String,
-                                      changeUrl: String): Option[AnswerRow] = {
-      userAnswers.get(query) map { x =>
-        AnswerRow(
-          HtmlFormat.escape(messages(s"$labelKey.checkYourAnswersLabel", name)),
-          formatIdentificationDetails(x),
-          changeUrl
-        )
-      }
-    }
-
-    def passportOrIdCardDetailsQuestion(query: Gettable[CombinedPassportOrIdCard],
-                                        labelKey: String,
-                                        changeUrl: String): Option[AnswerRow] = {
-      userAnswers.get(query) map {x =>
-        AnswerRow(
-          HtmlFormat.escape(messages(s"$labelKey.checkYourAnswersLabel", name)),
-          formatPassportOrIdCardDetails(x, countryOptions),
           changeUrl
         )
       }
