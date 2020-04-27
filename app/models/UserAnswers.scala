@@ -35,7 +35,7 @@ final case class UserAnswers(
 
   def cleanup : Try[UserAnswers] = {
     this
-      .deleteAtPath(pages.living.basePath)
+      .deleteAtPath(pages.individual.living.basePath)
   }
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] = {
