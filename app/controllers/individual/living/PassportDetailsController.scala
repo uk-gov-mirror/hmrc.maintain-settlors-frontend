@@ -17,7 +17,8 @@
 package controllers.individual.living
 
 import config.annotations.LivingSettlor
-import controllers.actions.{NameRequiredAction, _}
+import controllers.actions._
+import controllers.actions.living.NameRequiredAction
 import forms.PassportDetailsFormProvider
 import javax.inject.Inject
 import models.Mode

@@ -17,6 +17,9 @@ POST       /change-has-national-insurance-number            controllers.individu
 GET        /change-national-insurance-number               controllers.individual.living.NationalInsuranceNumberController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-national-insurance-number               controllers.individual.living.NationalInsuranceNumberController.onSubmit(mode: Mode = CheckMode)
 
+GET        /change-has-address                             controllers.individual.living.AddressYesNoController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-has-address                             controllers.individual.living.AddressYesNoController.onSubmit(mode: Mode = CheckMode)
+
 GET        /has-passport                                    controllers.individual.living.PassportDetailsYesNoController.onPageLoad(mode: Mode = NormalMode)
 POST       /has-passport                                    controllers.individual.living.PassportDetailsYesNoController.onSubmit(mode: Mode = NormalMode)
 
