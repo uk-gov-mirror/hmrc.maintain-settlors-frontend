@@ -1,7 +1,6 @@
 # microservice specific routes
 
-->         /living                                                          living.Routes
-
+->         /individual/living                                               individualLivingSettlor.Routes
 ->         /individual/living/remove                                        individualLivingSettlor.remove.Routes
 
 ->         /business/remove                                                 businessSettlor.remove.Routes

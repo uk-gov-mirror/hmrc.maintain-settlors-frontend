@@ -19,7 +19,7 @@ package controllers.actions.living
 import controllers.actions.SettlorNameRequest
 import javax.inject.Inject
 import models.requests.DataRequest
-import pages.living.NamePage
+import pages.individual.living.NamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.ActionTransformer
 

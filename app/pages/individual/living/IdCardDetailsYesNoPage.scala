@@ -14,22 +14,25 @@
  * limitations under the License.
  */
 
-package generators
+package pages.individual.living
 
-import models._
-import org.scalacheck.Arbitrary
-import org.scalacheck.Arbitrary.arbitrary
-import pages._
-import pages.individual.living.NamePage
-import play.api.libs.json.{JsValue, Json}
+import models.UserAnswers
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
+import scala.util.Try
 
-  implicit lazy val arbitraryNameUserAnswersEntry: Arbitrary[(NamePage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[NamePage.type]
-        value <- arbitrary[Name].map(Json.toJson(_))
-      } yield (page, value)
-    }
+case object IdCardDetailsYesNoPage extends QuestionPage[Boolean] {
+
+  override def path: JsPath = basePath \ toString
+
+  override def toString: String = "idCardDetailsYesNo"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
+    case Some(false) =>
+      userAnswers.remove(IdCardDetailsPage)
+    case _ =>
+      super.cleanup(value, userAnswers)
+  }
+
 }

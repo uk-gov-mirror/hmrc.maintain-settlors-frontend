@@ -14,22 +14,10 @@
  * limitations under the License.
  */
 
-package generators
+package pages.individual
 
-import models._
-import org.scalacheck.Arbitrary
-import org.scalacheck.Arbitrary.arbitrary
-import pages._
-import pages.individual.living.NamePage
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.JsPath
 
-trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
-
-  implicit lazy val arbitraryNameUserAnswersEntry: Arbitrary[(NamePage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[NamePage.type]
-        value <- arbitrary[Name].map(Json.toJson(_))
-      } yield (page, value)
-    }
+package object living {
+  val basePath: JsPath = JsPath \ 'individual \ 'living
 }
