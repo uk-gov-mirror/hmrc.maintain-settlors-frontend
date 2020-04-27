@@ -154,6 +154,13 @@ livingSettlor.nationalInsuranceNumberYesNo.title = Do you know the individual’
 livingSettlor.nationalInsuranceNumberYesNo.heading = Do you know {0}’s National Insurance number?
 livingSettlor.nationalInsuranceNumberYesNo.error.required = Select yes if you know the settlor’s National Insurance number
 
+livingSettlor.nationalInsuranceNumber.checkYourAnswersLabel = What is {0}’s National Insurance number?
+livingSettlor.nationalInsuranceNumber.title = What is the settlor’s National Insurance number?
+livingSettlor.nationalInsuranceNumber.heading = What is {0}’s National Insurance number?
+livingSettlor.nationalInsuranceNumber.hint = It is on their National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’.
+livingSettlor.nationalInsuranceNumber.error.required = Enter the individual beneficiary’s National Insurance number
+livingSettlor.nationalInsuranceNumber.error.invalidFormat = Enter the individual beneficiary’s National Insurance number in the correct format
+
 livingSettlor.startDate.checkYourAnswersLabel = When was {0} added as a settlor?
 livingSettlor.startDate.title = When was the settlor added as a beneficiary?
 livingSettlor.startDate.heading = When was {0} added as a settlor?
