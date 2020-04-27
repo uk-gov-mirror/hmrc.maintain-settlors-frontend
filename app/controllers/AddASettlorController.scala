@@ -57,8 +57,6 @@ class AddASettlorController @Inject()(
         updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
         _ <- repository.set(updatedAnswers)
       } yield {
-        println("**************************")
-        println(settlors)
         settlors match {
           case all: Settlors =>
 
