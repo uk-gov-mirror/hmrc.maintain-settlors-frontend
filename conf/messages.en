@@ -161,6 +161,11 @@ livingSettlor.nationalInsuranceNumber.hint = It is on their National Insurance c
 livingSettlor.nationalInsuranceNumber.error.required = Enter the individual beneficiary’s National Insurance number
 livingSettlor.nationalInsuranceNumber.error.invalidFormat = Enter the individual beneficiary’s National Insurance number in the correct format
 
+livingSettlor.addressYesNo.checkYourAnswersLabel = Do you know {0}’s address?
+livingSettlor.addressYesNo.title = Do you know the settlor’s address?
+livingSettlor.addressYesNo.heading = Do you know {0}’s address?
+livingSettlor.addressYesNo.error.required = Select yes if you know the settlor’s address
+
 livingSettlor.passportDetailsYesNo.checkYourAnswersLabel = Do you know {0}’s passport details?
 livingSettlor.passportDetailsYesNo.title = Do you know the settlor’s passport details?
 livingSettlor.passportDetailsYesNo.heading = Do you know {0}’s passport details?
