@@ -14,6 +14,15 @@ POST       /change-know-date-of-birth                       controllers.individu
 GET        /change-has-national-insurance-number            controllers.individual.living.NationalInsuranceNumberYesNoController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-has-national-insurance-number            controllers.individual.living.NationalInsuranceNumberYesNoController.onSubmit(mode: Mode = CheckMode)
 
+GET        /has-uk-address                                  controllers.individual.living.LiveInTheUkYesNoController.onPageLoad(mode: Mode = NormalMode)
+POST       /has-uk-address                                  controllers.individual.living.LiveInTheUkYesNoController.onSubmit(mode: Mode = NormalMode)
+
+GET        /uk-address                                      controllers.individual.living.UkAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /uk-address                                      controllers.individual.living.UkAddressController.onSubmit(mode: Mode = NormalMode)
+
+GET        /non-uk-address                                  controllers.individual.living.NonUkAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /non-uk-address                                  controllers.individual.living.NonUkAddressController.onSubmit(mode: Mode = NormalMode)
+
 GET        /has-passport                                    controllers.individual.living.PassportDetailsYesNoController.onPageLoad(mode: Mode = NormalMode)
 POST       /has-passport                                    controllers.individual.living.PassportDetailsYesNoController.onSubmit(mode: Mode = NormalMode)
 
