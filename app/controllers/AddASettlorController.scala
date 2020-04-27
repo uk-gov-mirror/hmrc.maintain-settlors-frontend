@@ -57,26 +57,23 @@ class AddASettlorController @Inject()(
         updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
         _ <- repository.set(updatedAnswers)
       } yield {
-        settlors match {
-          case all: Settlors =>
+        
+        val settlorRows = new AddASettlorViewHelper(settlors).rows
 
-            val settlorRows = new AddASettlorViewHelper(all).rows
-
-            if (settlors.nonMaxedOutOptions.isEmpty) {
-              Ok(completeView(
-                inProgressSettlors = settlorRows.inProgress,
-                completeSettlors = settlorRows.complete,
-                heading = all.addToHeading
-              ))
-            } else {
-              Ok(addAnotherView(
-                form = addAnotherForm,
-                inProgressSettlors = settlorRows.inProgress,
-                completeSettlors = settlorRows.complete,
-                heading = all.addToHeading,
-                maxedOut = settlors.maxedOutOptions.map(x => x.messageKey)
-              ))
-            }
+        if (settlors.nonMaxedOutOptions.isEmpty) {
+          Ok(completeView(
+            inProgressSettlors = settlorRows.inProgress,
+            completeSettlors = settlorRows.complete,
+            heading = settlors.addToHeading
+          ))
+        } else {
+          Ok(addAnotherView(
+            form = addAnotherForm,
+            inProgressSettlors = settlorRows.inProgress,
+            completeSettlors = settlorRows.complete,
+            heading = settlors.addToHeading,
+            maxedOut = settlors.maxedOutOptions.map(x => x.messageKey)
+          ))
         }
       }
   }
