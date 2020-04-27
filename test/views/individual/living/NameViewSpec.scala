@@ -14,35 +14,46 @@
  * limitations under the License.
  */
 
-package views
+package views.individual.living
 
-import forms.YesNoFormProvider
+import forms.NameFormProvider
 import models.{Name, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.YesNoViewBehaviours
-import controllers.living.routes
-import views.html.living.DateOfBirthYesNoView
+import views.behaviours.QuestionViewBehaviours
+import views.html.individual.living.NameView
 
-class DateOfBirthYesNoViewSpec extends YesNoViewBehaviours {
+class NameViewSpec extends QuestionViewBehaviours[Name] {
 
-  val messageKeyPrefix = "livingSettlor.dateOfBirthYesNo"
+  val messageKeyPrefix = "livingSettlor.name"
   val name: Name = Name("First", Some("Middle"), "Last")
 
-  val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
+  override val form: Form[Name] = new NameFormProvider().withPrefix(messageKeyPrefix)
 
-  "DateOfBirthYesNo view" must {
+  "Name view" must {
 
-    val view = viewFor[DateOfBirthYesNoView](Some(emptyUserAnswers))
+    val view = viewFor[NameView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, name.displayName, NormalMode)(fakeRequest, messages)
+      view.apply(form, NormalMode)(fakeRequest, messages)
 
-    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
+    behave like normalPage(applyView(form), messageKeyPrefix)
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName), routes.DateOfBirthYesNoController.onSubmit().url)
+    "fields" must {
+
+      behave like pageWithTextFields(
+        form,
+        applyView,
+        messageKeyPrefix,
+        None,
+        "",
+        "firstName",
+        "middleName",
+        "lastName"
+      )
+    }
 
     behave like pageWithASubmitButton(applyView(form))
   }

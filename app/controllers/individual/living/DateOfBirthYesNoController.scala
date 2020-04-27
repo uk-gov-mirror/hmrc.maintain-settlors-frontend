@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.living
+package controllers.individual.living
 
 import config.annotations.LivingSettlor
 import controllers.actions._
@@ -23,12 +23,12 @@ import forms.YesNoFormProvider
 import javax.inject.Inject
 import models.{CheckMode, Mode}
 import navigation.Navigator
-import pages.living.DateOfBirthYesNoPage
+import pages.individual.living.DateOfBirthYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.living.DateOfBirthYesNoView
+import views.html.individual.living.DateOfBirthYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
 
