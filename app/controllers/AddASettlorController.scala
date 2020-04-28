@@ -21,14 +21,16 @@ import connectors.TrustStoreConnector
 import controllers.actions.StandardActionSets
 import forms.AddASettlorFormProvider
 import javax.inject.Inject
-import models.AddASettlor
+import models.DeedOfVariation.AdditionToWillTrust
+import models.requests.DataRequest
+import models.{AddASettlor, DeedOfVariation, TypeOfTrust}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.{AddASettlorViewHelper, TrustDescriptionFormatter}
+import utils.AddASettlorViewHelper
 import views.html.{AddASettlorView, MaxedOutSettlorsView}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,7 +46,7 @@ class AddASettlorController @Inject()(
                                        repository: PlaybackRepository,
                                        addAnotherView: AddASettlorView,
                                        completeView: MaxedOutSettlorsView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with TrustDescriptionFormatter {
+                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val addAnotherForm : Form[AddASettlor] = addAnotherFormProvider()
 
@@ -61,7 +63,7 @@ class AddASettlorController @Inject()(
 
         if (settlors.nonMaxedOutOptions.isEmpty) {
           Ok(completeView(
-            request.messages(messagesApi)(getTrustDescription(request.userAnswers.trustType, request.userAnswers.deedOfVariation)),
+            getTrustDescription(request.userAnswers.trustType, request.userAnswers.deedOfVariation),
             inProgressSettlors = settlorRows.inProgress,
             completeSettlors = settlorRows.complete,
             heading = settlors.addToHeading
@@ -69,7 +71,7 @@ class AddASettlorController @Inject()(
         } else {
           Ok(addAnotherView(
             form = addAnotherForm,
-            request.messages(messagesApi)(getTrustDescription(request.userAnswers.trustType, request.userAnswers.deedOfVariation)),
+            getTrustDescription(request.userAnswers.trustType, request.userAnswers.deedOfVariation),
             inProgressSettlors = settlorRows.inProgress,
             completeSettlors = settlorRows.complete,
             heading = settlors.addToHeading,
@@ -91,7 +93,7 @@ class AddASettlorController @Inject()(
             Future.successful(BadRequest(
               addAnotherView(
                 formWithErrors,
-                request.messages(messagesApi)(getTrustDescription(request.userAnswers.trustType, request.userAnswers.deedOfVariation)),
+                getTrustDescription(request.userAnswers.trustType, request.userAnswers.deedOfVariation),
                 rows.inProgress,
                 rows.complete,
                 settlors.addToHeading,
@@ -128,5 +130,24 @@ class AddASettlorController @Inject()(
       } yield {
         Redirect(appConfig.maintainATrustOverview)
       }
+  }
+
+  private def getTrustDescription(
+                                   typeOfTrust: TypeOfTrust,
+                                   deedOfVariation:
+                                   Option[DeedOfVariation]
+                                 )(implicit request: DataRequest[AnyContent]): String = {
+
+    val result = (typeOfTrust, deedOfVariation) match {
+      case (TypeOfTrust.WillTrustOrIntestacyTrust, _) => "willTrust"
+      case (TypeOfTrust.IntervivosSettlementTrust, _) => "intervivosTrust"
+      case (TypeOfTrust.DeedOfVariation, Some(AdditionToWillTrust)) => "deedOfVariationInAdditionToWill"
+      case (TypeOfTrust.DeedOfVariation, _) => "deedOfVariation"
+      case (TypeOfTrust.EmployeeRelated, _) => "employeeRelated"
+      case (TypeOfTrust.FlatManagementTrust, _) => "flatManagementTrust"
+      case (TypeOfTrust.HeritageTrust, _) => "heritageTrust"
+    }
+
+    request.messages(messagesApi)(s"trustDescription.$result")
   }
 }
