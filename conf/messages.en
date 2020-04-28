@@ -134,6 +134,14 @@ addASettlor.maxedOut.all.paragraph = Check the settlors you have added. If you h
 whatTypeOfSettlor.individual = Individual
 whatTypeOfSettlor.business = Business
 
+trustDescription.willTrust = This is a will trust. If the trust does not have a will settlor, you will need to change your answers.
+trustDescription.intervivosTrust = This is a trust created during their lifetime to gift or transfer assets.
+trustDescription.deedOfVariationInAdditionToWill = This trust was set up by family agreement in addition to a will.
+trustDescription.deedOfVariation = This trust was set up by family agreement.
+trustDescription.employeeRelated = This trust was set up for employees of a company.
+trustDescription.flatManagementTrust = This trust was set up for a building or a building with lots of tenants.
+trustDescription.heritageTrust = This trust was set up to pay for the repair of historic buildings.
+
 livingSettlor.name.checkYourAnswersLabel = What is the name of the settlor?
 livingSettlor.name.title = What is the name of the settlor?
 livingSettlor.name.heading = What is the name of the settlor?

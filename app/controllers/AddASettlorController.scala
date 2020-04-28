@@ -21,15 +21,14 @@ import connectors.TrustStoreConnector
 import controllers.actions.StandardActionSets
 import forms.AddASettlorFormProvider
 import javax.inject.Inject
-import models.settlors.Settlors
-import models.{AddASettlor, Enumerable}
+import models.AddASettlor
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.AddASettlorViewHelper
+import utils.{AddASettlorViewHelper, TrustDescriptionFormatter}
 import views.html.{AddASettlorView, MaxedOutSettlorsView}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -45,7 +44,7 @@ class AddASettlorController @Inject()(
                                        repository: PlaybackRepository,
                                        addAnotherView: AddASettlorView,
                                        completeView: MaxedOutSettlorsView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
+                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with TrustDescriptionFormatter {
 
   val addAnotherForm : Form[AddASettlor] = addAnotherFormProvider()
 
@@ -62,6 +61,7 @@ class AddASettlorController @Inject()(
 
         if (settlors.nonMaxedOutOptions.isEmpty) {
           Ok(completeView(
+            request.messages(messagesApi)(getTrustDescription(request.userAnswers.trustType, request.userAnswers.deedOfVariation)),
             inProgressSettlors = settlorRows.inProgress,
             completeSettlors = settlorRows.complete,
             heading = settlors.addToHeading
@@ -69,6 +69,7 @@ class AddASettlorController @Inject()(
         } else {
           Ok(addAnotherView(
             form = addAnotherForm,
+            request.messages(messagesApi)(getTrustDescription(request.userAnswers.trustType, request.userAnswers.deedOfVariation)),
             inProgressSettlors = settlorRows.inProgress,
             completeSettlors = settlorRows.complete,
             heading = settlors.addToHeading,
@@ -90,6 +91,7 @@ class AddASettlorController @Inject()(
             Future.successful(BadRequest(
               addAnotherView(
                 formWithErrors,
+                request.messages(messagesApi)(getTrustDescription(request.userAnswers.trustType, request.userAnswers.deedOfVariation)),
                 rows.inProgress,
                 rows.complete,
                 settlors.addToHeading,
