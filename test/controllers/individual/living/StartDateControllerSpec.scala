@@ -49,7 +49,7 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val startDateRoute = routes.StartDateController.onPageLoad().url
 
-  val name = Name("New", None, "Beneficiary")
+  val name = Name("New", None, "Settlor")
 
   override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", date, TypeOfTrust.WillTrustOrIntestacyTrust)
     .set(NamePage, name)

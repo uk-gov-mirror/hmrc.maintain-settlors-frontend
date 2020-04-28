@@ -26,28 +26,28 @@ POST       /change-has-national-insurance-number            controllers.individu
 
 GET        /national-insurance-number                       controllers.individual.living.NationalInsuranceNumberController.onPageLoad(mode: Mode = NormalMode)
 POST       /national-insurance-number                       controllers.individual.living.NationalInsuranceNumberController.onSubmit(mode: Mode = NormalMode)
-GET        /change-national-insurance-number               controllers.individual.living.NationalInsuranceNumberController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-national-insurance-number               controllers.individual.living.NationalInsuranceNumberController.onSubmit(mode: Mode = CheckMode)
+GET        /change-national-insurance-number                controllers.individual.living.NationalInsuranceNumberController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-national-insurance-number                controllers.individual.living.NationalInsuranceNumberController.onSubmit(mode: Mode = CheckMode)
 
 GET        /has-address                                     controllers.individual.living.AddressYesNoController.onPageLoad(mode: Mode = NormalMode)
 POST       /has-address                                     controllers.individual.living.AddressYesNoController.onSubmit(mode: Mode = NormalMode)
-GET        /change-has-address                             controllers.individual.living.AddressYesNoController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-has-address                             controllers.individual.living.AddressYesNoController.onSubmit(mode: Mode = CheckMode)
+GET        /change-has-address                              controllers.individual.living.AddressYesNoController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-has-address                              controllers.individual.living.AddressYesNoController.onSubmit(mode: Mode = CheckMode)
 
 GET        /has-uk-address                                  controllers.individual.living.LiveInTheUkYesNoController.onPageLoad(mode: Mode = NormalMode)
 POST       /has-uk-address                                  controllers.individual.living.LiveInTheUkYesNoController.onSubmit(mode: Mode = NormalMode)
-GET        /change-has-uk-address                                  controllers.individual.living.LiveInTheUkYesNoController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-has-uk-address                                  controllers.individual.living.LiveInTheUkYesNoController.onSubmit(mode: Mode = CheckMode)
+GET        /change-has-uk-address                           controllers.individual.living.LiveInTheUkYesNoController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-has-uk-address                           controllers.individual.living.LiveInTheUkYesNoController.onSubmit(mode: Mode = CheckMode)
 
 GET        /uk-address                                      controllers.individual.living.UkAddressController.onPageLoad(mode: Mode = NormalMode)
 POST       /uk-address                                      controllers.individual.living.UkAddressController.onSubmit(mode: Mode = NormalMode)
-GET        /change-uk-address                                      controllers.individual.living.UkAddressController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-uk-address                                      controllers.individual.living.UkAddressController.onSubmit(mode: Mode = CheckMode)
+GET        /change-uk-address                               controllers.individual.living.UkAddressController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-uk-address                               controllers.individual.living.UkAddressController.onSubmit(mode: Mode = CheckMode)
 
 GET        /non-uk-address                                  controllers.individual.living.NonUkAddressController.onPageLoad(mode: Mode = NormalMode)
 POST       /non-uk-address                                  controllers.individual.living.NonUkAddressController.onSubmit(mode: Mode = NormalMode)
-GET        /change-non-uk-address                                  controllers.individual.living.NonUkAddressController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-non-uk-address                                  controllers.individual.living.NonUkAddressController.onSubmit(mode: Mode = CheckMode)
+GET        /change-non-uk-address                           controllers.individual.living.NonUkAddressController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-non-uk-address                           controllers.individual.living.NonUkAddressController.onSubmit(mode: Mode = CheckMode)
 
 GET        /has-passport                                    controllers.individual.living.PassportDetailsYesNoController.onPageLoad(mode: Mode = NormalMode)
 POST       /has-passport                                    controllers.individual.living.PassportDetailsYesNoController.onSubmit(mode: Mode = NormalMode)
@@ -71,6 +71,9 @@ POST       /change-id-card                                  controllers.individu
 
 GET        /start-date                                      controllers.individual.living.StartDateController.onPageLoad()
 POST       /start-date                                      controllers.individual.living.StartDateController.onSubmit()
+
+GET         /check-details                                  controllers.individual.living.CheckDetailsController.onPageLoad()
+POST        /check-details                                  controllers.individual.living.CheckDetailsController.onSubmit()
 
 GET        /:index/check-details                            controllers.individual.living.amend.CheckDetailsController.extractAndRender(index: Int)
 GET        /:index/updated-details                          controllers.individual.living.amend.CheckDetailsController.renderFromUserAnswers(index: Int)

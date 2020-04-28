@@ -3,6 +3,7 @@ site.back = Back
 site.delete = Remove
 site.edit = Change
 site.hidden-delete = Delete {0}
+site.hidden-cannot-delete = You cannot delete {0}
 site.hidden-edit = Change {0}
 site.change.details = Change details
 site.no = No
@@ -172,8 +173,8 @@ livingSettlor.nationalInsuranceNumber.checkYourAnswersLabel = What is {0}’s Na
 livingSettlor.nationalInsuranceNumber.title = What is the settlor’s National Insurance number?
 livingSettlor.nationalInsuranceNumber.heading = What is {0}’s National Insurance number?
 livingSettlor.nationalInsuranceNumber.hint = It is on their National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’.
-livingSettlor.nationalInsuranceNumber.error.required = Enter the individual beneficiary’s National Insurance number
-livingSettlor.nationalInsuranceNumber.error.invalidFormat = Enter the individual beneficiary’s National Insurance number in the correct format
+livingSettlor.nationalInsuranceNumber.error.required = Enter the settlor’s National Insurance number
+livingSettlor.nationalInsuranceNumber.error.invalidFormat = Enter the settlor’s National Insurance number in the correct format
 
 livingSettlor.addressYesNo.checkYourAnswersLabel = Do you know {0}’s address?
 livingSettlor.addressYesNo.title = Do you know the settlor’s address?
@@ -259,6 +260,9 @@ livingSettlor.startDate.error.required = The date the settlor was added to the t
 livingSettlor.startDate.error.invalid = Enter a real date
 livingSettlor.startDate.error.future = The date the settlor was added to the trust must be today or in the past
 livingSettlor.startDate.error.past = The date the settlor was added to the trust cannot be before the start date of the trust
+
+livingSettlor.checkDetails.title = Check individual settlor details
+livingSettlor.checkDetails.heading = Check individual settlor details
 
 removeIndividualSettlor.title = Are you sure you want to remove the individual settlor?
 removeIndividualSettlor.heading = Are you sure you want to remove {0}?
