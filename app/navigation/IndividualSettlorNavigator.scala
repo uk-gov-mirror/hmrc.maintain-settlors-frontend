@@ -81,7 +81,7 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
     answers.get(IndexPage) match {
       case None => controllers.routes.SessionExpiredController.onPageLoad()
       case Some(x) =>
-        controllers.individual.living.routes.CheckDetailsController.onPageLoad() //TODO: Change this for amend journey
+        controllers.individual.living.amend.routes.CheckDetailsController.renderFromUserAnswers(x)
     }
   }
 
