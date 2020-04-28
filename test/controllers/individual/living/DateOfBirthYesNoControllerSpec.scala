@@ -40,7 +40,7 @@ class DateOfBirthYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val dateOfBirthYesNoRoute = routes.DateOfBirthYesNoController.onPageLoad(NormalMode).url
 
-  val name = Name("New", None, "Beneficiary")
+  val name = Name("New", None, "Settlor")
 
   override val emptyUserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
