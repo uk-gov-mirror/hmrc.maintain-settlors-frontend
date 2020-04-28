@@ -63,7 +63,7 @@ class AddASettlorController @Inject()(
 
         if (settlors.nonMaxedOutOptions.isEmpty) {
           Ok(completeView(
-            getTrustDescription(request.userAnswers.trustType, request.userAnswers.deedOfVariation),
+            trustDescription,
             inProgressSettlors = settlorRows.inProgress,
             completeSettlors = settlorRows.complete,
             heading = settlors.addToHeading
@@ -71,7 +71,7 @@ class AddASettlorController @Inject()(
         } else {
           Ok(addAnotherView(
             form = addAnotherForm,
-            getTrustDescription(request.userAnswers.trustType, request.userAnswers.deedOfVariation),
+            trustDescription,
             inProgressSettlors = settlorRows.inProgress,
             completeSettlors = settlorRows.complete,
             heading = settlors.addToHeading,
@@ -93,7 +93,7 @@ class AddASettlorController @Inject()(
             Future.successful(BadRequest(
               addAnotherView(
                 formWithErrors,
-                getTrustDescription(request.userAnswers.trustType, request.userAnswers.deedOfVariation),
+                trustDescription,
                 rows.inProgress,
                 rows.complete,
                 settlors.addToHeading,
@@ -132,12 +132,9 @@ class AddASettlorController @Inject()(
       }
   }
 
-  private def getTrustDescription(
-                                   typeOfTrust: TypeOfTrust,
-                                   deedOfVariation: Option[DeedOfVariation]
-                                 )(implicit request: DataRequest[AnyContent]): String = {
+  private def trustDescription(implicit request: DataRequest[AnyContent]): String = {
 
-    val description = (typeOfTrust, deedOfVariation) match {
+    val description = (request.userAnswers.trustType, request.userAnswers.deedOfVariation) match {
       case (TypeOfTrust.WillTrustOrIntestacyTrust, _) => "willTrust"
       case (TypeOfTrust.IntervivosSettlementTrust, _) => "intervivosTrust"
       case (TypeOfTrust.DeedOfVariation, Some(AdditionToWillTrust)) => "deedOfVariationInAdditionToWill"
