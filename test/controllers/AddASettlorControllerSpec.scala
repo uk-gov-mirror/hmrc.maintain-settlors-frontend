@@ -151,7 +151,15 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
         status(result) mustEqual OK
 
-        contentAsString(result) mustEqual view(addTrusteeForm, Nil, settlorRows, "The trust has 2 settlors", Nil)(fakeRequest, messages).toString
+        contentAsString(result) mustEqual
+          view(
+            addTrusteeForm,
+            "This is a will trust. If the trust does not have a will settlor, you will need to change your answers.",
+            Nil,
+            settlorRows,
+            "The trust has 2 settlors",
+            Nil
+          )(fakeRequest, messages).toString
 
         application.stop()
       }
@@ -221,7 +229,15 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
         status(result) mustEqual BAD_REQUEST
 
-        contentAsString(result) mustEqual view(boundForm, Nil, settlorRows, "The trust has 2 settlors", Nil)(fakeRequest, messages).toString
+        contentAsString(result) mustEqual
+          view(
+            boundForm,
+            "This is a will trust. If the trust does not have a will settlor, you will need to change your answers.",
+            Nil,
+            settlorRows,
+            "The trust has 2 settlors",
+            Nil
+          )(fakeRequest, messages).toString
 
         application.stop()
       }
@@ -254,7 +270,13 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
         val content = contentAsString(result)
 
-        content mustEqual view(settlorRows.inProgress, settlorRows.complete, "The trust has 50 settlors")(fakeRequest, messages).toString
+        content mustEqual
+          view(
+            "This is a will trust. If the trust does not have a will settlor, you will need to change your answers.",
+            settlorRows.inProgress,
+            settlorRows.complete,
+            "The trust has 50 settlors"
+          )(fakeRequest, messages).toString
         content must include("You cannot enter another settlor as you have entered a maximum of 50.")
         content must include("If you have further settlors to add, write to HMRC with their details.")
 
@@ -339,7 +361,15 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
         status(result) mustEqual OK
 
-        contentAsString(result) mustEqual view(addTrusteeForm, Nil, settlorRows, "The trust has 2 settlors", Nil)(fakeRequest, messages).toString
+        contentAsString(result) mustEqual
+          view(
+            addTrusteeForm,
+            "This is a will trust. If the trust does not have a will settlor, you will need to change your answers.",
+            Nil,
+            settlorRows,
+            "The trust has 2 settlors",
+            Nil
+          )(fakeRequest, messages).toString
 
         application.stop()
       }
