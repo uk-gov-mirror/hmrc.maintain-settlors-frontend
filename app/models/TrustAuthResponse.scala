@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.actions.actions
+package models
 
-import com.google.inject.Inject
-import controllers.actions.PlaybackIdentifierAction
-import models.requests.DataRequest
-import play.api.mvc.Result
+import play.api.libs.json.{Format, Json}
 
-import scala.concurrent.{ExecutionContext, Future}
+case class TrustAuthResponseBody(redirectUrl: Option[String] = None, arn: Option[String] = None)
 
-class FakePlaybackIdentifierAction @Inject()(
-                                              implicit val executionContext: ExecutionContext
-                                            ) extends PlaybackIdentifierAction {
-
-  override def refine[A](request: DataRequest[A]): Future[Either[Result, DataRequest[A]]] = Future.successful(Right(request))
-
+object TrustAuthResponseBody {
+  implicit val format: Format[TrustAuthResponseBody] = Json.format[TrustAuthResponseBody]
 }
+
+sealed trait TrustAuthResponse
+
+case object TrustAuthAllowed extends TrustAuthResponse
+case class TrustAuthAgentAllowed(arn: String) extends TrustAuthResponse
+case class TrustAuthDenied(redirectUrl: String) extends TrustAuthResponse
+case object TrustAuthInternalServerError extends TrustAuthResponse

@@ -16,79 +16,41 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
-import com.github.tomakehurst.wiremock.client.WireMock._
-import org.scalatest.{AsyncFreeSpec, MustMatchers}
-import play.api.Application
-import play.api.http.Status
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsValue, Json}
-import play.api.test.DefaultAwaitTimeout
+import com.google.inject.ImplementedBy
+import config.FrontendAppConfig
+import javax.inject.Inject
+import models.{TrustAuthAgentAllowed, TrustAuthAllowed, TrustAuthDenied, TrustAuthInternalServerError, TrustAuthResponse, TrustAuthResponseBody}
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.WireMockHelper
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
 
-class TrustAuthConnectorSpec extends AsyncFreeSpec with MustMatchers with WireMockHelper with DefaultAwaitTimeout{
+@ImplementedBy(classOf[TrustAuthConnectorImpl])
+trait TrustAuthConnector {
+  def agentIsAuthorised()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TrustAuthResponse]
+  def authorisedForUtr(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TrustAuthResponse]
+}
 
-  implicit lazy val hc: HeaderCarrier = HeaderCarrier()
+class TrustAuthConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig)
+  extends TrustAuthConnector {
 
-  private def authorisedUrlFor(utr: String): String = s"/trusts-auth/authorised/$utr"
+  val baseUrl: String = config.trustAuthUrl + "/trusts-auth"
 
-  private def responseFromJson(json: JsValue) = {
-    aResponse().withStatus(Status.OK).withBody(json.toString())
+  override def agentIsAuthorised()
+                                (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TrustAuthResponse] = {
+    mapResponse(http.GET[TrustAuthResponseBody](s"$baseUrl/agent-authorised"))
   }
 
-
-  private def allowedResponse = responseFromJson(Json.obj())
-
-  private def redirectResponse(redirectUrl: String) = responseFromJson(Json.obj("redirectUrl" -> redirectUrl))
-
-  private def wiremock(utr: String, response: ResponseDefinitionBuilder) = {
-    server.stubFor(get(urlEqualTo(authorisedUrlFor(utr))).willReturn(response))
+  override def authorisedForUtr(utr: String)
+                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TrustAuthResponse] = {
+    mapResponse(http.GET[TrustAuthResponseBody](s"$baseUrl/authorised/$utr"))
   }
 
-  lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(Seq(
-      "microservice.services.trusts-auth.port" -> server.port(),
-      "auditing.enabled" -> false
-    ): _*).build()
-
-  private lazy val connector = app.injector.instanceOf[TrustAuthConnector]
-
-  private val utr = "0123456789"
-
-  "TrustAuthConnector" - {
-
-    "returns 'Allowed' when" - {
-      "service returns with no redirect url" in {
-
-        wiremock(utr, allowedResponse)
-
-        connector.authorisedForUtr(utr) map { result =>
-          result mustEqual TrustAuthAllowed
-        }
-      }
-    }
-    "returns 'Denied' when" - {
-      "service returns a redirect url" in {
-
-        wiremock(utr, redirectResponse("redirect-url"))
-
-        connector.authorisedForUtr(utr) map { result =>
-          result mustEqual TrustAuthDenied("redirect-url")
-        }
-      }
-    }
-    "returns 'Internal server error' when" - {
-      "service returns something not OK" in {
-
-        wiremock(utr, aResponse().withStatus(Status.INTERNAL_SERVER_ERROR))
-
-        connector.authorisedForUtr(utr) map { result =>
-          result mustEqual TrustAuthInternalServerError
-        }
-      }
-    }
+  private def mapResponse(response: Future[TrustAuthResponseBody])(implicit ec: ExecutionContext) = response.map {
+    case TrustAuthResponseBody(Some(redirectUrl), None) => TrustAuthDenied(redirectUrl)
+    case TrustAuthResponseBody(None, Some(arn)) => TrustAuthAgentAllowed(arn)
+    case _ => TrustAuthAllowed
+  }.recoverWith {
+    case _ => Future.successful(TrustAuthInternalServerError)
   }
 }
