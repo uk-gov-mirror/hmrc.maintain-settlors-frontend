@@ -27,9 +27,9 @@ class IndividualSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConver
                                              countryOptions: CountryOptions
                                             ) {
 
-  def apply(userAnswers: UserAnswers, provisional: Boolean, beneficiaryName: String)(implicit messages: Messages) = {
+  def apply(userAnswers: UserAnswers, provisional: Boolean, settlorName: String)(implicit messages: Messages) = {
 
-    val bound = answerRowConverter.bind(userAnswers, beneficiaryName, countryOptions)
+    val bound = answerRowConverter.bind(userAnswers, settlorName, countryOptions)
 
     val add: Seq[AnswerRow] = Seq(
         bound.nameQuestion(NamePage, "livingSettlor.name", controllers.individual.living.routes.NameController.onPageLoad(CheckMode).url),

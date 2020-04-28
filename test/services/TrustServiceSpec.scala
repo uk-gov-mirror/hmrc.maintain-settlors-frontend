@@ -46,7 +46,7 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
   )
 
   val businessSettlor = BusinessSettlor(
-    name = "Company Beneficiary Name",
+    name = "Company Settlor Name",
     companyType = None,
     companyTime = None,
     utr = None,
