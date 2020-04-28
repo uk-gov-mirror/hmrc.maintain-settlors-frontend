@@ -361,7 +361,9 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
         status(result) mustEqual OK
 
-        contentAsString(result) mustEqual
+        val content = contentAsString(result)
+
+        content mustEqual
           view(
             addTrusteeForm,
             "This is a will trust. If the trust does not have a will settlor, you will need to change your answers.",
@@ -370,6 +372,9 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
             "The trust has 2 settlors",
             Nil
           )(fakeRequest, messages).toString
+
+        content must include("You cannot delete First Last")
+        content must include("You cannot delete Humanitarian Company Ltd")
 
         application.stop()
       }

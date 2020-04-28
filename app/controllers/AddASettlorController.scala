@@ -138,7 +138,7 @@ class AddASettlorController @Inject()(
                                    Option[DeedOfVariation]
                                  )(implicit request: DataRequest[AnyContent]): String = {
 
-    val result = (typeOfTrust, deedOfVariation) match {
+    val description = (typeOfTrust, deedOfVariation) match {
       case (TypeOfTrust.WillTrustOrIntestacyTrust, _) => "willTrust"
       case (TypeOfTrust.IntervivosSettlementTrust, _) => "intervivosTrust"
       case (TypeOfTrust.DeedOfVariation, Some(AdditionToWillTrust)) => "deedOfVariationInAdditionToWill"
@@ -148,6 +148,6 @@ class AddASettlorController @Inject()(
       case (TypeOfTrust.HeritageTrust, _) => "heritageTrust"
     }
 
-    request.messages(messagesApi)(s"trustDescription.$result")
+    request.messages(messagesApi)(s"trustDescription.$description")
   }
 }
