@@ -49,13 +49,13 @@ class AddNowController @Inject()(
     implicit request =>
 
       trustService.getSettlors(request.userAnswers.utr).map {
-        beneficiaries =>
+        settlors =>
           val preparedForm = request.userAnswers.get(AddNowPage) match {
             case None => form
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, beneficiaries.nonMaxedOutOptions))
+          Ok(view(preparedForm, settlors.nonMaxedOutOptions))
 
       }
   }
@@ -64,11 +64,11 @@ class AddNowController @Inject()(
     implicit request =>
 
       trustService.getSettlors(request.userAnswers.utr).flatMap {
-        beneficiaries =>
+        settlors =>
 
           form.bindFromRequest().fold(
             formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, beneficiaries.nonMaxedOutOptions))),
+              Future.successful(BadRequest(view(formWithErrors, settlors.nonMaxedOutOptions))),
 
             value =>
               for {
