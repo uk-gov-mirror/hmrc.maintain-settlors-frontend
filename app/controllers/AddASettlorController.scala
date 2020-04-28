@@ -23,7 +23,7 @@ import forms.AddASettlorFormProvider
 import javax.inject.Inject
 import models.DeedOfVariation.AdditionToWillTrust
 import models.requests.DataRequest
-import models.{AddASettlor, DeedOfVariation, TypeOfTrust}
+import models.{AddASettlor, TypeOfTrust}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
