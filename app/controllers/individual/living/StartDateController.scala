@@ -21,10 +21,9 @@ import controllers.actions.StandardActionSets
 import controllers.actions.living.NameRequiredAction
 import forms.DateAddedToTrustFormProvider
 import javax.inject.Inject
-import models.{Mode, NormalMode}
 import navigation.Navigator
 import pages.individual.living.StartDatePage
-import play.api.i18n.I18nSupport
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -33,6 +32,7 @@ import views.html.individual.living.StartDateView
 import scala.concurrent.{ExecutionContext, Future}
 
 class StartDateController @Inject()(
+                                     override val messagesApi: MessagesApi,
                                      playbackRepository: PlaybackRepository,
                                      @LivingSettlor navigator: Navigator,
                                      standardActionSets: StandardActionSets,
@@ -70,7 +70,7 @@ class StartDateController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(StartDatePage, value))
             _              <- playbackRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(StartDatePage, NormalMode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(StartDatePage, updatedAnswers))
       )
   }
 }
