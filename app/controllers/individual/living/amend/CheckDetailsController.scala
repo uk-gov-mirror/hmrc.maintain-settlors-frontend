@@ -83,8 +83,8 @@ class CheckDetailsController @Inject()(
     implicit request =>
 
       mapper(request.userAnswers).map {
-        beneficiary =>
-          connector.amendTrustBeneficiary(request.userAnswers.utr, index, beneficiary).map(_ =>
+        individual =>
+          connector.amendIndividualSettlor(request.userAnswers.utr, index, individual).map(_ =>
             Redirect(controllers.routes.AddASettlorController.onPageLoad())
           )
       }.getOrElse(Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate)))
