@@ -134,8 +134,7 @@ class AddASettlorController @Inject()(
 
   private def getTrustDescription(
                                    typeOfTrust: TypeOfTrust,
-                                   deedOfVariation:
-                                   Option[DeedOfVariation]
+                                   deedOfVariation: Option[DeedOfVariation]
                                  )(implicit request: DataRequest[AnyContent]): String = {
 
     val description = (typeOfTrust, deedOfVariation) match {
