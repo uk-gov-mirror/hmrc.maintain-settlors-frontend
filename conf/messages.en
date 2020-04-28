@@ -131,6 +131,11 @@ addASettlor.maxedOut.just1.paragraph = Check the settlors you have added. If you
 addASettlor.maxedOut.all = You cannot enter another settlor as you have entered a maximum of 50.
 addASettlor.maxedOut.all.paragraph = Check the settlors you have added. If you have further settlors to add, write to HMRC with their details.
 
+addNow.heading = Is the settlor an individual or a business?
+addNow.title = Is the settlor an individual or a business?
+addNow.error.required = Select if the settlor is an individual or a business
+addNow.return.link = Return to add a settlor
+
 whatTypeOfSettlor.individual = Individual
 whatTypeOfSettlor.business = Business
 

@@ -18,6 +18,9 @@ GET        /this-service-has-been-reset                                     cont
 
 GET        /feature-not-available                                           controllers.FeatureNotAvailableController.onPageLoad()
 
+GET        /what-kind                                                       controllers.AddNowController.onPageLoad()
+POST       /what-kind                                                       controllers.AddNowController.onSubmit()
+
 GET        /logout                                                          controllers.LogoutController.logout()
 
 GET        /unauthorised                                                    controllers.UnauthorisedController.onPageLoad
