@@ -16,8 +16,11 @@
 
 package pages.individual.living
 
+import models.UserAnswers
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+
+import scala.util.Try
 
 case object NationalInsuranceNumberYesNoPage extends QuestionPage[Boolean] {
 
@@ -25,4 +28,21 @@ case object NationalInsuranceNumberYesNoPage extends QuestionPage[Boolean] {
 
   override def toString: String = "nationalInsuranceNumberYesNo"
 
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    value match {
+      case Some(true) =>
+        userAnswers.remove(AddressYesNoPage)
+          .flatMap(_.remove(LiveInTheUkYesNoPage))
+          .flatMap(_.remove(UkAddressPage))
+          .flatMap(_.remove(NonUkAddressPage))
+          .flatMap(_.remove(PassportDetailsYesNoPage))
+          .flatMap(_.remove(PassportDetailsPage))
+          .flatMap(_.remove(IdCardDetailsYesNoPage))
+          .flatMap(_.remove(IdCardDetailsPage))
+      case Some(false) =>
+        userAnswers.remove(NationalInsuranceNumberPage)
+      case _ =>
+        super.cleanup(value, userAnswers)
+    }
+  }
 }
