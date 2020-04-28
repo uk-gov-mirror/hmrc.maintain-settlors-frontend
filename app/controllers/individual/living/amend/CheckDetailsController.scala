@@ -20,6 +20,7 @@ import config.{ErrorHandler, FrontendAppConfig}
 import connectors.TrustConnector
 import controllers.actions._
 import controllers.actions.living.NameRequiredAction
+import extractors.IndividualSettlorExtractor
 import javax.inject.Inject
 import models.UserAnswers
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -46,7 +47,7 @@ class CheckDetailsController @Inject()(
                                         printHelper: IndividualSettlorPrintHelper,
                                         mapper: IndividualSettlorMapper,
                                         nameAction: NameRequiredAction,
-                                        extractor: TrustBeneficiaryExtractor,
+                                        extractor: IndividualSettlorExtractor,
                                         errorHandler: ErrorHandler
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
@@ -68,7 +69,7 @@ class CheckDetailsController @Inject()(
             extractedF <- Future.fromTry(extractor(request.userAnswers, trust, index))
             _ <- playbackRepository.set(extractedF)
           } yield {
-              render(extractedF, index, trust.name)
+              render(extractedF, index, trust.name.displayName)
           }
       }
   }
