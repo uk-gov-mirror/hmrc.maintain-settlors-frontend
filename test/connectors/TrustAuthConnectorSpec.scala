@@ -16,41 +16,118 @@
 
 package connectors
 
-import com.google.inject.ImplementedBy
-import config.FrontendAppConfig
-import javax.inject.Inject
-import models.{TrustAuthAgentAllowed, TrustAuthAllowed, TrustAuthDenied, TrustAuthInternalServerError, TrustAuthResponse, TrustAuthResponseBody}
+import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
+import com.github.tomakehurst.wiremock.client.WireMock._
+import models.{TrustAuthAgentAllowed, TrustAuthAllowed, TrustAuthDenied, TrustAuthInternalServerError}
+import org.scalatest.{AsyncFreeSpec, MustMatchers}
+import play.api.Application
+import play.api.http.Status
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.{JsValue, Json}
+import play.api.test.DefaultAwaitTimeout
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import utils.WireMockHelper
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
 
-@ImplementedBy(classOf[TrustAuthConnectorImpl])
-trait TrustAuthConnector {
-  def agentIsAuthorised()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TrustAuthResponse]
-  def authorisedForUtr(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TrustAuthResponse]
-}
+class TrustAuthConnectorSpec extends AsyncFreeSpec with MustMatchers with WireMockHelper with DefaultAwaitTimeout{
 
-class TrustAuthConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig)
-  extends TrustAuthConnector {
+  implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
-  val baseUrl: String = config.trustAuthUrl + "/trusts-auth"
+  private val authorisedUrl: String = s"/trusts-auth/agent-authorised"
+  private def authorisedUrlFor(utr: String): String = s"/trusts-auth/authorised/$utr"
 
-  override def agentIsAuthorised()
-                                (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TrustAuthResponse] = {
-    mapResponse(http.GET[TrustAuthResponseBody](s"$baseUrl/agent-authorised"))
+  private def responseFromJson(json: JsValue) = {
+    aResponse().withStatus(Status.OK).withBody(json.toString())
   }
 
-  override def authorisedForUtr(utr: String)
-                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TrustAuthResponse] = {
-    mapResponse(http.GET[TrustAuthResponseBody](s"$baseUrl/authorised/$utr"))
+  private def allowedResponse = responseFromJson(Json.obj("authorised" -> true))
+  private def allowedAgentResponse = responseFromJson(Json.obj("arn" -> "SomeArn"))
+
+  private def redirectResponse(redirectUrl: String) = responseFromJson(Json.obj("redirectUrl" -> redirectUrl))
+
+  private def wiremock(url: String, response: ResponseDefinitionBuilder) = {
+    server.stubFor(get(urlEqualTo(url)).willReturn(response))
   }
 
-  private def mapResponse(response: Future[TrustAuthResponseBody])(implicit ec: ExecutionContext) = response.map {
-    case TrustAuthResponseBody(Some(redirectUrl), None) => TrustAuthDenied(redirectUrl)
-    case TrustAuthResponseBody(None, Some(arn)) => TrustAuthAgentAllowed(arn)
-    case _ => TrustAuthAllowed
-  }.recoverWith {
-    case _ => Future.successful(TrustAuthInternalServerError)
+  lazy val app: Application = new GuiceApplicationBuilder()
+    .configure(Seq(
+      "microservice.services.trusts-auth.port" -> server.port(),
+      "auditing.enabled" -> false
+    ): _*).build()
+
+  private lazy val connector = app.injector.instanceOf[TrustAuthConnector]
+
+  private val utr = "0123456789"
+
+  "TrustAuthConnector" - {
+    "authorisedForUtr" - {
+
+      "returns 'Allowed' when" - {
+        "service returns with no redirect url" in {
+
+          wiremock(authorisedUrlFor(utr), allowedResponse)
+
+          connector.authorisedForUtr(utr) map { result =>
+            result mustEqual TrustAuthAllowed()
+          }
+        }
+      }
+      "returns 'Denied' when" - {
+        "service returns a redirect url" in {
+
+          wiremock(authorisedUrlFor(utr), redirectResponse("redirect-url"))
+
+          connector.authorisedForUtr(utr) map { result =>
+            result mustEqual TrustAuthDenied("redirect-url")
+          }
+        }
+      }
+      "returns 'Internal server error' when" - {
+        "service returns something not OK" in {
+
+          wiremock(authorisedUrlFor(utr), aResponse().withStatus(Status.INTERNAL_SERVER_ERROR))
+
+          connector.authorisedForUtr(utr) map { result =>
+            result mustEqual TrustAuthInternalServerError
+          }
+        }
+      }
+    }
+    "authorised" - {
+
+      "returns 'Agent Allowed' when" - {
+        "service returns with agent authorised response" in {
+
+          wiremock(authorisedUrl, allowedAgentResponse)
+
+          connector.agentIsAuthorised() map { result =>
+            result mustEqual TrustAuthAgentAllowed("SomeArn")
+          }
+        }
+      }
+
+      "returns 'Denied' when" - {
+        "service returns a redirect url" in {
+
+          wiremock(authorisedUrl, redirectResponse("redirect-url"))
+
+          connector.agentIsAuthorised() map { result =>
+            result mustEqual TrustAuthDenied("redirect-url")
+          }
+        }
+      }
+      "returns 'Internal server error' when" - {
+        "service returns something not OK" in {
+
+          wiremock(authorisedUrl, aResponse().withStatus(Status.INTERNAL_SERVER_ERROR))
+
+          connector.agentIsAuthorised() map { result =>
+            result mustEqual TrustAuthInternalServerError
+          }
+        }
+      }
+    }
+
   }
 }
