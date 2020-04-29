@@ -1,2 +1,0 @@
-GET        /:index/remove           controllers.business.remove.RemoveBusinessSettlorController.onPageLoad(index: Int)
-POST       /:index/remove           controllers.business.remove.RemoveBusinessSettlorController.onSubmit(index: Int)

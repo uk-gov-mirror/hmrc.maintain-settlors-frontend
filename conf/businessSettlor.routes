@@ -1,0 +1,7 @@
+
+GET        /:index/check-details                            controllers.business.amend.CheckDetailsController.extractAndRender(index: Int)
+GET        /:index/updated-details                          controllers.business.amend.CheckDetailsController.renderFromUserAnswers(index: Int)
+POST       /:index/check-details                            controllers.business.amend.CheckDetailsController.onSubmit(index: Int)
+
+GET        /:index/remove                                   controllers.business.remove.RemoveBusinessSettlorController.onPageLoad(index: Int)
+POST       /:index/remove                                   controllers.business.remove.RemoveBusinessSettlorController.onSubmit(index: Int)

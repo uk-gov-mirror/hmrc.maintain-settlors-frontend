@@ -139,6 +139,8 @@ addNow.return.link = Return to add a settlor
 whatTypeOfSettlor.individual = Individual
 whatTypeOfSettlor.business = Business
 
+livingSettlor.name.default = the individual settlor
+
 livingSettlor.name.checkYourAnswersLabel = What is the name of the settlor?
 livingSettlor.name.title = What is the name of the settlor?
 livingSettlor.name.heading = What is the name of the settlor?
@@ -272,6 +274,31 @@ livingSettlor.checkDetails.heading = Check individual settlor details
 removeIndividualSettlor.title = Are you sure you want to remove the individual settlor?
 removeIndividualSettlor.heading = Are you sure you want to remove {0}?
 removeIndividualSettlor.error.required = Select yes if you want to remove the individual settlor
+
+businessSettlor.name.default = the business settlor
+
+businessSettlor.name.checkYourAnswersLabel = What is the business’s name?
+
+businessSettlor.utrYesNo.checkYourAnswersLabel = Do you know {0}’s Unique Taxpayer Reference (UTR)?
+
+businessSettlor.utr.checkYourAnswersLabel = What is {0} Unique Taxpayer Reference (UTR)?
+
+businessSettlor.addressYesNo.checkYourAnswersLabel = Do you know {0}’s address?
+
+businessSettlor.liveInTheUkYesNo.checkYourAnswersLabel = Is {0}’s address in the UK?
+
+businessSettlor.ukAddress.checkYourAnswersLabel = What is {0}’s address?
+
+businessSettlor.nonUkAddress.checkYourAnswersLabel = What is {0}’s address?
+
+businessSettlor.companyType.checkYourAnswersLabel = What kind of business is {0}
+
+businessSettlor.companyTime.checkYourAnswersLabel = At the date of each contribution to the trust, had the business been in existence for at least 2 years?
+
+businessSettlor.startDate.checkYourAnswersLabel = When was {0} added as a settlor?
+
+businessSettlor.checkDetails.title = Check business settlor details
+businessSettlor.checkDetails.heading = Check business settlor details
 
 removeBusinessSettlor.title = Are you sure you want to remove the business settlor?
 removeBusinessSettlor.heading = Are you sure you want to remove {0}?

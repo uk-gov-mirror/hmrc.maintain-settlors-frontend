@@ -2,7 +2,7 @@
 
 ->         /individual/living                                               individualLivingSettlor.Routes
 
-->         /business/remove                                                 businessSettlor.remove.Routes
+->         /business                                                        businessSettlor.Routes
 
 GET        /add                                                             controllers.AddASettlorController.onPageLoad()
 POST       /add                                                             controllers.AddASettlorController.submit()
