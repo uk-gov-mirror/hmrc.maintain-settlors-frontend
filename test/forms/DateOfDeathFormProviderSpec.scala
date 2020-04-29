@@ -22,7 +22,7 @@ import forms.behaviours.DateBehaviours
 import play.api.data.FormError
 
 class DateOfDeathFormProviderSpec extends DateBehaviours {
-  
+
   val form = new DateOfDeathFormProvider().withPrefix("deceasedSettlor.dateOfDeath")
 
   private val min = LocalDate.of(1500, 1, 1)
