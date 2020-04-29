@@ -2,8 +2,11 @@
 GET        /change-name                                     controllers.individual.deceased.NameController.onPageLoad()
 POST       /change-name                                     controllers.individual.deceased.NameController.onSubmit()
 
-GET        /know-date-of-birth                              controllers.individual.deceased.DateOfBirthYesNoController.onPageLoad()
-POST       /know-date-of-birth                              controllers.individual.deceased.DateOfBirthYesNoController.onSubmit()
+GET        /change-know-date-of-birth                              controllers.individual.deceased.DateOfBirthYesNoController.onPageLoad()
+POST       /change-know-date-of-birth                              controllers.individual.deceased.DateOfBirthYesNoController.onSubmit()
+
+GET        /change-date-of-birth                            controllers.individual.deceased.DateOfBirthController.onPageLoad()
+POST       /change-date-of-birth                            controllers.individual.deceased.DateOfBirthController.onSubmit()
 
 GET        /change-had-uk-address                           controllers.individual.deceased.LivedInTheUkYesNoController.onPageLoad()
 POST       /change-had-uk-address                           controllers.individual.deceased.LivedInTheUkYesNoController.onSubmit()
