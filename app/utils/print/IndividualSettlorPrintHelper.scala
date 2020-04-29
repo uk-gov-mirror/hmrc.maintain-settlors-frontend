@@ -17,7 +17,7 @@
 package utils.print
 
 import com.google.inject.Inject
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, NormalMode, UserAnswers}
 import pages.individual.living._
 import play.api.i18n.Messages
 import utils.countryOptions.CountryOptions
@@ -32,19 +32,19 @@ class IndividualSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConver
     val bound = answerRowConverter.bind(userAnswers, settlorName, countryOptions)
 
     val add: Seq[AnswerRow] = Seq(
-        bound.nameQuestion(NamePage, "livingSettlor.name", controllers.individual.living.routes.NameController.onPageLoad(CheckMode).url),
-        bound.yesNoQuestion(DateOfBirthYesNoPage, "livingSettlor.dateOfBirthYesNo", controllers.individual.living.routes.DateOfBirthYesNoController.onPageLoad(CheckMode).url),
-        bound.dateQuestion(DateOfBirthPage, "livingSettlor.dateOfBirth", controllers.individual.living.routes.DateOfBirthController.onPageLoad(CheckMode).url),
-        bound.yesNoQuestion(NationalInsuranceNumberYesNoPage, "livingSettlor.nationalInsuranceNumberYesNo", controllers.individual.living.routes.NationalInsuranceNumberYesNoController.onPageLoad(CheckMode).url),
-        bound.ninoQuestion(NationalInsuranceNumberPage, "livingSettlor.nationalInsuranceNumber", controllers.individual.living.routes.NationalInsuranceNumberYesNoController.onPageLoad(CheckMode).url),
-        bound.yesNoQuestion(AddressYesNoPage, "livingSettlor.addressYesNo", controllers.individual.living.routes.AddressYesNoController.onPageLoad(CheckMode).url),
-        bound.yesNoQuestion(LiveInTheUkYesNoPage, "livingSettlor.liveInTheUkYesNo", controllers.individual.living.routes.LiveInTheUkYesNoController.onPageLoad(CheckMode).url),
-        bound.addressQuestion(UkAddressPage, "livingSettlor.ukAddress", controllers.individual.living.routes.UkAddressController.onPageLoad(CheckMode).url),
-        bound.addressQuestion(NonUkAddressPage, "livingSettlor.nonUkAddress", controllers.individual.living.routes.NonUkAddressController.onPageLoad(CheckMode).url),
-        bound.yesNoQuestion(PassportDetailsYesNoPage, "livingSettlor.passportDetailsYesNo", controllers.individual.living.routes.PassportDetailsYesNoController.onPageLoad(CheckMode).url),
-        bound.passportDetailsQuestion(PassportDetailsPage, "livingSettlor.passportDetails", controllers.individual.living.routes.PassportDetailsController.onPageLoad(CheckMode).url),
-        bound.yesNoQuestion(IdCardDetailsYesNoPage, "livingSettlor.idCardDetailsYesNo", controllers.individual.living.routes.IdCardDetailsYesNoController.onPageLoad(CheckMode).url),
-        bound.idCardDetailsQuestion(IdCardDetailsPage, "livingSettlor.idCardDetails", controllers.individual.living.routes.IdCardDetailsController.onPageLoad(CheckMode).url),
+        bound.nameQuestion(NamePage, "livingSettlor.name", controllers.individual.living.routes.NameController.onPageLoad(NormalMode).url),
+        bound.yesNoQuestion(DateOfBirthYesNoPage, "livingSettlor.dateOfBirthYesNo", controllers.individual.living.routes.DateOfBirthYesNoController.onPageLoad(NormalMode).url),
+        bound.dateQuestion(DateOfBirthPage, "livingSettlor.dateOfBirth", controllers.individual.living.routes.DateOfBirthController.onPageLoad(NormalMode).url),
+        bound.yesNoQuestion(NationalInsuranceNumberYesNoPage, "livingSettlor.nationalInsuranceNumberYesNo", controllers.individual.living.routes.NationalInsuranceNumberYesNoController.onPageLoad(NormalMode).url),
+        bound.ninoQuestion(NationalInsuranceNumberPage, "livingSettlor.nationalInsuranceNumber", controllers.individual.living.routes.NationalInsuranceNumberYesNoController.onPageLoad(NormalMode).url),
+        bound.yesNoQuestion(AddressYesNoPage, "livingSettlor.addressYesNo", controllers.individual.living.routes.AddressYesNoController.onPageLoad(NormalMode).url),
+        bound.yesNoQuestion(LiveInTheUkYesNoPage, "livingSettlor.liveInTheUkYesNo", controllers.individual.living.routes.LiveInTheUkYesNoController.onPageLoad(NormalMode).url),
+        bound.addressQuestion(UkAddressPage, "livingSettlor.ukAddress", controllers.individual.living.routes.UkAddressController.onPageLoad(NormalMode).url),
+        bound.addressQuestion(NonUkAddressPage, "livingSettlor.nonUkAddress", controllers.individual.living.routes.NonUkAddressController.onPageLoad(NormalMode).url),
+        bound.yesNoQuestion(PassportDetailsYesNoPage, "livingSettlor.passportDetailsYesNo", controllers.individual.living.routes.PassportDetailsYesNoController.onPageLoad(NormalMode).url),
+        bound.passportDetailsQuestion(PassportDetailsPage, "livingSettlor.passportDetails", controllers.individual.living.routes.PassportDetailsController.onPageLoad(NormalMode).url),
+        bound.yesNoQuestion(IdCardDetailsYesNoPage, "livingSettlor.idCardDetailsYesNo", controllers.individual.living.routes.IdCardDetailsYesNoController.onPageLoad(NormalMode).url),
+        bound.idCardDetailsQuestion(IdCardDetailsPage, "livingSettlor.idCardDetails", controllers.individual.living.routes.IdCardDetailsController.onPageLoad(NormalMode).url),
         bound.dateQuestion(StartDatePage, "livingSettlor.startDate", controllers.individual.living.routes.StartDateController.onPageLoad().url)
       ).flatten
 
