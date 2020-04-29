@@ -303,3 +303,21 @@ businessSettlor.checkDetails.heading = Check business settlor details
 removeBusinessSettlor.title = Are you sure you want to remove the business settlor?
 removeBusinessSettlor.heading = Are you sure you want to remove {0}?
 removeBusinessSettlor.error.required = Select yes if you want to remove the business settlor
+
+
+deceasedSettlor.name.default = the individual settlor
+
+deceasedSettlor.name.checkYourAnswersLabel = What is the name of the settlor?
+deceasedSettlor.name.title = What is the name of the settlor?
+deceasedSettlor.name.heading = What is the name of the settlor?
+deceasedSettlor.name.firstName = First name
+deceasedSettlor.name.middleName = Middle names (optional)
+deceasedSettlor.name.lastName = Last name
+deceasedSettlor.name.error.firstName.required = Enter the settlor’s first name
+deceasedSettlor.name.error.lastName.required = Enter the settlor’s last name
+deceasedSettlor.name.error.firstName.length = Settlor’s first name must be 35 characters or less
+deceasedSettlor.name.error.middleName.length = Settlor’s middle names must be 35 characters or less
+deceasedSettlor.name.error.lastName.length = Settlor’s last name must be 35 characters or less
+deceasedSettlor.name.error.firstName.invalid = Settlor’s first name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+deceasedSettlor.name.error.middleName.invalid = Settlor’s middle name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+deceasedSettlor.name.error.lastName.invalid = Settlor’s last name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
