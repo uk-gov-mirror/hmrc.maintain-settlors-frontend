@@ -232,6 +232,10 @@
     clear: both;
 }
 
+.govuk-details {
+    margin-bottom: 30px;
+}
+
 .clearfix {
     @include govuk-clearfix;
 }
