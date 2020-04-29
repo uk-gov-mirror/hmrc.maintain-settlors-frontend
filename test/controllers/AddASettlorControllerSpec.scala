@@ -373,8 +373,8 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
             Nil
           )(fakeRequest, messages).toString
 
-        content must include("You cannot delete First Last")
-        content must include("You cannot delete Humanitarian Company Ltd")
+        content must include("You cannot remove First Last as they have already been declared")
+        content must include("You cannot remove Humanitarian Company Ltd as they have already been declared")
 
         application.stop()
       }
