@@ -25,6 +25,7 @@
 )
 
 @(form: Form[_],
+    trustDescription: String,
     inProgressSettlors: Seq[AddRow],
     completeSettlors: Seq[AddRow],
     heading: String,
@@ -41,6 +42,8 @@
         @components.error_summary(form.errors)
 
         @components.heading(heading)
+
+        <p>@trustDescription</p>
 
         @components.data_list(inProgressSettlors, "inprogress")
 

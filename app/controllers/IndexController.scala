@@ -46,7 +46,8 @@ class IndexController @Inject()(
               internalAuthId = request.user.internalId,
               utr = utr,
               whenTrustSetup = LocalDate.parse(details.startDate),
-              trustType = details.typeOfTrust
+              trustType = details.typeOfTrust,
+              deedOfVariation = details.deedOfVariation
             )
           ).map(_ =>
             Redirect(controllers.routes.AddASettlorController.onPageLoad())

@@ -51,6 +51,7 @@ trait UserAnswersGenerator extends TryValues {
         utr = utr,
         whenTrustSetup = LocalDate.now(),
         trustType = TypeOfTrust.WillTrustOrIntestacyTrust,
+        deedOfVariation = None,
         data = data.foldLeft(Json.obj()) {
           case (obj, (path, value)) =>
             obj.setObject(path.path, value).get
