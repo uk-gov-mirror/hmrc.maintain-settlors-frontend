@@ -18,7 +18,7 @@ package controllers.individual.deceased
 
 import config.annotations.DeceasedSettlor
 import controllers.actions._
-import controllers.actions.living.NameRequiredAction
+import controllers.actions.deceased.NameRequiredAction
 import forms.UkAddressFormProvider
 import javax.inject.Inject
 import navigation.Navigator

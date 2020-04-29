@@ -18,10 +18,9 @@ package controllers.individual.deceased
 
 import config.annotations.DeceasedSettlor
 import controllers.actions._
-import controllers.actions.living.NameRequiredAction
+import controllers.actions.deceased.NameRequiredAction
 import forms.YesNoFormProvider
 import javax.inject.Inject
-import models.Mode
 import navigation.Navigator
 import pages.individual.deceased.DateOfBirthYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
