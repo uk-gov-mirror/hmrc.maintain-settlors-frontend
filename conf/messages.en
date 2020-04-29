@@ -387,3 +387,13 @@ deceasedSettlor.dateOfBirth.error.required = Date of birth must include a {0}
 deceasedSettlor.dateOfBirth.error.invalid = Enter a real date of birth
 deceasedSettlor.dateOfBirth.error.future = Date of birth must be today or in the past
 deceasedSettlor.dateOfBirth.error.past = Date of birth must be after 31 December 1499
+
+deceasedSettlor.dateOfDeath.checkYourAnswersLabel = What is {0}’s date of death?
+deceasedSettlor.dateOfDeath.title = What is the settlor’s date of death?
+deceasedSettlor.dateOfDeath.heading = What is {0}’s date of death?
+deceasedSettlor.dateOfDeath.error.required.all = Enter a date of death
+deceasedSettlor.dateOfDeath.error.required.two = Date of death must include a {0} and a {1}
+deceasedSettlor.dateOfDeath.error.required = Date of death must include a {0}
+deceasedSettlor.dateOfDeath.error.invalid = Enter a real date of death
+deceasedSettlor.dateOfDeath.error.future = Date of death must be today or in the past
+deceasedSettlor.dateOfDeath.error.past = Date of death must be after 31 December 1499
