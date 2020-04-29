@@ -14,6 +14,9 @@ POST       /change-know-date-of-death                              controllers.i
 GET        /change-date-of-death                            controllers.individual.deceased.DateOfDeathController.onPageLoad()
 POST       /change-date-of-death                            controllers.individual.deceased.DateOfDeathController.onSubmit()
 
+GET        /change-had-address                              controllers.individual.deceased.AddressYesNoController.onPageLoad()
+POST       /change-had-address                              controllers.individual.deceased.AddressYesNoController.onSubmit()
+
 GET        /change-had-uk-address                           controllers.individual.deceased.LivedInTheUkYesNoController.onPageLoad()
 POST       /change-had-uk-address                           controllers.individual.deceased.LivedInTheUkYesNoController.onSubmit()
 

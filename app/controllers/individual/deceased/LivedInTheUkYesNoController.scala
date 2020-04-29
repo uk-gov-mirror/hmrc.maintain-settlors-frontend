@@ -42,7 +42,7 @@ class LivedInTheUkYesNoController @Inject()(
                                             view: LivedInTheUkYesNoView
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("deceasedSettlor.liveInTheUkYesNo")
+  val form = formProvider.withPrefix("deceasedSettlor.livedInTheUkYesNo")
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>

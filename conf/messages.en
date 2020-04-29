@@ -402,3 +402,27 @@ deceasedSettlor.dateOfDeath.error.required = Date of death must include a {0}
 deceasedSettlor.dateOfDeath.error.invalid = Enter a real date of death
 deceasedSettlor.dateOfDeath.error.future = Date of death must be today or in the past
 deceasedSettlor.dateOfDeath.error.past = Date of death must be after 31 December 1499
+
+deceasedSettlor.addressYesNo.checkYourAnswersLabel = Do you know {0}’s last known address?
+deceasedSettlor.addressYesNo.title = Do you know the settlor’s last known address?
+deceasedSettlor.addressYesNo.heading = Do you know {0}’s last known address?
+deceasedSettlor.addressYesNo.error.required = Select yes if you know the settlor’s last known address
+
+deceasedSettlor.livedInTheUkYesNo.checkYourAnswersLabel = Did {0} live in the UK?
+deceasedSettlor.livedInTheUkYesNo.title = Did the settlor live in the UK?
+deceasedSettlor.livedInTheUkYesNo.heading = Did {0} live in the UK?
+deceasedSettlor.livedInTheUkYesNo.error.required = Select yes if the settlor lived in the UK
+
+deceasedSettlor.ukAddress.checkYourAnswersLabel = What was {0}’s address?
+deceasedSettlor.ukAddress.title = What was the settlor’s address?
+deceasedSettlor.ukAddress.heading = What was {0}’s address?
+deceasedSettlor.ukAddress.line1 = Address line 1
+deceasedSettlor.ukAddress.line2 = Address line 2
+deceasedSettlor.ukAddress.line3 = Address line 3 (optional)
+deceasedSettlor.ukAddress.line4 = Address line 4 (optional)
+deceasedSettlor.ukAddress.postcode = Postcode
+deceasedSettlor.ukAddress.postcode.hint = For example AB1 1AB
+
+deceasedSettlor.nonUkAddress.checkYourAnswersLabel = What was {0}’s address?
+deceasedSettlor.nonUkAddress.title = What was the settlor’s address?
+deceasedSettlor.nonUkAddress.heading = What was {0}’s address?
