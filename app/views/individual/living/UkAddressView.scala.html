@@ -21,7 +21,7 @@
   formHelper: FormWithCSRF
 )
 
-@(form: Form[_], trusteeName: String, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], name: String, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
   title = s"${errorPrefix(form)} ${messages("livingSettlor.ukAddress.title")}"
@@ -33,7 +33,7 @@
 
     @components.error_summary(form.errors)
 
-    @components.heading("livingSettlor.ukAddress.heading", Some(trusteeName))
+    @components.heading("livingSettlor.ukAddress.heading", Some(name))
 
     @components.uk_address(form)
 

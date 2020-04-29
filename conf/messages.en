@@ -403,6 +403,18 @@ deceasedSettlor.dateOfDeath.error.invalid = Enter a real date of death
 deceasedSettlor.dateOfDeath.error.future = Date of death must be today or in the past
 deceasedSettlor.dateOfDeath.error.past = Date of death must be after 31 December 1499
 
+deceasedSettlor.nationalInsuranceNumberYesNo.checkYourAnswersLabel = Do you know {0}’s National Insurance number?
+deceasedSettlor.nationalInsuranceNumberYesNo.title = Do you know the individual’s National Insurance number?
+deceasedSettlor.nationalInsuranceNumberYesNo.heading = Do you know {0}’s National Insurance number?
+deceasedSettlor.nationalInsuranceNumberYesNo.error.required = Select yes if you know the settlor’s National Insurance number
+
+deceasedSettlor.nationalInsuranceNumber.checkYourAnswersLabel = What is {0}’s National Insurance number?
+deceasedSettlor.nationalInsuranceNumber.title = What is the settlor’s National Insurance number?
+deceasedSettlor.nationalInsuranceNumber.heading = What is {0}’s National Insurance number?
+deceasedSettlor.nationalInsuranceNumber.hint = It is on their National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’.
+deceasedSettlor.nationalInsuranceNumber.error.required = Enter the settlor’s National Insurance number
+deceasedSettlor.nationalInsuranceNumber.error.invalidFormat = Enter the settlor’s National Insurance number in the correct format
+
 deceasedSettlor.addressYesNo.checkYourAnswersLabel = Do you know {0}’s last known address?
 deceasedSettlor.addressYesNo.title = Do you know the settlor’s last known address?
 deceasedSettlor.addressYesNo.heading = Do you know {0}’s last known address?

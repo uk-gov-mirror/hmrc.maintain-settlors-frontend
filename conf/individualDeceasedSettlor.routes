@@ -2,8 +2,8 @@
 GET        /change-name                                     controllers.individual.deceased.NameController.onPageLoad()
 POST       /change-name                                     controllers.individual.deceased.NameController.onSubmit()
 
-GET        /change-know-date-of-birth                              controllers.individual.deceased.DateOfBirthYesNoController.onPageLoad()
-POST       /change-know-date-of-birth                              controllers.individual.deceased.DateOfBirthYesNoController.onSubmit()
+GET        /change-know-date-of-birth                       controllers.individual.deceased.DateOfBirthYesNoController.onPageLoad()
+POST       /change-know-date-of-birth                       controllers.individual.deceased.DateOfBirthYesNoController.onSubmit()
 
 GET        /change-date-of-birth                            controllers.individual.deceased.DateOfBirthController.onPageLoad()
 POST       /change-date-of-birth                            controllers.individual.deceased.DateOfBirthController.onSubmit()
@@ -13,6 +13,12 @@ POST       /change-know-date-of-death                              controllers.i
 
 GET        /change-date-of-death                            controllers.individual.deceased.DateOfDeathController.onPageLoad()
 POST       /change-date-of-death                            controllers.individual.deceased.DateOfDeathController.onSubmit()
+
+GET        /change-has-national-insurance-number            controllers.individual.deceased.NationalInsuranceNumberYesNoController.onPageLoad()
+POST       /change-has-national-insurance-number            controllers.individual.deceased.NationalInsuranceNumberYesNoController.onSubmit()
+
+GET        /change-national-insurance-number                controllers.individual.deceased.NationalInsuranceNumberController.onPageLoad()
+POST       /change-national-insurance-number                controllers.individual.deceased.NationalInsuranceNumberController.onSubmit()
 
 GET        /change-had-address                              controllers.individual.deceased.AddressYesNoController.onPageLoad()
 POST       /change-had-address                              controllers.individual.deceased.AddressYesNoController.onSubmit()

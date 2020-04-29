@@ -16,50 +16,48 @@
 
 package controllers.individual.deceased
 
-import java.time.LocalDate
-
 import base.SpecBase
 import config.annotations.DeceasedSettlor
-import forms.YesNoFormProvider
-import models.{Name, TypeOfTrust, UserAnswers}
+import forms.NationalInsuranceNumberFormProvider
+import models.Name
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.individual.deceased.{AddressYesNoPage, NamePage}
+import pages.individual.deceased.{NamePage, NationalInsuranceNumberPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import views.html.individual.deceased.AddressYesNoView
+import views.html.individual.deceased.NationalInsuranceNumberView
 
 import scala.concurrent.Future
 
-class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
+class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("deceasedSettlor.addressYesNo")
+  val formProvider = new NationalInsuranceNumberFormProvider()
+  val form = formProvider.withPrefix("deceasedSettlor.nationalInsuranceNumber")
+
   val name = Name("FirstName", None, "LastName")
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), TypeOfTrust.WillTrustOrIntestacyTrust, None)
-    .set(NamePage, name).success.value
+  lazy val nationalInsuranceNumberRoute = routes.NationalInsuranceNumberController.onPageLoad().url
 
-  lazy val addressYesNoControllerRoute = routes.AddressYesNoController.onPageLoad().url
-
-  "AddressYesNo Controller" must {
+  "NationalInsuranceNumber Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val userAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
-      val request = FakeRequest(GET, addressYesNoControllerRoute)
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      val request = FakeRequest(GET, nationalInsuranceNumberRoute)
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[AddressYesNoView]
+      val view = application.injector.instanceOf[NationalInsuranceNumberView]
 
       status(result) mustEqual OK
 
@@ -71,20 +69,22 @@ class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(AddressYesNoPage, true).success.value
+      val userAnswers = emptyUserAnswers
+        .set(NamePage, name).success.value
+        .set(NationalInsuranceNumberPage, "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val request = FakeRequest(GET, addressYesNoControllerRoute)
+      val request = FakeRequest(GET, nationalInsuranceNumberRoute)
 
-      val view = application.injector.instanceOf[AddressYesNoView]
+      val view = application.injector.instanceOf[NationalInsuranceNumberView]
 
       val result = route(application, request).value
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), name.displayName)(fakeRequest, messages).toString
+        view(form.fill("answer"), name.displayName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -103,13 +103,12 @@ class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
           .build()
 
       val request =
-        FakeRequest(POST, addressYesNoControllerRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, nationalInsuranceNumberRoute)
+          .withFormUrlEncodedBody(("value", "AA000000A"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual onwardRoute.url
 
       application.stop()
@@ -117,15 +116,17 @@ class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val userAnswers = emptyUserAnswers.set(NamePage, name).success.value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       val request =
-        FakeRequest(POST, addressYesNoControllerRoute)
+        FakeRequest(POST, nationalInsuranceNumberRoute)
           .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
 
-      val view = application.injector.instanceOf[AddressYesNoView]
+      val view = application.injector.instanceOf[NationalInsuranceNumberView]
 
       val result = route(application, request).value
 
@@ -141,7 +142,7 @@ class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, addressYesNoControllerRoute)
+      val request = FakeRequest(GET, nationalInsuranceNumberRoute)
 
       val result = route(application, request).value
 
@@ -157,8 +158,8 @@ class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, addressYesNoControllerRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, nationalInsuranceNumberRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
 

@@ -42,7 +42,6 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   val validAnswer = LocalDate.now(ZoneOffset.UTC)
-  val trusteeName = "FirstName LastName"
   val name = Name("FirstName", None, "LastName")
   val index: Int = 0
 
