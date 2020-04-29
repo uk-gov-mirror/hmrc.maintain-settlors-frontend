@@ -1,0 +1,11 @@
+
+GET        /change-had-uk-address                           controllers.individual.deceased.LivedInTheUkYesNoController.onPageLoad()
+POST       /change-had-uk-address                           controllers.individual.deceased.LivedInTheUkYesNoController.onSubmit()
+
+GET        /change-uk-address                               controllers.individual.deceased.UkAddressController.onPageLoad()
+POST       /change-uk-address                               controllers.individual.deceased.UkAddressController.onSubmit()
+
+GET        /change-non-uk-address                           controllers.individual.deceased.NonUkAddressController.onPageLoad()
+POST       /change-non-uk-address                           controllers.individual.deceased.NonUkAddressController.onSubmit()
+
+
