@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package navigation
+package config.annotations;
 
-import play.api.mvc.Call
-import pages._
-import models.{Mode, NormalMode, TypeOfTrust, UserAnswers}
+import com.google.inject.BindingAnnotation;
 
-class FakeNavigator(val desiredRoute: Call = Call("GET", "/foo"), mode: Mode = NormalMode) extends Navigator {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-  override def nextPage(page: Page, userAnswers: UserAnswers): Call =
-    desiredRoute
-
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    nextPage(page, userAnswers)
-
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, trustType: TypeOfTrust): Call =
-    nextPage(page, mode, userAnswers, trustType)
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
+@BindingAnnotation
+public @interface BusinessSettlor {}

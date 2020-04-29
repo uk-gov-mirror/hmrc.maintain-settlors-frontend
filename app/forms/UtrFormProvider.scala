@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 
-package navigation
+package forms
 
-import play.api.mvc.Call
-import pages._
-import models.{Mode, NormalMode, TypeOfTrust, UserAnswers}
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-class FakeNavigator(val desiredRoute: Call = Call("GET", "/foo"), mode: Mode = NormalMode) extends Navigator {
+class UtrFormProvider @Inject() extends Mappings {
 
-  override def nextPage(page: Page, userAnswers: UserAnswers): Call =
-    desiredRoute
-
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    nextPage(page, userAnswers)
-
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, trustType: TypeOfTrust): Call =
-    nextPage(page, mode, userAnswers, trustType)
+  def withPrefix(messagePrefix: String): Form[String] =
+    Form(
+      "value" -> text(s"$messagePrefix.error.required")
+        .verifying(
+          firstError(
+            maxLength(10, s"$messagePrefix.error.length"),
+            minLength(10, s"$messagePrefix.error.length"),
+            regexp(Validation.utrRegex, s"$messagePrefix.error.invalidCharacters"),
+            nonEmptyString("value", s"$messagePrefix.error.required")
+          ))
+    )
 }
