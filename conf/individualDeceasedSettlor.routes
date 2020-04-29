@@ -1,4 +1,7 @@
 
+GET        /change-name                                     controllers.individual.deceased.NameController.onPageLoad()
+POST       /change-name                                     controllers.individual.deceased.NameController.onSubmit()
+
 GET        /change-had-uk-address                           controllers.individual.deceased.LivedInTheUkYesNoController.onPageLoad()
 POST       /change-had-uk-address                           controllers.individual.deceased.LivedInTheUkYesNoController.onSubmit()
 
