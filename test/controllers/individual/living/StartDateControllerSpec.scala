@@ -51,7 +51,7 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
 
   val name = Name("New", None, "Settlor")
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", date, TypeOfTrust.WillTrustOrIntestacyTrust)
+  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", date, TypeOfTrust.WillTrustOrIntestacyTrust, None)
     .set(NamePage, name)
     .success.value
 

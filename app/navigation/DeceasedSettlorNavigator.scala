@@ -17,7 +17,7 @@
 package navigation
 
 import javax.inject.Inject
-import models.{Mode, UserAnswers}
+import models.{Mode, TypeOfTrust, UserAnswers}
 import pages.individual.living._
 import pages.{Page, QuestionPage}
 import play.api.mvc.Call
@@ -29,6 +29,10 @@ class DeceasedSettlorNavigator @Inject()() extends Navigator {
 
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
     routes(page)(userAnswers)
+
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, trustType: TypeOfTrust): Call = {
+    routes(page)(userAnswers)
+  }
 
   private val simpleNavigation: PartialFunction[Page, Call] = {
     case NamePage => ???

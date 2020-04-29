@@ -3,7 +3,7 @@ site.back = Back
 site.delete = Remove
 site.edit = Change
 site.hidden-delete = Delete {0}
-site.hidden-cannot-delete = You cannot delete {0}
+site.hidden-cannot-delete = You cannot remove {0} as they have already been declared
 site.hidden-edit = Change {0}
 site.change.details = Change details
 site.no = No
@@ -138,6 +138,14 @@ addNow.return.link = Return to add a settlor
 
 whatTypeOfSettlor.individual = Individual
 whatTypeOfSettlor.business = Business
+
+trustDescription.willTrust = This is a will trust. If the trust does not have a will settlor, you will need to change your answers.
+trustDescription.intervivosTrust = This is a trust created during their lifetime to gift or transfer assets.
+trustDescription.deedOfVariationInAdditionToWill = This trust was set up by family agreement in addition to a will.
+trustDescription.deedOfVariation = This trust was set up by family agreement.
+trustDescription.employeeRelated = This trust was set up for employees of a company.
+trustDescription.flatManagementTrust = This trust was set up for a building or a building with lots of tenants.
+trustDescription.heritageTrust = This trust was set up to pay for the repair of historic buildings.
 
 livingSettlor.name.default = the individual settlor
 
@@ -278,24 +286,66 @@ removeIndividualSettlor.error.required = Select yes if you want to remove the in
 businessSettlor.name.default = the business settlor
 
 businessSettlor.name.checkYourAnswersLabel = What is the business’s name?
+businessSettlor.name.title = What is the business’s name?
+businessSettlor.name.heading = What is the business’s name?
+businessSettlor.name.error.required = Enter the business’s name
+businessSettlor.name.error.length = Business’s name must be 105 characters or less
+businessSettlor.name.error.invalid = Business’s name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
 
 businessSettlor.utrYesNo.checkYourAnswersLabel = Do you know {0}’s Unique Taxpayer Reference (UTR)?
+businessSettlor.utrYesNo.title = Do you know the business’s Unique Taxpayer Reference (UTR)?
+businessSettlor.utrYesNo.heading = Do you know {0}’s Unique Taxpayer Reference (UTR)?
+businessSettlor.utrYesNo.error.required = Select yes if you know the business’s Unique Taxpayer Reference (UTR)?
 
 businessSettlor.utr.checkYourAnswersLabel = What is {0} Unique Taxpayer Reference (UTR)?
+businessSettlor.utr.title = What is the business’s Unique Taxpayer Reference (UTR)?
+businessSettlor.utr.heading = What is {0}’s Unique Taxpayer Reference (UTR)?
+businessSettlor.utr.hint = This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Self Assessment. It may be called ‘reference’, ‘UTR’ or ‘official use’.
+businessSettlor.utr.hint.reader = This is 10 numbers, for example 1 2 3 4 5 6 7 8 9 0. It will be on tax returns and other letters about Self Assessment. It may be called ‘reference’, ‘UTR’ or ‘official use’.
+businessSettlor.utr.p1 = You can
+businessSettlor.utr.link = find a lost UTR number (opens in a new window or tab)
 
 businessSettlor.addressYesNo.checkYourAnswersLabel = Do you know {0}’s address?
+businessSettlor.addressYesNo.title = Do you know the business’s address?
+businessSettlor.addressYesNo.heading = Do you know {0}’s address?
+businessSettlor.addressYesNo.error.required = Select yes if you know the business’s address
 
 businessSettlor.liveInTheUkYesNo.checkYourAnswersLabel = Is {0}’s address in the UK?
+businessSettlor.liveInTheUkYesNo.title = Is the business’s address in the UK?
+businessSettlor.liveInTheUkYesNo.heading = Is {0}’s address in the UK?
+businessSettlor.liveInTheUkYesNo.error.required = Select yes if the business’s address is in the UK
 
 businessSettlor.ukAddress.checkYourAnswersLabel = What is {0}’s address?
+businessSettlor.ukAddress.title = What is the business’s address?
+businessSettlor.ukAddress.heading = What is {0}’s address?
 
 businessSettlor.nonUkAddress.checkYourAnswersLabel = What is {0}’s address?
+businessSettlor.nonUkAddress.title = What is the business’s address?
+businessSettlor.nonUkAddress.heading = What is {0}’s address?
 
-businessSettlor.companyType.checkYourAnswersLabel = What kind of business is {0}
+businessSettlor.companyType.checkYourAnswersLabel = What kind of business is {0}?
+businessSettlor.companyType.title = What kind of business is the business?
+businessSettlor.companyType.heading = What kind of business is {0}?
+businessSettlor.companyType.error.required = Select what kind of business the business is
+
+companyType.Trading = Trading
+companyType.Investment = Investment
 
 businessSettlor.companyTime.checkYourAnswersLabel = At the date of each contribution to the trust, had the business been in existence for at least 2 years?
+businessSettlor.companyTime.title = At the date of each contribution to the trust, had the business been in existence for at least 2 years?
+businessSettlor.companyTime.heading = At the date of each contribution to the trust, had the business been in existence for at least 2 years?
+businessSettlor.companyTime.error.required = Select yes if, at the date of each contribution to the trust, the business had been in existence for at least 2 years
 
 businessSettlor.startDate.checkYourAnswersLabel = When was {0} added as a settlor?
+businessSettlor.startDate.title = When was the settlor added to the trust?
+businessSettlor.startDate.heading = When was {0} added as a settlor?
+businessSettlor.startDate.hint = Check the trust deed or the power of appointment document. For example, 31 3 1980
+businessSettlor.startDate.error.required.all = Enter the date the settlor was added to the trust
+businessSettlor.startDate.error.required.two = The date the settlor was added to the trust must include a {0} and a {1}
+businessSettlor.startDate.error.required = The date the settlor was added to the trust must include a {0}
+businessSettlor.startDate.error.invalid = Enter a real date
+businessSettlor.startDate.error.future = The date the settlor was added to the trust must be today or in the past
+businessSettlor.startDate.error.past = The date the settlor was added to the trust cannot be before the start date of the trust
 
 businessSettlor.checkDetails.title = Check business settlor details
 businessSettlor.checkDetails.heading = Check business settlor details
