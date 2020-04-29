@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package controllers.actions.actions
+package forms
 
-import com.google.inject.Inject
-import controllers.actions.PlaybackIdentifierAction
-import models.requests.DataRequest
-import play.api.mvc.Result
+import forms.mappings.Mappings
+import javax.inject.Inject
+import models.CompanyType
+import play.api.data.Form
 
-import scala.concurrent.{ExecutionContext, Future}
+class CompanyTypeFormProvider @Inject() extends Mappings {
 
-class FakePlaybackIdentifierAction @Inject()(
-                                              implicit val executionContext: ExecutionContext
-                                            ) extends PlaybackIdentifierAction {
-
-  override def refine[A](request: DataRequest[A]): Future[Either[Result, DataRequest[A]]] = Future.successful(Right(request))
-
+  def apply(): Form[CompanyType] =
+    Form(
+      "value" -> enumerable[CompanyType]("businessSettlor.companyType.error.required")
+    )
 }

@@ -18,7 +18,7 @@ package navigation
 
 import controllers.individual.living.{routes => rts}
 import javax.inject.Inject
-import models.{CheckMode, Mode, NormalMode, UserAnswers}
+import models.{CheckMode, Mode, NormalMode, TypeOfTrust, UserAnswers}
 import pages.individual.living._
 import pages.{Page, QuestionPage}
 import play.api.mvc.Call
@@ -27,6 +27,9 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
 
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
     routes(mode)(page)(userAnswers)
+
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, trustType: TypeOfTrust): Call =
+    nextPage(page, mode, userAnswers)
 
   override def nextPage(page: Page, userAnswers: UserAnswers): Call =
     nextPage(page, NormalMode, userAnswers)

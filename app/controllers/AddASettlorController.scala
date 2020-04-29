@@ -21,8 +21,9 @@ import connectors.TrustStoreConnector
 import controllers.actions.StandardActionSets
 import forms.AddASettlorFormProvider
 import javax.inject.Inject
-import models.settlors.Settlors
-import models.{AddASettlor, Enumerable}
+import models.DeedOfVariation.AdditionToWillTrust
+import models.requests.DataRequest
+import models.{AddASettlor, TypeOfTrust}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -45,7 +46,7 @@ class AddASettlorController @Inject()(
                                        repository: PlaybackRepository,
                                        addAnotherView: AddASettlorView,
                                        completeView: MaxedOutSettlorsView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
+                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val addAnotherForm : Form[AddASettlor] = addAnotherFormProvider()
 
@@ -62,6 +63,7 @@ class AddASettlorController @Inject()(
 
         if (settlors.nonMaxedOutOptions.isEmpty) {
           Ok(completeView(
+            trustDescription,
             inProgressSettlors = settlorRows.inProgress,
             completeSettlors = settlorRows.complete,
             heading = settlors.addToHeading
@@ -69,6 +71,7 @@ class AddASettlorController @Inject()(
         } else {
           Ok(addAnotherView(
             form = addAnotherForm,
+            trustDescription,
             inProgressSettlors = settlorRows.inProgress,
             completeSettlors = settlorRows.complete,
             heading = settlors.addToHeading,
@@ -90,6 +93,7 @@ class AddASettlorController @Inject()(
             Future.successful(BadRequest(
               addAnotherView(
                 formWithErrors,
+                trustDescription,
                 rows.inProgress,
                 rows.complete,
                 settlors.addToHeading,
@@ -126,5 +130,20 @@ class AddASettlorController @Inject()(
       } yield {
         Redirect(appConfig.maintainATrustOverview)
       }
+  }
+
+  private def trustDescription(implicit request: DataRequest[AnyContent]): String = {
+
+    val description = (request.userAnswers.trustType, request.userAnswers.deedOfVariation) match {
+      case (TypeOfTrust.WillTrustOrIntestacyTrust, _) => "willTrust"
+      case (TypeOfTrust.IntervivosSettlementTrust, _) => "intervivosTrust"
+      case (TypeOfTrust.DeedOfVariation, Some(AdditionToWillTrust)) => "deedOfVariationInAdditionToWill"
+      case (TypeOfTrust.DeedOfVariation, _) => "deedOfVariation"
+      case (TypeOfTrust.EmployeeRelated, _) => "employeeRelated"
+      case (TypeOfTrust.FlatManagementTrust, _) => "flatManagementTrust"
+      case (TypeOfTrust.HeritageTrust, _) => "heritageTrust"
+    }
+
+    request.messages(messagesApi)(s"trustDescription.$description")
   }
 }
