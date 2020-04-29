@@ -18,12 +18,11 @@ package controllers.individual.deceased
 
 import config.annotations.DeceasedSettlor
 import controllers.actions._
-import controllers.actions.living.NameRequiredAction
+import controllers.actions.individual.deceased.NameRequiredAction
 import forms.YesNoFormProvider
 import javax.inject.Inject
-import models.Mode
 import navigation.Navigator
-import pages.individual.living.LiveInTheUkYesNoPage
+import pages.individual.deceased.LivedInTheUkYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -48,7 +47,7 @@ class LivedInTheUkYesNoController @Inject()(
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(LiveInTheUkYesNoPage) match {
+      val preparedForm = request.userAnswers.get(LivedInTheUkYesNoPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -65,9 +64,9 @@ class LivedInTheUkYesNoController @Inject()(
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(LiveInTheUkYesNoPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(LivedInTheUkYesNoPage, value))
             _              <- playbackRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(LiveInTheUkYesNoPage, updatedAnswers))
+          } yield Redirect(navigator.nextPage(LivedInTheUkYesNoPage, updatedAnswers))
       )
   }
 }

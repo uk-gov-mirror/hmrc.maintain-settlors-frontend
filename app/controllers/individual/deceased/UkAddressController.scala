@@ -18,11 +18,11 @@ package controllers.individual.deceased
 
 import config.annotations.DeceasedSettlor
 import controllers.actions._
-import controllers.actions.living.NameRequiredAction
+import controllers.actions.individual.deceased.NameRequiredAction
 import forms.UkAddressFormProvider
 import javax.inject.Inject
 import navigation.Navigator
-import pages.individual.living.UkAddressPage
+import pages.individual.deceased.UkAddressPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
