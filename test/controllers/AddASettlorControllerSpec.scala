@@ -74,7 +74,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
   lazy val featureNotAvailable : String = controllers.routes.FeatureNotAvailableController.onPageLoad().url
 
   val settlorRows = List(
-    AddRow("First Last", typeLabel = "Individual settlor", "Change details", Some(featureNotAvailable), "Remove", Some(controllers.individual.living.remove.routes.RemoveIndividualSettlorController.onPageLoad(0).url)),
+    AddRow("First Last", typeLabel = "Individual settlor", "Change details", Some(controllers.individual.living.amend.routes.CheckDetailsController.extractAndRender(0).url), "Remove", Some(controllers.individual.living.remove.routes.RemoveIndividualSettlorController.onPageLoad(0).url)),
     AddRow("Humanitarian Company Ltd", typeLabel = "Business settlor", "Change details", Some(controllers.business.amend.routes.CheckDetailsController.extractAndRender(0).url), "Remove", Some(controllers.business.remove.routes.RemoveBusinessSettlorController.onPageLoad(0).url))
   )
 
@@ -319,7 +319,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
       )
 
       val settlorRows = List(
-        AddRow("First Last", typeLabel = "Individual settlor", "Change details", Some(featureNotAvailable), "Remove", None),
+        AddRow("First Last", typeLabel = "Individual settlor", "Change details", Some(controllers.individual.living.amend.routes.CheckDetailsController.extractAndRender(0).url), "Remove", None),
         AddRow("Humanitarian Company Ltd", typeLabel = "Business settlor", "Change details", Some(controllers.business.amend.routes.CheckDetailsController.extractAndRender(0).url), "Remove", None)
       )
 
