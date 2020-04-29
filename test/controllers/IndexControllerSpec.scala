@@ -36,7 +36,7 @@ class IndexControllerSpec extends SpecBase {
       val mockTrustConnector = mock[TrustConnector]
 
       when(mockTrustConnector.getTrustDetails(any())(any(), any()))
-        .thenReturn(Future.successful(TrustDetails(startDate = "2019-06-01", typeOfTrust = TypeOfTrust.WillTrustOrIntestacyTrust)))
+        .thenReturn(Future.successful(TrustDetails(startDate = "2019-06-01", typeOfTrust = TypeOfTrust.WillTrustOrIntestacyTrust, deedOfVariation = None)))
 
       val application = applicationBuilder(userAnswers = None).overrides(bind[TrustConnector].toInstance(mockTrustConnector)).build()
 

@@ -17,7 +17,7 @@
 package utils.print
 
 import com.google.inject.Inject
-import models.UserAnswers
+import models.{CheckMode, NormalMode, UserAnswers}
 import pages.business._
 import play.api.i18n.Messages
 import utils.countryOptions.CountryOptions
@@ -32,28 +32,28 @@ class BusinessSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverte
     val bound = answerRowConverter.bind(userAnswers, settlorName, countryOptions)
 
     val add: Seq[AnswerRow] = Seq(
-        bound.stringQuestion(NamePage, "businessSettlor.name", controllers.routes.FeatureNotAvailableController.onPageLoad().url),
-        bound.yesNoQuestion(UtrYesNoPage, "businessSettlor.utrYesNo", controllers.routes.FeatureNotAvailableController.onPageLoad().url),
-        bound.stringQuestion(UtrPage, "businessSettlor.utr", controllers.routes.FeatureNotAvailableController.onPageLoad().url),
-        bound.yesNoQuestion(AddressYesNoPage, "businessSettlor.addressYesNo", controllers.routes.FeatureNotAvailableController.onPageLoad().url),
-        bound.yesNoQuestion(LiveInTheUkYesNoPage, "businessSettlor.liveInTheUkYesNo", controllers.routes.FeatureNotAvailableController.onPageLoad().url),
-        bound.addressQuestion(UkAddressPage, "businessSettlor.ukAddress", controllers.routes.FeatureNotAvailableController.onPageLoad().url),
-        bound.addressQuestion(NonUkAddressPage, "businessSettlor.nonUkAddress", controllers.routes.FeatureNotAvailableController.onPageLoad().url),
-        bound.companyTypeQuestion(CompanyTypePage, "businessSettlor.companyType", controllers.routes.FeatureNotAvailableController.onPageLoad().url),
-        bound.yesNoQuestion(CompanyTimePage, "businessSettlor.companyTime", controllers.routes.FeatureNotAvailableController.onPageLoad().url),
-        bound.dateQuestion(StartDatePage, "businessSettlor.startDate", controllers.routes.FeatureNotAvailableController.onPageLoad().url)
+        bound.stringQuestion(NamePage, "businessSettlor.name", controllers.business.routes.NameController.onPageLoad(NormalMode).url),
+        bound.yesNoQuestion(UtrYesNoPage, "businessSettlor.utrYesNo", controllers.business.routes.UtrYesNoController.onPageLoad(NormalMode).url),
+        bound.stringQuestion(UtrPage, "businessSettlor.utr", controllers.business.routes.UtrController.onPageLoad(NormalMode).url),
+        bound.yesNoQuestion(AddressYesNoPage, "businessSettlor.addressYesNo", controllers.business.routes.AddressYesNoController.onPageLoad(NormalMode).url),
+        bound.yesNoQuestion(LiveInTheUkYesNoPage, "businessSettlor.liveInTheUkYesNo", controllers.business.routes.LiveInTheUkYesNoController.onPageLoad(NormalMode).url),
+        bound.addressQuestion(UkAddressPage, "businessSettlor.ukAddress", controllers.business.routes.UkAddressController.onPageLoad(NormalMode).url),
+        bound.addressQuestion(NonUkAddressPage, "businessSettlor.nonUkAddress", controllers.business.routes.NonUkAddressController.onPageLoad(NormalMode).url),
+        bound.companyTypeQuestion(CompanyTypePage, "businessSettlor.companyType", controllers.business.routes.CompanyTypeController.onPageLoad(NormalMode).url),
+        bound.yesNoQuestion(CompanyTimePage, "businessSettlor.companyTime", controllers.business.routes.CompanyTimeController.onPageLoad(NormalMode).url),
+        bound.dateQuestion(StartDatePage, "businessSettlor.startDate", controllers.business.routes.StartDateController.onPageLoad().url)
       ).flatten
 
     val amend: Seq[AnswerRow] = Seq(
-      bound.stringQuestion(NamePage, "businessSettlor.name", controllers.routes.FeatureNotAvailableController.onPageLoad().url),
-      bound.yesNoQuestion(UtrYesNoPage, "businessSettlor.utrYesNo", controllers.routes.FeatureNotAvailableController.onPageLoad().url),
-      bound.stringQuestion(UtrPage, "businessSettlor.utr", controllers.routes.FeatureNotAvailableController.onPageLoad().url),
-      bound.yesNoQuestion(AddressYesNoPage, "businessSettlor.addressYesNo", controllers.routes.FeatureNotAvailableController.onPageLoad().url),
-      bound.yesNoQuestion(LiveInTheUkYesNoPage, "businessSettlor.liveInTheUkYesNo", controllers.routes.FeatureNotAvailableController.onPageLoad().url),
-      bound.addressQuestion(UkAddressPage, "businessSettlor.ukAddress", controllers.routes.FeatureNotAvailableController.onPageLoad().url),
-      bound.addressQuestion(NonUkAddressPage, "businessSettlor.nonUkAddress", controllers.routes.FeatureNotAvailableController.onPageLoad().url),
-      bound.companyTypeQuestion(CompanyTypePage, "businessSettlor.companyType", controllers.routes.FeatureNotAvailableController.onPageLoad().url),
-      bound.yesNoQuestion(CompanyTimePage, "businessSettlor.companyTime", controllers.routes.FeatureNotAvailableController.onPageLoad().url)
+      bound.stringQuestion(NamePage, "businessSettlor.name", controllers.business.routes.NameController.onPageLoad(CheckMode).url),
+      bound.yesNoQuestion(UtrYesNoPage, "businessSettlor.utrYesNo", controllers.business.routes.UtrYesNoController.onPageLoad(CheckMode).url),
+      bound.stringQuestion(UtrPage, "businessSettlor.utr", controllers.business.routes.UtrController.onPageLoad(CheckMode).url),
+      bound.yesNoQuestion(AddressYesNoPage, "businessSettlor.addressYesNo", controllers.business.routes.AddressYesNoController.onPageLoad(CheckMode).url),
+      bound.yesNoQuestion(LiveInTheUkYesNoPage, "businessSettlor.liveInTheUkYesNo", controllers.business.routes.LiveInTheUkYesNoController.onPageLoad(CheckMode).url),
+      bound.addressQuestion(UkAddressPage, "businessSettlor.ukAddress", controllers.business.routes.UkAddressController.onPageLoad(CheckMode).url),
+      bound.addressQuestion(NonUkAddressPage, "businessSettlor.nonUkAddress", controllers.business.routes.NonUkAddressController.onPageLoad(CheckMode).url),
+      bound.companyTypeQuestion(CompanyTypePage, "businessSettlor.companyType", controllers.business.routes.CompanyTypeController.onPageLoad(CheckMode).url),
+      bound.yesNoQuestion(CompanyTimePage, "businessSettlor.companyTime", controllers.business.routes.CompanyTimeController.onPageLoad(CheckMode).url)
     ).flatten
 
     AnswerSection(
