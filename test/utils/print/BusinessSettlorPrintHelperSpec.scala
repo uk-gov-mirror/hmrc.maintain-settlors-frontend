@@ -1,0 +1,95 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package utils.print
+
+import java.time.LocalDate
+
+import base.SpecBase
+import models.{CheckMode, CompanyType, NonUkAddress, NormalMode, UkAddress}
+import pages.business._
+import play.twirl.api.Html
+import viewmodels.{AnswerRow, AnswerSection}
+
+class BusinessSettlorPrintHelperSpec extends SpecBase {
+
+  private val name: String = "Name"
+  private val utr: String = "1234567890"
+  private val ukAddress: UkAddress = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
+  private val nonUkAddress: NonUkAddress = NonUkAddress("value 1", "value 2", None, "DE")
+
+  "BusinessSettlorPrintHelper" must {
+
+    val userAnswers = emptyUserAnswers
+      .set(NamePage, name).success.value
+      .set(UtrYesNoPage, true).success.value
+      .set(UtrPage, utr).success.value
+      .set(AddressYesNoPage, true).success.value
+      .set(LiveInTheUkYesNoPage, true).success.value
+      .set(UkAddressPage, ukAddress).success.value
+      .set(NonUkAddressPage, nonUkAddress).success.value
+      .set(CompanyTypePage, CompanyType.Investment).success.value
+      .set(CompanyTimePage, true).success.value
+      .set(StartDatePage, LocalDate.of(2020, 1, 1)).success.value
+
+    val helper = injector.instanceOf[BusinessSettlorPrintHelper]
+
+    "generate add business settlor section for all possible data" in {
+
+      val mode = NormalMode
+
+      val result = helper(userAnswers, provisional = true, name)
+
+      result mustBe AnswerSection(
+        headingKey = None,
+        rows = Seq(
+          AnswerRow(label = Html(messages("businessSettlor.name.checkYourAnswersLabel")), answer = Html("Name"), changeUrl = controllers.business.routes.NameController.onPageLoad(mode).url),
+          AnswerRow(label = Html(messages("businessSettlor.utrYesNo.checkYourAnswersLabel", name)), answer = Html("Yes"), changeUrl = controllers.business.routes.UtrYesNoController.onPageLoad(mode).url),
+          AnswerRow(label = Html(messages("businessSettlor.utr.checkYourAnswersLabel", name)), answer = Html("1234567890"), changeUrl = controllers.business.routes.UtrController.onPageLoad(mode).url),
+          AnswerRow(label = Html(messages("businessSettlor.addressYesNo.checkYourAnswersLabel", name)), answer = Html("Yes"), changeUrl = controllers.business.routes.AddressYesNoController.onPageLoad(mode).url),
+          AnswerRow(label = Html(messages("businessSettlor.liveInTheUkYesNo.checkYourAnswersLabel", name)), answer = Html("Yes"), changeUrl = controllers.business.routes.LiveInTheUkYesNoController.onPageLoad(mode).url),
+          AnswerRow(label = Html(messages("businessSettlor.ukAddress.checkYourAnswersLabel", name)), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = controllers.business.routes.UkAddressController.onPageLoad(mode).url),
+          AnswerRow(label = Html(messages("businessSettlor.nonUkAddress.checkYourAnswersLabel", name)), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = controllers.business.routes.NonUkAddressController.onPageLoad(mode).url),
+          AnswerRow(label = Html(messages("businessSettlor.companyType.checkYourAnswersLabel", name)), answer = Html("Investment"), changeUrl = controllers.business.routes.CompanyTypeController.onPageLoad(mode).url),
+          AnswerRow(label = Html(messages("businessSettlor.companyTime.checkYourAnswersLabel")), answer = Html("Yes"), changeUrl = controllers.business.routes.CompanyTimeController.onPageLoad(mode).url),
+          AnswerRow(label = Html(messages("businessSettlor.startDate.checkYourAnswersLabel", name)), answer = Html("1 January 2020"), changeUrl = controllers.business.routes.StartDateController.onPageLoad().url)
+        )
+      )
+    }
+
+    "generate amend business settlor section for all possible data" in {
+
+      val mode = CheckMode
+
+      val result = helper(userAnswers, provisional = false, name)
+
+      result mustBe AnswerSection(
+        headingKey = None,
+        rows = Seq(
+          AnswerRow(label = Html(messages("businessSettlor.name.checkYourAnswersLabel")), answer = Html("Name"), changeUrl = controllers.business.routes.NameController.onPageLoad(mode).url),
+          AnswerRow(label = Html(messages("businessSettlor.utrYesNo.checkYourAnswersLabel", name)), answer = Html("Yes"), changeUrl = controllers.business.routes.UtrYesNoController.onPageLoad(mode).url),
+          AnswerRow(label = Html(messages("businessSettlor.utr.checkYourAnswersLabel", name)), answer = Html("1234567890"), changeUrl = controllers.business.routes.UtrController.onPageLoad(mode).url),
+          AnswerRow(label = Html(messages("businessSettlor.addressYesNo.checkYourAnswersLabel", name)), answer = Html("Yes"), changeUrl = controllers.business.routes.AddressYesNoController.onPageLoad(mode).url),
+          AnswerRow(label = Html(messages("businessSettlor.liveInTheUkYesNo.checkYourAnswersLabel", name)), answer = Html("Yes"), changeUrl = controllers.business.routes.LiveInTheUkYesNoController.onPageLoad(mode).url),
+          AnswerRow(label = Html(messages("businessSettlor.ukAddress.checkYourAnswersLabel", name)), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = controllers.business.routes.UkAddressController.onPageLoad(mode).url),
+          AnswerRow(label = Html(messages("businessSettlor.nonUkAddress.checkYourAnswersLabel", name)), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = controllers.business.routes.NonUkAddressController.onPageLoad(mode).url),
+          AnswerRow(label = Html(messages("businessSettlor.companyType.checkYourAnswersLabel", name)), answer = Html("Investment"), changeUrl = controllers.business.routes.CompanyTypeController.onPageLoad(mode).url),
+          AnswerRow(label = Html(messages("businessSettlor.companyTime.checkYourAnswersLabel")), answer = Html("Yes"), changeUrl = controllers.business.routes.CompanyTimeController.onPageLoad(mode).url)
+        )
+      )
+    }
+  }
+}
