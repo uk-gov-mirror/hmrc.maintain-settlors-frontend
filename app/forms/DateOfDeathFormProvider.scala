@@ -24,7 +24,7 @@ import play.api.data.Form
 
 class DateOfDeathFormProvider @Inject() extends Mappings {
 
-  def withPrefix(prefix: String): Form[LocalDate] =
+  def withConfig(trustStartDate: LocalDate, prefix: String): Form[LocalDate] =
     Form(
       "value" -> localDate(
         invalidKey     = s"$prefix.error.invalid",
@@ -32,7 +32,7 @@ class DateOfDeathFormProvider @Inject() extends Mappings {
         twoRequiredKey = s"$prefix.error.required.two",
         requiredKey    = s"$prefix.error.required"
       ).verifying(firstError(
-        maxDate(LocalDate.now, s"$prefix.error.future", "day", "month", "year"),
+        maxDate(trustStartDate, s"$prefix.error.future", "day", "month", "year"),
         minDate(LocalDate.of(1500,1,1), s"$prefix.error.past", "day", "month", "year")
       ))
     )

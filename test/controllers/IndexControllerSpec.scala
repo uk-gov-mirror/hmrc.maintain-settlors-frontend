@@ -16,6 +16,8 @@
 
 package controllers
 
+import java.time.LocalDate
+
 import base.SpecBase
 import connectors.TrustConnector
 import models.{TrustDetails, TypeOfTrust}
@@ -36,7 +38,7 @@ class IndexControllerSpec extends SpecBase {
       val mockTrustConnector = mock[TrustConnector]
 
       when(mockTrustConnector.getTrustDetails(any())(any(), any()))
-        .thenReturn(Future.successful(TrustDetails(startDate = "2019-06-01", typeOfTrust = TypeOfTrust.WillTrustOrIntestacyTrust, deedOfVariation = None)))
+        .thenReturn(Future.successful(TrustDetails(startDate = LocalDate.parse("2019-06-01"), typeOfTrust = TypeOfTrust.WillTrustOrIntestacyTrust, deedOfVariation = None)))
 
       val application = applicationBuilder(userAnswers = None).overrides(bind[TrustConnector].toInstance(mockTrustConnector)).build()
 

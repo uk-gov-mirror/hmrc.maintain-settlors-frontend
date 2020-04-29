@@ -23,10 +23,10 @@ import play.api.data.FormError
 
 class DateOfDeathFormProviderSpec extends DateBehaviours {
 
-  val form = new DateOfDeathFormProvider().withPrefix("deceasedSettlor.dateOfDeath")
-
   private val min = LocalDate.of(1500, 1, 1)
   private val max = LocalDate.now(ZoneOffset.UTC)
+
+  val form = new DateOfDeathFormProvider().withConfig(max,"deceasedSettlor.dateOfDeath")
 
   ".value" should {
 

@@ -20,8 +20,9 @@ import java.time.{LocalDate, ZoneOffset}
 
 import base.SpecBase
 import config.annotations.DeceasedSettlor
+import connectors.TrustConnector
 import forms.DateOfDeathFormProvider
-import models.Name
+import models.{Name, TrustDetails, TypeOfTrust}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -38,15 +39,17 @@ import scala.concurrent.Future
 
 class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new DateOfDeathFormProvider()
-  private def form = formProvider.withPrefix("deceasedSettlor.dateOfDeath")
-
   def onwardRoute = Call("GET", "/foo")
 
   val validAnswer = LocalDate.now(ZoneOffset.UTC)
   val trusteeName = "FirstName LastName"
   val name = Name("FirstName", None, "LastName")
   val index: Int = 0
+
+  val formProvider = new DateOfDeathFormProvider()
+  private def form = formProvider.withConfig(validAnswer, "deceasedSettlor.dateOfDeath")
+
+  val mockTrustConnector = mock[TrustConnector]
 
   lazy val dateOfDeathRoute = routes.DateOfDeathController.onPageLoad().url
 
@@ -68,7 +71,18 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersWithName)).build()
+      when(mockTrustConnector.getTrustDetails(any())(any(), any()))
+        .thenReturn(Future.successful(TrustDetails(
+          LocalDate.now,
+          TypeOfTrust.WillTrustOrIntestacyTrust,
+          None
+        )))
+
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithName))
+        .overrides(
+          bind[TrustConnector].toInstance(mockTrustConnector)
+        )
+        .build()
 
       val result = route(application, getRequest()).value
 
@@ -88,7 +102,18 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
         .set(DateOfDeathPage, validAnswer).success.value
         .set(NamePage, name).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      when(mockTrustConnector.getTrustDetails(any())(any(), any()))
+        .thenReturn(Future.successful(TrustDetails(
+          LocalDate.now,
+          TypeOfTrust.WillTrustOrIntestacyTrust,
+          None
+        )))
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(
+          bind[TrustConnector].toInstance(mockTrustConnector)
+        )
+        .build()
 
       val view = application.injector.instanceOf[DateOfDeathView]
 
@@ -108,10 +133,18 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
+      when(mockTrustConnector.getTrustDetails(any())(any(), any()))
+        .thenReturn(Future.successful(TrustDetails(
+          LocalDate.now,
+          TypeOfTrust.WillTrustOrIntestacyTrust,
+          None
+        )))
+
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[Navigator].qualifiedWith(classOf[DeceasedSettlor]).toInstance(new FakeNavigator(onwardRoute))
+            bind[Navigator].qualifiedWith(classOf[DeceasedSettlor]).toInstance(new FakeNavigator(onwardRoute)),
+            bind[TrustConnector].toInstance(mockTrustConnector)
           )
           .build()
 
@@ -126,7 +159,18 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersWithName)).build()
+      when(mockTrustConnector.getTrustDetails(any())(any(), any()))
+        .thenReturn(Future.successful(TrustDetails(
+          LocalDate.now,
+          TypeOfTrust.WillTrustOrIntestacyTrust,
+          None
+        )))
+
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithName))
+        .overrides(
+          bind[TrustConnector].toInstance(mockTrustConnector)
+        )
+        .build()
 
       val request =
         FakeRequest(POST, dateOfDeathRoute)
@@ -160,7 +204,17 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to Session Expired for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      when(mockTrustConnector.getTrustDetails(any())(any(), any()))
+        .thenReturn(Future.successful(TrustDetails(
+          LocalDate.now,
+          TypeOfTrust.WillTrustOrIntestacyTrust,
+          None
+        )))
+
+      val application = applicationBuilder(userAnswers = None)
+        .overrides(
+          bind[TrustConnector].toInstance(mockTrustConnector)
+        ).build()
 
       val result = route(application, postRequest()).value
 

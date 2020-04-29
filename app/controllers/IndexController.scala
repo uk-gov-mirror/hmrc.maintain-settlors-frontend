@@ -45,7 +45,7 @@ class IndexController @Inject()(
             UserAnswers(
               internalAuthId = request.user.internalId,
               utr = utr,
-              whenTrustSetup = LocalDate.parse(details.startDate),
+              whenTrustSetup = details.startDate,
               trustType = details.typeOfTrust,
               deedOfVariation = details.deedOfVariation
             )

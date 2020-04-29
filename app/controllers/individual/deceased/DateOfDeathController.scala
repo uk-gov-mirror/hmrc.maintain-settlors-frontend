@@ -16,13 +16,18 @@
 
 package controllers.individual.deceased
 
+import java.time.LocalDate
+
+import config.ErrorHandler
 import config.annotations.DeceasedSettlor
+import connectors.TrustConnector
 import controllers.actions.StandardActionSets
 import controllers.actions.individual.deceased.NameRequiredAction
 import forms.DateOfDeathFormProvider
 import javax.inject.Inject
 import navigation.Navigator
 import pages.individual.deceased.DateOfDeathPage
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -39,34 +44,41 @@ class DateOfDeathController @Inject()(
                                        nameAction: NameRequiredAction,
                                        formProvider: DateOfDeathFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
-                                       view: DateOfDeathView
+                                       view: DateOfDeathView,
+                                       trustsConnector : TrustConnector
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("deceasedSettlor.dateOfDeath")
+  def form(trustStartDate: LocalDate) =
+    formProvider.withConfig(trustStartDate, "deceasedSettlor.dateOfDeath")
 
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(DateOfDeathPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
+      trustsConnector.getTrustDetails(request.userAnswers.utr) map { details =>
+          val preparedForm = request.userAnswers.get(DateOfDeathPage) match {
+            case None => form(details.startDate)
+            case Some(value) => form(details.startDate).fill(value)
+          }
+
+          Ok(view(preparedForm, request.settlorName))
       }
 
-      Ok(view(preparedForm, request.settlorName))
   }
 
   def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.settlorName))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(DateOfDeathPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(DateOfDeathPage, updatedAnswers))
-      )
+      trustsConnector.getTrustDetails(request.userAnswers.utr) flatMap { details =>
+        form(details.startDate).bindFromRequest().fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, request.settlorName))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(DateOfDeathPage, value))
+              _ <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(DateOfDeathPage, updatedAnswers))
+        )
+      }
   }
 }
