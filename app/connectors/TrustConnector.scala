@@ -18,10 +18,10 @@ package connectors
 
 import config.FrontendAppConfig
 import javax.inject.Inject
-import models.settlors.{IndividualSettlor, Settlors}
+import models.settlors.{BusinessSettlor, IndividualSettlor, Settlors}
 import models.{RemoveSettlor, TrustDetails}
-import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import play.api.libs.json.{JsString, JsValue, Json, Writes}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,6 +44,18 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
 
   def addIndividualSettlor(utr: String, settlor: IndividualSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     http.POST[JsValue, HttpResponse](addIndividualSettlorUrl(utr), Json.toJson(settlor))
+  }
+
+  private def amendIndividualSettlorUrl(utr: String, index: Int) = s"${config.trustsUrl}/trusts/amend-individual-settlor/$utr/$index"
+
+  def amendIndividualSettlor(utr: String, index: Int, individual: IndividualSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    http.POST[JsValue, HttpResponse](amendIndividualSettlorUrl(utr, index), Json.toJson(individual))(implicitly[Writes[JsValue]], HttpReads.readRaw, hc, ec)
+  }
+
+  private def amendBusinessSettlorUrl(utr: String, index: Int) = s"${config.trustsUrl}/trusts/amend-business-settlor/$utr/$index"
+
+  def amendBusinessSettlor(utr: String, index: Int, business: BusinessSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    http.POST[JsValue, HttpResponse](amendBusinessSettlorUrl(utr, index), Json.toJson(business))(implicitly[Writes[JsValue]], HttpReads.readRaw, hc, ec)
   }
 
   private def removeSettlorUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/settlors/remove"

@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import base.SpecBase
 import com.github.tomakehurst.wiremock.WireMockServer
-import com.github.tomakehurst.wiremock.client.WireMock.{get, okJson, urlEqualTo}
+import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import generators.Generators
 import models.DeedOfVariation.PreviouslyAbsoluteInterestUnderWill
@@ -29,6 +29,7 @@ import models.{CompanyType, Name, TrustDetails, TypeOfTrust}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
 import play.api.libs.json.Json
+import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 
 class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
@@ -225,6 +226,87 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
               )
             )
         }
+
+        application.stop()
+      }
+
+    }
+
+    "amending an individual settlor" must {
+
+      def amendIndividualSettlorUrl(utr: String, index: Int) =
+        s"/trusts/amend-individual-settlor/$utr/$index"
+
+      "Return OK when the request is successful" in {
+
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustConnector]
+
+        server.stubFor(
+          post(urlEqualTo(amendIndividualSettlorUrl(utr, index)))
+            .willReturn(ok)
+        )
+
+        val individual = IndividualSettlor(
+          name = Name(
+            firstName = "First",
+            middleName = None,
+            lastName = "Last"
+          ),
+          dateOfBirth = None,
+          identification = None,
+          address = None,
+          entityStart = LocalDate.parse("2020-03-27"),
+          provisional = false
+        )
+
+        val result = connector.amendIndividualSettlor(utr, index, individual)
+
+        result.futureValue.status mustBe OK
+
+        application.stop()
+      }
+
+      "return Bad Request when the request is unsuccessful" in {
+
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustConnector]
+
+        server.stubFor(
+          post(urlEqualTo(amendIndividualSettlorUrl(utr, index)))
+            .willReturn(badRequest)
+        )
+
+        val individual = IndividualSettlor(
+          name = Name(
+            firstName = "First",
+            middleName = None,
+            lastName = "Last"
+          ),
+          dateOfBirth = None,
+          identification = None,
+          address = None,
+          entityStart = LocalDate.parse("2020-03-27"),
+          provisional = false
+        )
+
+        val result = connector.amendIndividualSettlor(utr, index, individual)
+
+        result.map(response => response.status mustBe BAD_REQUEST)
 
         application.stop()
       }

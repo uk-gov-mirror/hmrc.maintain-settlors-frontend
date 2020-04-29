@@ -106,7 +106,7 @@ class AddASettlorController @Inject()(
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
                 _ <- repository.set(updatedAnswers)
-              } yield Redirect(controllers.routes.FeatureNotAvailableController.onPageLoad())
+              } yield Redirect(controllers.routes.AddNowController.onPageLoad())
 
             case AddASettlor.YesLater =>
               Future.successful(Redirect(appConfig.maintainATrustOverview))

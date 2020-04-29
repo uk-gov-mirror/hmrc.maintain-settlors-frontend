@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.actions.actions
+package pages.business
 
-import com.google.inject.Inject
-import controllers.actions.PlaybackIdentifierAction
-import models.requests.DataRequest
-import play.api.mvc.Result
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-import scala.concurrent.{ExecutionContext, Future}
+case object NamePage extends QuestionPage[String] {
 
-class FakePlaybackIdentifierAction @Inject()(
-                                              implicit val executionContext: ExecutionContext
-                                            ) extends PlaybackIdentifierAction {
+  override def path: JsPath = basePath \ toString
 
-  override def refine[A](request: DataRequest[A]): Future[Either[Result, DataRequest[A]]] = Future.successful(Right(request))
-
+  override def toString: String = "name"
 }

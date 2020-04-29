@@ -43,7 +43,7 @@ class AddASettlorViewHelper(settlors: Settlors)(implicit messages: Messages) {
       name = settlor.name,
       typeLabel = messages("entities.settlor.business"),
       changeLabel = messages("site.change.details"),
-      changeUrl = Some(controllers.routes.FeatureNotAvailableController.onPageLoad().url),
+      changeUrl = Some(controllers.business.amend.routes.CheckDetailsController.extractAndRender(index).url),
       removeLabel =  messages("site.delete"),
       removeUrl =
         if (settlor.provisional) {

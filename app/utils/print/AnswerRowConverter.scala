@@ -19,7 +19,7 @@ package utils.print
 import java.time.LocalDate
 
 import com.google.inject.Inject
-import models.{Address, IdCard, Name, Passport, UserAnswers}
+import models.{Address, CompanyType, IdCard, Name, Passport, UserAnswers}
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
 import play.twirl.api.HtmlFormat
@@ -42,6 +42,30 @@ class AnswerRowConverter @Inject()() {
         AnswerRow(
           HtmlFormat.escape(messages(s"$labelKey.checkYourAnswersLabel")),
           HtmlFormat.escape(x.displayFullName),
+          changeUrl
+        )
+      }
+    }
+
+    def companyTypeQuestion(query: Gettable[CompanyType],
+                            labelKey: String,
+                            changeUrl: String): Option[AnswerRow] = {
+      userAnswers.get(query) map {x =>
+        AnswerRow(
+          HtmlFormat.escape(messages(s"$labelKey.checkYourAnswersLabel", name)),
+          HtmlFormat.escape(x.toString),
+          changeUrl
+        )
+      }
+    }
+
+    def stringQuestion(query: Gettable[String],
+                       labelKey: String,
+                       changeUrl: String): Option[AnswerRow] = {
+      userAnswers.get(query) map {x =>
+        AnswerRow(
+          HtmlFormat.escape(messages(s"$labelKey.checkYourAnswersLabel", name)),
+          HtmlFormat.escape(x),
           changeUrl
         )
       }

@@ -1,15 +1,12 @@
 # microservice specific routes
 
 ->         /individual/living                                               individualLivingSettlor.Routes
-->         /individual/living/remove                                        individualLivingSettlor.remove.Routes
 
-->         /business/remove                                                 businessSettlor.remove.Routes
+->         /business                                                        businessSettlor.Routes
 
 GET        /add                                                             controllers.AddASettlorController.onPageLoad()
 POST       /add                                                             controllers.AddASettlorController.submit()
 POST       /complete                                                        controllers.AddASettlorController.submitComplete()
-
-GET        /create-agent-services-account                                   controllers.CreateAgentServicesAccountController.onPageLoad()
 
 GET        /assets/*file                                                    controllers.Assets.versioned(path="/public", file: Asset)
 
@@ -18,6 +15,9 @@ GET        /language/:lang                                                  cont
 GET        /this-service-has-been-reset                                     controllers.SessionExpiredController.onPageLoad
 
 GET        /feature-not-available                                           controllers.FeatureNotAvailableController.onPageLoad()
+
+GET        /what-kind                                                       controllers.AddNowController.onPageLoad()
+POST       /what-kind                                                       controllers.AddNowController.onSubmit()
 
 GET        /logout                                                          controllers.LogoutController.logout()
 
