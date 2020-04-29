@@ -19,7 +19,7 @@ package utils.print
 import java.time.LocalDate
 
 import base.SpecBase
-import models.{CheckMode, IdCard, Name, NonUkAddress, Passport, UkAddress}
+import models.{CheckMode, IdCard, Name, NonUkAddress, NormalMode, Passport, UkAddress}
 import pages.individual.living._
 import play.twirl.api.Html
 import viewmodels.{AnswerRow, AnswerSection}
@@ -56,19 +56,19 @@ class AddIndividualSettlorPrintHelperSpec extends SpecBase {
       result mustBe AnswerSection(
         headingKey = None,
         rows = Seq(
-          AnswerRow(label = Html(messages("livingSettlor.name.checkYourAnswersLabel")), answer = Html("First Middle Last"), changeUrl = controllers.individual.living.routes.NameController.onPageLoad(CheckMode).url),
-          AnswerRow(label = Html(messages("livingSettlor.dateOfBirthYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.individual.living.routes.DateOfBirthYesNoController.onPageLoad(CheckMode).url),
-          AnswerRow(label = Html(messages("livingSettlor.dateOfBirth.checkYourAnswersLabel", name.displayName)), answer = Html("10 October 2010"), changeUrl = controllers.individual.living.routes.DateOfBirthController.onPageLoad(CheckMode).url),
-          AnswerRow(label = Html(messages("livingSettlor.nationalInsuranceNumberYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.individual.living.routes.NationalInsuranceNumberYesNoController.onPageLoad(CheckMode).url),
-          AnswerRow(label = Html(messages("livingSettlor.nationalInsuranceNumber.checkYourAnswersLabel", name.displayName)), answer = Html("AA 00 00 00 A"), changeUrl = controllers.individual.living.routes.NationalInsuranceNumberYesNoController.onPageLoad(CheckMode).url),
-          AnswerRow(label = Html(messages("livingSettlor.addressYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.individual.living.routes.AddressYesNoController.onPageLoad(CheckMode).url),
-          AnswerRow(label = Html(messages("livingSettlor.liveInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.individual.living.routes.LiveInTheUkYesNoController.onPageLoad(CheckMode).url),
-          AnswerRow(label = Html(messages("livingSettlor.ukAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = controllers.individual.living.routes.UkAddressController.onPageLoad(CheckMode).url),
-          AnswerRow(label = Html(messages("livingSettlor.nonUkAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = controllers.individual.living.routes.NonUkAddressController.onPageLoad(CheckMode).url),
-          AnswerRow(label = Html(messages("livingSettlor.passportDetailsYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.individual.living.routes.PassportDetailsYesNoController.onPageLoad(CheckMode).url),
-          AnswerRow(label = Html(messages("livingSettlor.passportDetails.checkYourAnswersLabel", name.displayName)), answer = Html("United Kingdom<br />1<br />10 October 2030"), changeUrl = controllers.individual.living.routes.PassportDetailsController.onPageLoad(CheckMode).url),
-          AnswerRow(label = Html(messages("livingSettlor.idCardDetailsYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.individual.living.routes.IdCardDetailsYesNoController.onPageLoad(CheckMode).url),
-          AnswerRow(label = Html(messages("livingSettlor.idCardDetails.checkYourAnswersLabel", name.displayName)), answer = Html("United Kingdom<br />1<br />10 October 2030"), changeUrl = controllers.individual.living.routes.IdCardDetailsController.onPageLoad(CheckMode).url),
+          AnswerRow(label = Html(messages("livingSettlor.name.checkYourAnswersLabel")), answer = Html("First Middle Last"), changeUrl = controllers.individual.living.routes.NameController.onPageLoad(NormalMode).url),
+          AnswerRow(label = Html(messages("livingSettlor.dateOfBirthYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.individual.living.routes.DateOfBirthYesNoController.onPageLoad(NormalMode).url),
+          AnswerRow(label = Html(messages("livingSettlor.dateOfBirth.checkYourAnswersLabel", name.displayName)), answer = Html("10 October 2010"), changeUrl = controllers.individual.living.routes.DateOfBirthController.onPageLoad(NormalMode).url),
+          AnswerRow(label = Html(messages("livingSettlor.nationalInsuranceNumberYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.individual.living.routes.NationalInsuranceNumberYesNoController.onPageLoad(NormalMode).url),
+          AnswerRow(label = Html(messages("livingSettlor.nationalInsuranceNumber.checkYourAnswersLabel", name.displayName)), answer = Html("AA 00 00 00 A"), changeUrl = controllers.individual.living.routes.NationalInsuranceNumberYesNoController.onPageLoad(NormalMode).url),
+          AnswerRow(label = Html(messages("livingSettlor.addressYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.individual.living.routes.AddressYesNoController.onPageLoad(NormalMode).url),
+          AnswerRow(label = Html(messages("livingSettlor.liveInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.individual.living.routes.LiveInTheUkYesNoController.onPageLoad(NormalMode).url),
+          AnswerRow(label = Html(messages("livingSettlor.ukAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = controllers.individual.living.routes.UkAddressController.onPageLoad(NormalMode).url),
+          AnswerRow(label = Html(messages("livingSettlor.nonUkAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = controllers.individual.living.routes.NonUkAddressController.onPageLoad(NormalMode).url),
+          AnswerRow(label = Html(messages("livingSettlor.passportDetailsYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.individual.living.routes.PassportDetailsYesNoController.onPageLoad(NormalMode).url),
+          AnswerRow(label = Html(messages("livingSettlor.passportDetails.checkYourAnswersLabel", name.displayName)), answer = Html("United Kingdom<br />1<br />10 October 2030"), changeUrl = controllers.individual.living.routes.PassportDetailsController.onPageLoad(NormalMode).url),
+          AnswerRow(label = Html(messages("livingSettlor.idCardDetailsYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = controllers.individual.living.routes.IdCardDetailsYesNoController.onPageLoad(NormalMode).url),
+          AnswerRow(label = Html(messages("livingSettlor.idCardDetails.checkYourAnswersLabel", name.displayName)), answer = Html("United Kingdom<br />1<br />10 October 2030"), changeUrl = controllers.individual.living.routes.IdCardDetailsController.onPageLoad(NormalMode).url),
           AnswerRow(label = Html(messages("livingSettlor.startDate.checkYourAnswersLabel", name.displayName)), answer = Html("1 January 2020"), changeUrl = controllers.individual.living.routes.StartDateController.onPageLoad().url)
         )
       )
