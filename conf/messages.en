@@ -371,3 +371,27 @@ deceasedSettlor.name.error.lastName.length = Settlor’s last name must be 35 ch
 deceasedSettlor.name.error.firstName.invalid = Settlor’s first name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
 deceasedSettlor.name.error.middleName.invalid = Settlor’s middle name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
 deceasedSettlor.name.error.lastName.invalid = Settlor’s last name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+
+deceasedSettlor.addressYesNo.checkYourAnswersLabel = Do you know {0}’s last known address?
+deceasedSettlor.addressYesNo.title = Do you know the settlor’s last known address?
+deceasedSettlor.addressYesNo.heading = Do you know {0}’s last known address?
+deceasedSettlor.addressYesNo.error.required = Select yes if you know the settlor’s last known address
+
+deceasedSettlor.livedInTheUkYesNo.checkYourAnswersLabel = Did {0} live in the UK?
+deceasedSettlor.livedInTheUkYesNo.title = Did the settlor live in the UK?
+deceasedSettlor.livedInTheUkYesNo.heading = Did {0} live in the UK?
+deceasedSettlor.livedInTheUkYesNo.error.required = Select yes if the settlor lived in the UK
+
+deceasedSettlor.ukAddress.checkYourAnswersLabel = What was {0}’s address?
+deceasedSettlor.ukAddress.title = What was the settlor’s address?
+deceasedSettlor.ukAddress.heading = What was {0}’s address?
+deceasedSettlor.ukAddress.line1 = Address line 1
+deceasedSettlor.ukAddress.line2 = Address line 2
+deceasedSettlor.ukAddress.line3 = Address line 3 (optional)
+deceasedSettlor.ukAddress.line4 = Address line 4 (optional)
+deceasedSettlor.ukAddress.postcode = Postcode
+deceasedSettlor.ukAddress.postcode.hint = For example AB1 1AB
+
+deceasedSettlor.nonUkAddress.checkYourAnswersLabel = What was {0}’s address?
+deceasedSettlor.nonUkAddress.title = What was the settlor’s address?
+deceasedSettlor.nonUkAddress.heading = What was {0}’s address?
