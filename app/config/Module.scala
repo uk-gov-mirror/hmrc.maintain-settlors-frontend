@@ -17,9 +17,9 @@
 package config
 
 import com.google.inject.AbstractModule
-import config.annotations.LivingSettlor
+import config.annotations.{DeceasedSettlor, LivingSettlor}
 import controllers.actions._
-import navigation.{IndividualSettlorNavigator, Navigator}
+import navigation.{DeceasedSettlorNavigator, IndividualSettlorNavigator, Navigator}
 import repositories.{MongoRepository, PlaybackRepository}
 import services.{AuthenticationService, AuthenticationServiceImpl}
 
@@ -38,5 +38,6 @@ class Module extends AbstractModule {
     bind(classOf[AuthenticationService]).to(classOf[AuthenticationServiceImpl]).asEagerSingleton()
 
     bind(classOf[Navigator]).annotatedWith(classOf[LivingSettlor]).to(classOf[IndividualSettlorNavigator]).asEagerSingleton()
+    bind(classOf[Navigator]).annotatedWith(classOf[DeceasedSettlor]).to(classOf[DeceasedSettlorNavigator]).asEagerSingleton()
   }
 }
