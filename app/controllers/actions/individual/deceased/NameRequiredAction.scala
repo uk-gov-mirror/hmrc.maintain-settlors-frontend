@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.actions.deceased
+package controllers.actions.individual.deceased
 
 import controllers.actions.SettlorNameRequest
 import javax.inject.Inject

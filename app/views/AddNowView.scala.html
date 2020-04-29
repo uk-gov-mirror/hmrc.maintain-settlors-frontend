@@ -39,7 +39,8 @@
             legend = messages("addNow.heading"),
             legendClass = Some("heading-large"),
             inputs = options.toSeq,
-            headingIsLegend = true
+            headingIsLegend = true,
+            fieldSetClass = Some("inline")
         )
 
         @components.submit_button()

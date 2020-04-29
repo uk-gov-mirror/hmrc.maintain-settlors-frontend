@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.actions.living
+package controllers.actions.individual.living
 
 import controllers.actions.SettlorNameRequest
 import javax.inject.Inject
