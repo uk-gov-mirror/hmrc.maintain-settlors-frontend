@@ -2,7 +2,7 @@
 
 ->         /individual/living                                               individualLivingSettlor.Routes
 
-->         /business/remove                                                 businessSettlor.remove.Routes
+->         /business                                                        businessSettlor.Routes
 
 GET        /add                                                             controllers.AddASettlorController.onPageLoad()
 POST       /add                                                             controllers.AddASettlorController.submit()
@@ -15,6 +15,9 @@ GET        /language/:lang                                                  cont
 GET        /this-service-has-been-reset                                     controllers.SessionExpiredController.onPageLoad
 
 GET        /feature-not-available                                           controllers.FeatureNotAvailableController.onPageLoad()
+
+GET        /what-kind                                                       controllers.AddNowController.onPageLoad()
+POST       /what-kind                                                       controllers.AddNowController.onSubmit()
 
 GET        /logout                                                          controllers.LogoutController.logout()
 
