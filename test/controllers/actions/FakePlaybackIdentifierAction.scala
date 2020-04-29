@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package controllers.actions.actions
+package controllers.actions
 
 import com.google.inject.Inject
-import controllers.actions.PlaybackIdentifierAction
 import models.requests.DataRequest
 import play.api.mvc.Result
 
