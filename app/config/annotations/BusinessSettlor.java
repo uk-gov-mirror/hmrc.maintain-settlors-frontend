@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package navigation
+package config.annotations;
 
-import models.{Mode, TypeOfTrust, UserAnswers}
-import pages.Page
-import play.api.mvc.Call
+import com.google.inject.BindingAnnotation;
 
-trait Navigator {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-  def nextPage(page: Page, userAnswers: UserAnswers): Call
-
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call
-
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, trustType: TypeOfTrust): Call
-
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
+@BindingAnnotation
+public @interface BusinessSettlor {}

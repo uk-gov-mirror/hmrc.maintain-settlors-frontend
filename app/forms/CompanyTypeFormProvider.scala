@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package navigation
+package forms
 
-import models.{Mode, TypeOfTrust, UserAnswers}
-import pages.Page
-import play.api.mvc.Call
+import forms.mappings.Mappings
+import javax.inject.Inject
+import models.CompanyType
+import play.api.data.Form
 
-trait Navigator {
+class CompanyTypeFormProvider @Inject() extends Mappings {
 
-  def nextPage(page: Page, userAnswers: UserAnswers): Call
-
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call
-
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, trustType: TypeOfTrust): Call
-
+  def apply(): Form[CompanyType] =
+    Form(
+      "value" -> enumerable[CompanyType]("businessSettlor.companyType.error.required")
+    )
 }

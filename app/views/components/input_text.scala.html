@@ -19,6 +19,7 @@
         label: String,
         inputClass: Option[String] = None,
         hint: Option[String] = None,
+        readerHint: Option[String] = None,
         labelClass: Option[String] = None,
         headingIsLabel: Boolean = false
 )(implicit messages: Messages)
@@ -36,7 +37,9 @@
         </label>
     }
     @if(hint.nonEmpty){
-        <div class="form-hint" id="hint-@{field.id}">@hint</div>
+        <div id="hint-@{field.id}">
+            <span class="form-hint form-field" @if(readerHint.nonEmpty){aria-label="@readerHint"}>@hint</span>
+        </div>
     }
     @field.errors.map { error =>
         <div class="error-message" id="error-message-@{field.id}-input">

@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-package navigation
+package forms
 
-import models.{Mode, TypeOfTrust, UserAnswers}
-import pages.Page
-import play.api.mvc.Call
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-trait Navigator {
+class StringFormProvider @Inject() extends Mappings {
 
-  def nextPage(page: Page, userAnswers: UserAnswers): Call
-
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call
-
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, trustType: TypeOfTrust): Call
-
+  def withPrefix(prefix: String, length: Int): Form[String] =
+    Form(
+      "value" -> text(s"$prefix.error.required")
+        .verifying(
+          firstError(
+            nonEmptyString("value", s"$prefix.error.required"),
+            maxLength(length, s"$prefix.error.length"),
+            regexp(Validation.nameRegex, s"$prefix.error.invalidFormat")
+          )
+        )
+    )
 }
