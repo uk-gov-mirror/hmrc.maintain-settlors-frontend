@@ -55,8 +55,6 @@ class DeceasedSettlorMapper {
     }
   }
 
-
-
   private def readAddress: Reads[Option[Address]] = {
     NationalInsuranceNumberYesNoPage.path.read[Boolean].flatMap {
       case true => Reads(_ => JsSuccess(None))
