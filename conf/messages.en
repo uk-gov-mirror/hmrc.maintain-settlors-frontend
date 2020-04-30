@@ -358,9 +358,9 @@ removeBusinessSettlor.error.required = Select yes if you want to remove the busi
 # Adam todo come back to this what should the default be?
 deceasedSettlor.name.default = the individual settlor
 
-deceasedSettlor.name.checkYourAnswersLabel = What is the name of the settlor?
-deceasedSettlor.name.title = What is the name of the settlor?
-deceasedSettlor.name.heading = What is the name of the settlor?
+deceasedSettlor.name.checkYourAnswersLabel = What was the name of the settlor?
+deceasedSettlor.name.title = What was the name of the settlor?
+deceasedSettlor.name.heading = What was the name of the settlor?
 deceasedSettlor.name.firstName = First name
 deceasedSettlor.name.middleName = Middle names (optional)
 deceasedSettlor.name.lastName = Last name
@@ -404,7 +404,7 @@ deceasedSettlor.dateOfDeath.error.future = Date of death must be the trusts star
 deceasedSettlor.dateOfDeath.error.past = Date of death must be after 31 December 1499
 
 deceasedSettlor.nationalInsuranceNumberYesNo.checkYourAnswersLabel = Do you know {0}’s National Insurance number?
-deceasedSettlor.nationalInsuranceNumberYesNo.title = Do you know the individual’s National Insurance number?
+deceasedSettlor.nationalInsuranceNumberYesNo.title = Do you know the settlors’s National Insurance number?
 deceasedSettlor.nationalInsuranceNumberYesNo.heading = Do you know {0}’s National Insurance number?
 deceasedSettlor.nationalInsuranceNumberYesNo.error.required = Select yes if you know the settlor’s National Insurance number
 
