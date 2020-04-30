@@ -29,5 +29,5 @@ class FakeNavigator(val desiredRoute: Call = Call("GET", "/foo"), mode: Mode = N
     nextPage(page, userAnswers)
 
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, trustType: TypeOfTrust): Call =
-    nextPage(page, mode, userAnswers, trustType)
+    nextPage(page, userAnswers)
 }

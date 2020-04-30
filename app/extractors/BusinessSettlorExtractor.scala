@@ -30,8 +30,8 @@ class BusinessSettlorExtractor @Inject()() {
       .flatMap(_.set(NamePage, business.name))
       .flatMap(answers => extractCompanyType(business.companyType, answers))
       .flatMap(answers => extractCompanyTime(business.companyTime, answers))
-      .flatMap(answers => extractUtr(business.utr, answers))
       .flatMap(answers => extractAddress(business.address, answers))
+      .flatMap(answers => extractUtr(business.utr, answers))
       .flatMap(_.set(StartDatePage, business.entityStart))
       .flatMap(_.set(IndexPage, index))
 

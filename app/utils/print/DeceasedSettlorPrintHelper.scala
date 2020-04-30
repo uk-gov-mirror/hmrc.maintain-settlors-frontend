@@ -34,17 +34,17 @@ class DeceasedSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverte
     AnswerSection(
       None,
       Seq(
-        bound.nameQuestion(NamePage, "deceasedSettlor.name", controllers.individual.deceased.routes.NameController.onPageLoad().url),
-        bound.yesNoQuestion(DateOfDeathYesNoPage, "deceasedSettlor.dateOfDeathYesNo", controllers.individual.deceased.routes.DateOfDeathYesNoController.onPageLoad().url),
-        bound.dateQuestion(DateOfDeathPage, "deceasedSettlor.dateOfDeath", controllers.individual.deceased.routes.DateOfDeathController.onPageLoad().url),
-        bound.yesNoQuestion(DateOfBirthYesNoPage, "deceasedSettlor.dateOfBirthYesNo", controllers.individual.deceased.routes.DateOfBirthYesNoController.onPageLoad().url),
-        bound.dateQuestion(DateOfBirthPage, "deceasedSettlor.dateOfBirth", controllers.individual.deceased.routes.DateOfBirthController.onPageLoad().url),
-        bound.yesNoQuestion(NationalInsuranceNumberYesNoPage, "deceasedSettlor.nationalInsuranceNumberYesNo", controllers.individual.deceased.routes.NationalInsuranceNumberYesNoController.onPageLoad().url),
-        bound.ninoQuestion(NationalInsuranceNumberPage, "deceasedSettlor.nationalInsuranceNumber", controllers.individual.deceased.routes.NationalInsuranceNumberYesNoController.onPageLoad().url),
-        bound.yesNoQuestion(AddressYesNoPage, "deceasedSettlor.addressYesNo", controllers.individual.deceased.routes.AddressYesNoController.onPageLoad().url),
-        bound.yesNoQuestion(LivedInTheUkYesNoPage, "deceasedSettlor.liveInTheUkYesNo", controllers.individual.deceased.routes.LivedInTheUkYesNoController.onPageLoad().url),
-        bound.addressQuestion(UkAddressPage, "deceasedSettlor.ukAddress", controllers.individual.deceased.routes.UkAddressController.onPageLoad().url),
-        bound.addressQuestion(NonUkAddressPage, "deceasedSettlor.nonUkAddress", controllers.individual.deceased.routes.NonUkAddressController.onPageLoad().url)
+        bound.nameQuestion(NamePage, "deceasedSettlor.name", Some(controllers.individual.deceased.routes.NameController.onPageLoad().url)),
+        bound.yesNoQuestion(DateOfDeathYesNoPage, "deceasedSettlor.dateOfDeathYesNo", Some(controllers.individual.deceased.routes.DateOfDeathYesNoController.onPageLoad().url)),
+        bound.dateQuestion(DateOfDeathPage, "deceasedSettlor.dateOfDeath", Some(controllers.individual.deceased.routes.DateOfDeathController.onPageLoad().url)),
+        bound.yesNoQuestion(DateOfBirthYesNoPage, "deceasedSettlor.dateOfBirthYesNo", Some(controllers.individual.deceased.routes.DateOfBirthYesNoController.onPageLoad().url)),
+        bound.dateQuestion(DateOfBirthPage, "deceasedSettlor.dateOfBirth",Some(controllers.individual.deceased.routes.DateOfBirthController.onPageLoad().url)),
+        bound.yesNoQuestion(NationalInsuranceNumberYesNoPage, "deceasedSettlor.nationalInsuranceNumberYesNo", Some(controllers.individual.deceased.routes.NationalInsuranceNumberYesNoController.onPageLoad().url)),
+        bound.ninoQuestion(NationalInsuranceNumberPage, "deceasedSettlor.nationalInsuranceNumber", Some(controllers.individual.deceased.routes.NationalInsuranceNumberYesNoController.onPageLoad().url)),
+        bound.yesNoQuestion(AddressYesNoPage, "deceasedSettlor.addressYesNo", Some(controllers.individual.deceased.routes.AddressYesNoController.onPageLoad().url)),
+        bound.yesNoQuestion(LivedInTheUkYesNoPage, "deceasedSettlor.liveInTheUkYesNo", Some(controllers.individual.deceased.routes.LivedInTheUkYesNoController.onPageLoad().url)),
+        bound.addressQuestion(UkAddressPage, "deceasedSettlor.ukAddress", Some(controllers.individual.deceased.routes.UkAddressController.onPageLoad().url)),
+        bound.addressQuestion(NonUkAddressPage, "deceasedSettlor.nonUkAddress", Some(controllers.individual.deceased.routes.NonUkAddressController.onPageLoad().url))
       ).flatten
     )
   }
