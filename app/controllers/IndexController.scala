@@ -40,18 +40,18 @@ class IndexController @Inject()(
 
     identifierAction.async {
       implicit request =>
-        (connector.getTrustDetails(utr) flatMap { details =>
-          repo.set(
-            UserAnswers(
+
+        for {
+          details <- connector.getTrustDetails(utr)
+          _ <- repo.set(UserAnswers(
               internalAuthId = request.user.internalId,
               utr = utr,
               whenTrustSetup = details.startDate,
               trustType = details.typeOfTrust,
               deedOfVariation = details.deedOfVariation
-            )
-          ).map(_ =>
-            Redirect(controllers.routes.AddASettlorController.onPageLoad())
-          )
-        }).recover {case _ => InternalServerError}
+            ))
+        } yield {
+          Redirect(controllers.routes.AddASettlorController.onPageLoad())
+        }
     }
 }

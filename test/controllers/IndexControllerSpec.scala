@@ -33,7 +33,7 @@ class IndexControllerSpec extends SpecBase {
 
   "Index Controller" must {
 
-    "return OK and the correct view for a GET" in {
+    "redirect to task list when there are living settlors" in {
 
       val mockTrustConnector = mock[TrustConnector]
 
