@@ -16,11 +16,22 @@
 
 package utils
 
-import models.settlors.{BusinessSettlor, IndividualSettlor, Settlors}
+import models.settlors.{BusinessSettlor, DeceasedSettlor, DeceasedSettlors, IndividualSettlor, Settlors}
 import play.api.i18n.Messages
 import viewmodels.addAnother.{AddRow, AddToRows}
 
-class AddASettlorViewHelper(settlors: Settlors)(implicit messages: Messages) {
+class AddASettlorViewHelper(settlors: Settlors, deceasedSettlors: DeceasedSettlors)(implicit messages: Messages) {
+
+  private def deceasedSettlorRow(settlor: DeceasedSettlor, index: Int): AddRow = {
+    AddRow(
+      name = settlor.name.displayName,
+      typeLabel = messages("entities.settlor.deceased"),
+      changeLabel = messages("site.change.details"),
+      changeUrl = Some(controllers.individual.deceased.routes.CheckDetailsController.extractAndRender(index).url),
+      removeLabel =  messages("site.delete"),
+      removeUrl = None
+    )
+  }
 
   private def individualSettlorRow(settlor: IndividualSettlor, index: Int): AddRow = {
     AddRow(
@@ -56,6 +67,7 @@ class AddASettlorViewHelper(settlors: Settlors)(implicit messages: Messages) {
 
   def rows: AddToRows = {
     val complete =
+      deceasedSettlors.settlor.zipWithIndex.map(x => deceasedSettlorRow(x._1, x._2)) ++
       settlors.settlor.zipWithIndex.map(x => individualSettlorRow(x._1, x._2)) ++
       settlors.settlorCompany.zipWithIndex.map(x => businessSettlorRow(x._1, x._2))
 

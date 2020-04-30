@@ -21,7 +21,7 @@ import java.time.LocalDate
 import base.SpecBase
 import connectors.TrustStoreConnector
 import forms.AddASettlorFormProvider
-import models.settlors.{BusinessSettlor, IndividualSettlor, Settlors}
+import models.settlors.{BusinessSettlor, DeceasedSettlor, DeceasedSettlors, IndividualSettlor, Settlors}
 import models.{AddASettlor, CompanyType, Name, NationalInsuranceNumber, RemoveSettlor}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -47,6 +47,13 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
   val addTrusteeForm = new AddASettlorFormProvider()()
 
+  private val deceasedSettlor = DeceasedSettlor(
+    name = Name(firstName = "First", middleName = None, lastName = "Last"),
+    dateOfDeath = Some(LocalDate.parse("1993-09-24")),
+    dateOfBirth = Some(LocalDate.parse("1983-09-24")),
+    identification = Some(NationalInsuranceNumber("JS123456A")),
+    address = None
+  )
   private def individualSettlor(provisional: Boolean) = IndividualSettlor(
     name = Name(firstName = "First", middleName = None, lastName = "Last"),
     dateOfBirth = Some(LocalDate.parse("1983-09-24")),
@@ -71,6 +78,10 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
     List(businessSettlor(true))
   )
 
+  private val deceasedSettlors = DeceasedSettlors(
+    List(deceasedSettlor)
+  )
+
   lazy val featureNotAvailable : String = controllers.routes.FeatureNotAvailableController.onPageLoad().url
 
   val settlorRows = List(
@@ -78,7 +89,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
     AddRow("Humanitarian Company Ltd", typeLabel = "Business settlor", "Change details", Some(controllers.business.amend.routes.CheckDetailsController.extractAndRender(0).url), "Remove", Some(controllers.business.remove.routes.RemoveBusinessSettlorController.onPageLoad(0).url))
   )
 
-  class FakeService(data: Settlors) extends TrustService {
+  class FakeService(data: Settlors, deceasedSettlors: DeceasedSettlors) extends TrustService {
 
     override def getSettlors(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Settlors] = Future.successful(data)
 
@@ -91,6 +102,12 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
     override def removeSettlor(utr: String, settlor: RemoveSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
       Future.successful(HttpResponse(OK))
+
+    override def getDeceasedSettlors(utr: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[DeceasedSettlors] =
+      Future.successful(deceasedSettlors)
+
+    override def getDeceasedSettlor(utr: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[DeceasedSettlor] =
+      Future.successful(deceasedSettlor)
   }
 
   "AddASettlor Controller" when {
@@ -99,7 +116,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
       "redirect to Session Expired for a GET if no existing data is found" in {
 
-        val fakeService = new FakeService(Settlors(Nil, Nil))
+        val fakeService = new FakeService(Settlors(Nil, Nil), DeceasedSettlors(Nil))
 
         val application = applicationBuilder(userAnswers = None).overrides(Seq(
           bind(classOf[TrustService]).toInstance(fakeService)
@@ -137,7 +154,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
       "return OK and the correct view for a GET" in {
 
-        val fakeService = new FakeService(settlors)
+        val fakeService = new FakeService(settlors, DeceasedSettlors(Nil))
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
           bind(classOf[TrustService]).toInstance(fakeService)
@@ -166,7 +183,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
       "redirect to the maintain task list when the user says they are done" in {
 
-        val fakeService = new FakeService(settlors)
+        val fakeService = new FakeService(settlors, DeceasedSettlors(Nil))
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
           bind(classOf[TrustService]).toInstance(fakeService),
@@ -190,7 +207,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
       "redirect to the maintain task list when the user says they want to add later" ignore {
 
-        val fakeService = new FakeService(settlors)
+        val fakeService = new FakeService(settlors, DeceasedSettlors(Nil))
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
           bind(classOf[TrustService]).toInstance(fakeService)
@@ -211,7 +228,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
       "return a Bad Request and errors when invalid data is submitted" in {
 
-        val fakeService = new FakeService(settlors)
+        val fakeService = new FakeService(settlors, DeceasedSettlors(Nil))
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
           bind(classOf[TrustService]).toInstance(fakeService)
@@ -250,9 +267,9 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
         List.fill(25)(businessSettlor(true))
       )
 
-      val fakeService = new FakeService(settlors)
+      val fakeService = new FakeService(settlors, DeceasedSettlors(Nil))
 
-      val settlorRows = new AddASettlorViewHelper(settlors).rows
+      val settlorRows = new AddASettlorViewHelper(settlors, DeceasedSettlors(Nil)).rows
 
       "return OK and the correct view for a GET" in {
 
@@ -291,7 +308,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
           Nil
         )
 
-        val fakeService = new FakeService(settlors)
+        val fakeService = new FakeService(settlors, DeceasedSettlors(Nil))
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
           bind(classOf[TrustService]).toInstance(fakeService)
@@ -310,7 +327,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
       "redirect to add to page and set settlors to complete when user clicks continue" in {
 
-        val fakeService = new FakeService(settlors)
+        val fakeService = new FakeService(settlors, DeceasedSettlors(Nil))
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
           bind(classOf[TrustService]).toInstance(fakeService),
@@ -347,7 +364,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
       "return OK and the correct view for a GET with no remove links" in {
 
-        val fakeService = new FakeService(settlors)
+        val fakeService = new FakeService(settlors, DeceasedSettlors(Nil))
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
           bind(classOf[TrustService]).toInstance(fakeService)

@@ -24,7 +24,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import generators.Generators
 import models.DeedOfVariation.PreviouslyAbsoluteInterestUnderWill
-import models.settlors.{BusinessSettlor, IndividualSettlor, Settlors}
+import models.settlors.{BusinessSettlor, DeceasedSettlor, DeceasedSettlors, IndividualSettlor, Settlors}
 import models.{CompanyType, Name, TrustDetails, TypeOfTrust}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
@@ -232,6 +232,65 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
     }
 
+    "get deceased settlors" must {
+
+      "parse the response and return the deceased settlors" in {
+        val utr = "1000000008"
+
+        val json = Json.parse(
+          """
+            |{
+            | "deceasedSettlors" : {
+            |   "settlor" : [
+            |     {
+            |       "lineNo" : "79",
+            |       "name" : {
+            |         "firstName" : "Carmel",
+            |         "lastName" : "Settlor"
+            |       }
+            |     }
+            |   ]
+            | }
+            |}
+            |""".stripMargin)
+
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustConnector]
+
+        server.stubFor(
+          get(urlEqualTo(s"/trusts/$utr/transformed/deceased-settlors"))
+            .willReturn(okJson(json.toString))
+        )
+
+        val processed = connector.getDeceasedSettlors(utr)
+
+        whenReady(processed) {
+          result =>
+            result mustBe DeceasedSettlors(
+              settlor = List(
+                DeceasedSettlor(
+                  name = Name("Carmel", None, "Settlor"),
+                  dateOfDeath = None,
+                  dateOfBirth = None,
+                  identification = None,
+                  address = None
+                )
+              )
+            )
+        }
+
+        application.stop()
+      }
+
+    }
+
     "amending an individual settlor" must {
 
       def amendIndividualSettlorUrl(utr: String, index: Int) =
@@ -315,4 +374,81 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
   }
 
+  "amending a deceasd settlor" must {
+
+    def amendDeceasedSettlorUrl(utr: String) =
+      s"/trusts/amend-deceased-settlor/$utr"
+
+    "Return OK when the request is successful" in {
+
+      val application = applicationBuilder()
+        .configure(
+          Seq(
+            "microservice.services.trusts.port" -> server.port(),
+            "auditing.enabled" -> false
+          ): _*
+        ).build()
+
+      val connector = application.injector.instanceOf[TrustConnector]
+
+      server.stubFor(
+        post(urlEqualTo(amendDeceasedSettlorUrl(utr)))
+          .willReturn(ok)
+      )
+
+      val individual = DeceasedSettlor(
+        name = Name(
+          firstName = "First",
+          middleName = None,
+          lastName = "Last"
+        ),
+        dateOfDeath = None,
+        dateOfBirth = None,
+        identification = None,
+        address = None
+      )
+
+      val result = connector.amendDeceasedSettlor(utr, individual)
+
+      result.futureValue.status mustBe OK
+
+      application.stop()
+    }
+
+    "return Bad Request when the request is unsuccessful" in {
+
+      val application = applicationBuilder()
+        .configure(
+          Seq(
+            "microservice.services.trusts.port" -> server.port(),
+            "auditing.enabled" -> false
+          ): _*
+        ).build()
+
+      val connector = application.injector.instanceOf[TrustConnector]
+
+      server.stubFor(
+        post(urlEqualTo(amendDeceasedSettlorUrl(utr)))
+          .willReturn(badRequest)
+      )
+
+      val individual = DeceasedSettlor(
+        name = Name(
+          firstName = "First",
+          middleName = None,
+          lastName = "Last"
+        ),
+        dateOfDeath = None,
+        dateOfBirth = None,
+        identification = None,
+        address = None
+      )
+
+      val result = connector.amendDeceasedSettlor(utr, individual)
+
+      result.map(response => response.status mustBe BAD_REQUEST)
+
+      application.stop()
+    }
+  }
 }

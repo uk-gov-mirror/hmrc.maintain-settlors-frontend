@@ -55,11 +55,12 @@ class AddASettlorController @Inject()(
 
       for {
         settlors <- trustService.getSettlors(request.userAnswers.utr)
+        deceasedSettlors <- trustService.getDeceasedSettlors(request.userAnswers.utr)
         updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
         _ <- repository.set(updatedAnswers)
       } yield {
         
-        val settlorRows = new AddASettlorViewHelper(settlors).rows
+        val settlorRows = new AddASettlorViewHelper(settlors, deceasedSettlors).rows
 
         if (settlors.nonMaxedOutOptions.isEmpty) {
           Ok(completeView(
@@ -85,40 +86,42 @@ class AddASettlorController @Inject()(
     implicit request =>
 
       trustService.getSettlors(request.userAnswers.utr).flatMap { settlors =>
-        addAnotherForm.bindFromRequest().fold(
-          (formWithErrors: Form[_]) => {
+        trustService.getDeceasedSettlors(request.userAnswers.utr).flatMap { deceasedSettlors =>
+          addAnotherForm.bindFromRequest().fold(
+            (formWithErrors: Form[_]) => {
 
-            val rows = new AddASettlorViewHelper(settlors).rows
+              val rows = new AddASettlorViewHelper(settlors, deceasedSettlors).rows
 
-            Future.successful(BadRequest(
-              addAnotherView(
-                formWithErrors,
-                trustDescription,
-                rows.inProgress,
-                rows.complete,
-                settlors.addToHeading,
-                maxedOut = settlors.maxedOutOptions.map(x => x.messageKey)
-              )
-            ))
-          },
-          {
-            case AddASettlor.YesNow =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
-                _ <- repository.set(updatedAnswers)
-              } yield Redirect(controllers.routes.AddNowController.onPageLoad())
+              Future.successful(BadRequest(
+                addAnotherView(
+                  formWithErrors,
+                  trustDescription,
+                  rows.inProgress,
+                  rows.complete,
+                  settlors.addToHeading,
+                  maxedOut = settlors.maxedOutOptions.map(x => x.messageKey)
+                )
+              ))
+            },
+            {
+              case AddASettlor.YesNow =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
+                  _ <- repository.set(updatedAnswers)
+                } yield Redirect(controllers.routes.AddNowController.onPageLoad())
 
-            case AddASettlor.YesLater =>
-              Future.successful(Redirect(appConfig.maintainATrustOverview))
+              case AddASettlor.YesLater =>
+                Future.successful(Redirect(appConfig.maintainATrustOverview))
 
-            case AddASettlor.NoComplete =>
-              for {
-                _ <- trustStoreConnector.setTaskComplete(request.userAnswers.utr)
-              } yield {
-                Redirect(appConfig.maintainATrustOverview)
-              }
-          }
-        )
+              case AddASettlor.NoComplete =>
+                for {
+                  _ <- trustStoreConnector.setTaskComplete(request.userAnswers.utr)
+                } yield {
+                  Redirect(appConfig.maintainATrustOverview)
+                }
+            }
+          )
+        }
       }
   }
 

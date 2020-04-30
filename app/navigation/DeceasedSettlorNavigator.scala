@@ -16,9 +16,10 @@
 
 package navigation
 
+import controllers.individual.deceased.{routes => rts}
 import javax.inject.Inject
 import models.{Mode, TypeOfTrust, UserAnswers}
-import pages.individual.living._
+import pages.individual.deceased._
 import pages.{Page, QuestionPage}
 import play.api.mvc.Call
 
@@ -35,17 +36,43 @@ class DeceasedSettlorNavigator @Inject()() extends Navigator {
   }
 
   private val simpleNavigation: PartialFunction[Page, Call] = {
-    case NamePage => ???
+    case NamePage => rts.DateOfDeathYesNoController.onPageLoad()
+    case DateOfDeathPage => rts.DateOfBirthYesNoController.onPageLoad()
+    case DateOfBirthPage => rts.NationalInsuranceNumberYesNoController.onPageLoad()
+
   }
 
   private val yesNoNavigation: PartialFunction[Page, UserAnswers => Call] = {
-    case _ => ???
+    case DateOfDeathYesNoPage => ua =>
+      yesNoNav(ua, DateOfDeathYesNoPage, rts.DateOfDeathController.onPageLoad(), rts.DateOfBirthYesNoController.onPageLoad())
+    case DateOfBirthYesNoPage => ua =>
+      yesNoNav(ua, DateOfBirthYesNoPage, rts.DateOfBirthController.onPageLoad(), rts.NationalInsuranceNumberYesNoController.onPageLoad())
+    case NationalInsuranceNumberYesNoPage => ua =>
+      yesNoNav(ua, NationalInsuranceNumberYesNoPage, rts.NationalInsuranceNumberController.onPageLoad(), rts.AddressYesNoController.onPageLoad())
+    case NationalInsuranceNumberPage => ua =>
+      checkDetailsRoute(ua)
+    case AddressYesNoPage => ua =>
+      yesNoNav(ua, AddressYesNoPage, rts.LivedInTheUkYesNoController.onPageLoad(), checkDetailsRoute(ua))
+    case LivedInTheUkYesNoPage => ua =>
+      yesNoNav(ua, LivedInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad())
+    case UkAddressPage => ua =>
+      checkDetailsRoute(ua)
+    case NonUkAddressPage => ua =>
+      checkDetailsRoute(ua)
   }
 
   def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {
     ua.get(fromPage)
       .map(if (_) yesCall else noCall)
       .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
+  }
+
+  def checkDetailsRoute(answers: UserAnswers): Call = {
+    answers.get(IndexPage) match {
+      case None => controllers.routes.SessionExpiredController.onPageLoad()
+      case Some(x) =>
+        rts.CheckDetailsController.renderFromUserAnswers(x)
+    }
   }
 
   val routes: PartialFunction[Page, UserAnswers => Call] =

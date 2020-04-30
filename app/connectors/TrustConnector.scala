@@ -18,9 +18,9 @@ package connectors
 
 import config.FrontendAppConfig
 import javax.inject.Inject
-import models.settlors.{BusinessSettlor, IndividualSettlor, Settlors}
+import models.settlors.{BusinessSettlor, DeceasedSettlor, DeceasedSettlors, IndividualSettlor, Settlors}
 import models.{RemoveSettlor, TrustDetails}
-import play.api.libs.json.{JsString, JsValue, Json, Writes}
+import play.api.libs.json.{JsValue, Json, Writes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -40,6 +40,12 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
     http.GET[Settlors](getSettlorsUrl(utr))
   }
 
+  private def getDeceasedSettlorsUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/transformed/deceased-settlors"
+
+  def getDeceasedSettlors(utr: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[DeceasedSettlors] = {
+    http.GET[DeceasedSettlors](getDeceasedSettlorsUrl(utr))
+  }
+
   private def addIndividualSettlorUrl(utr: String) = s"${config.trustsUrl}/trusts/add-individual-settlor/$utr"
 
   def addIndividualSettlor(utr: String, settlor: IndividualSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
@@ -50,6 +56,12 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
 
   def amendIndividualSettlor(utr: String, index: Int, individual: IndividualSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     http.POST[JsValue, HttpResponse](amendIndividualSettlorUrl(utr, index), Json.toJson(individual))(implicitly[Writes[JsValue]], HttpReads.readRaw, hc, ec)
+  }
+
+  private def amendDeceasedSettlorUrl(utr: String) = s"${config.trustsUrl}/trusts/amend-deceased-settlor/$utr"
+
+  def amendDeceasedSettlor(utr: String, deceasedSettlor: DeceasedSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    http.POST[JsValue, HttpResponse](amendDeceasedSettlorUrl(utr), Json.toJson(deceasedSettlor))(implicitly[Writes[JsValue]], HttpReads.readRaw, hc, ec)
   }
 
   private def amendBusinessSettlorUrl(utr: String, index: Int) = s"${config.trustsUrl}/trusts/amend-business-settlor/$utr/$index"
