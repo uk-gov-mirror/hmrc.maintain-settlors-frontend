@@ -43,6 +43,7 @@ class IndexController @Inject()(
 
         for {
           details <- connector.getTrustDetails(utr)
+          allSettlors <- connector.getAllSettlors(utr)
           _ <- repo.set(UserAnswers(
               internalAuthId = request.user.internalId,
               utr = utr,
@@ -51,7 +52,13 @@ class IndexController @Inject()(
               deedOfVariation = details.deedOfVariation
             ))
         } yield {
-          Redirect(controllers.routes.AddASettlorController.onPageLoad())
+          val combined = allSettlors.settlors ::: allSettlors.settlorsCompany
+
+          if (combined.nonEmpty) {
+            Redirect(controllers.routes.AddASettlorController.onPageLoad())
+          } else {
+            Redirect(controllers.individual.deceased.routes.CheckDetailsController.extractAndRender(0))
+          }
         }
     }
 }

@@ -18,7 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import javax.inject.Inject
-import models.settlors.{BusinessSettlor, DeceasedSettlor, DeceasedSettlors, IndividualSettlor, Settlors}
+import models.settlors.{AllSettlors, BusinessSettlor, DeceasedSettlor, DeceasedSettlors, IndividualSettlor, Settlors}
 import models.{RemoveSettlor, TrustDetails}
 import play.api.libs.json.{JsValue, Json, Writes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
@@ -30,14 +30,19 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
 
   private def getTrustDetailsUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/trust-details"
 
+  private def getSettlorsUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/transformed/settlors"
+  private def getAllSettlorsUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/transformed/settlors"
+
   def getTrustDetails(utr: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[TrustDetails] = {
     http.GET[TrustDetails](getTrustDetailsUrl(utr))
   }
 
-  private def getSettlorsUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/transformed/settlors"
-
   def getSettlors(utr: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[Settlors] = {
     http.GET[Settlors](getSettlorsUrl(utr))
+  }
+
+  def getAllSettlors(utr: String)(implicit hc: HeaderCarrier, ec : ExecutionContext) : Future[AllSettlors] = {
+    http.GET[AllSettlors](getAllSettlorsUrl(utr))
   }
 
   private def getDeceasedSettlorsUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/transformed/deceased-settlors"
