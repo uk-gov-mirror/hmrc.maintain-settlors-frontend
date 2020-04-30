@@ -24,7 +24,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import generators.Generators
 import models.DeedOfVariation.PreviouslyAbsoluteInterestUnderWill
-import models.settlors.{BusinessSettlor, DeceasedSettlor, DeceasedSettlors, IndividualSettlor, Settlors}
+import models.settlors.{AllSettlors, BusinessSettlor, DeceasedSettlor, DeceasedSettlors, IndividualSettlor, Settlors}
 import models.{CompanyType, Name, TrustDetails, TypeOfTrust}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
@@ -142,6 +142,87 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
             result mustBe Settlors(
               settlor = Nil,
               settlorCompany = Nil
+            )
+        }
+
+        application.stop()
+      }
+
+    }
+
+    "get all settlors" must {
+
+      "parse the response and return the settlors" in {
+        val utr = "1000000008"
+
+        val json = Json.parse(
+          """
+            |{
+            | "settlors" : [
+            |     {
+            |       "lineNo" : "79",
+            |       "name" : {
+            |         "firstName" : "Carmel",
+            |         "lastName" : "Settlor"
+            |       },
+            |       "entityStart" : "2019-09-23"
+            |     }
+            |   ],
+            | "settlorsCompany" : [
+            |     {
+            |       "lineNo" : "110",
+            |       "bpMatchStatus" : "98",
+            |       "name" : "Settlor Org 24",
+            |       "companyType" : "Investment",
+            |       "companyTime" : false,
+            |       "entityStart" : "2019-09-23"
+            |     }
+            |   ]
+            |}
+            |""".stripMargin)
+
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustConnector]
+
+        server.stubFor(
+          get(urlEqualTo(s"/trusts/$utr/transformed/settlors"))
+            .willReturn(okJson(json.toString))
+        )
+
+        val processed = connector.getAllSettlors(utr)
+
+        whenReady(processed) {
+          result =>
+            result mustBe AllSettlors(
+              settlors = List(
+                IndividualSettlor(
+                  name = Name("Carmel", None, "Settlor"),
+                  dateOfBirth = None,
+                  identification = None,
+                  address = None,
+                  entityStart = LocalDate.parse("2019-09-23"),
+                  provisional = false
+                )
+              ),
+              settlorsCompany = List(
+                BusinessSettlor(
+                  name = "Settlor Org 24",
+                  companyType = Some(CompanyType.Investment),
+                  companyTime = Some(false),
+                  utr = None,
+                  address = None,
+                  entityStart = LocalDate.parse("2019-09-23"),
+                  provisional = false
+                )
+              ),
+              deceased = None
             )
         }
 
