@@ -285,9 +285,6 @@ removeIndividualSettlor.error.required = Select yes if you want to remove the in
 
 businessSettlor.name.default = the business settlor
 
-businessSettlor.checkDetails.title = Check individual settlor details
-businessSettlor.checkDetails.heading = Check individual settlor details
-
 businessSettlor.name.checkYourAnswersLabel = What is the business’s name?
 businessSettlor.name.title = What is the business’s name?
 businessSettlor.name.heading = What is the business’s name?
