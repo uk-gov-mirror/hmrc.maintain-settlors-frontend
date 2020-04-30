@@ -18,7 +18,7 @@ package controllers.individual.living
 
 import config.annotations.LivingSettlor
 import controllers.actions.StandardActionSets
-import controllers.actions.living.NameRequiredAction
+import controllers.actions.individual.living.NameRequiredAction
 import forms.DateOfBirthFormProvider
 import javax.inject.Inject
 import models.Mode

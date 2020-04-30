@@ -1,6 +1,7 @@
 # microservice specific routes
 
 ->         /individual/living                                               individualLivingSettlor.Routes
+->         /individual/deceased                                             individualDeceasedSettlor.Routes
 
 ->         /business                                                        businessSettlor.Routes
 

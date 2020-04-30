@@ -101,7 +101,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
       whenReady(processed) {
         r =>
-          r mustBe TrustDetails(startDate = "1920-03-28", typeOfTrust = TypeOfTrust.WillTrustOrIntestacyTrust, Some(PreviouslyAbsoluteInterestUnderWill))
+          r mustBe TrustDetails(startDate = LocalDate.parse("1920-03-28"), typeOfTrust = TypeOfTrust.WillTrustOrIntestacyTrust, Some(PreviouslyAbsoluteInterestUnderWill))
       }
 
     }
@@ -305,6 +305,71 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
         )
 
         val result = connector.amendIndividualSettlor(utr, index, individual)
+
+        result.map(response => response.status mustBe BAD_REQUEST)
+
+        application.stop()
+      }
+
+    }
+
+    "amending a business settlor" must {
+
+      def amendBusinessSettlorUrl(utr: String, index: Int) =
+        s"/trusts/amend-business-settlor/$utr/$index"
+
+      val business = BusinessSettlor(
+        name = "Name",
+        companyType = None,
+        companyTime = None,
+        utr = None,
+        address = None,
+        entityStart = LocalDate.parse("2020-03-27"),
+        provisional = false
+      )
+
+      "Return OK when the request is successful" in {
+
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustConnector]
+
+        server.stubFor(
+          post(urlEqualTo(amendBusinessSettlorUrl(utr, index)))
+            .willReturn(ok)
+        )
+
+        val result = connector.amendBusinessSettlor(utr, index, business)
+
+        result.futureValue.status mustBe OK
+
+        application.stop()
+      }
+
+      "return Bad Request when the request is unsuccessful" in {
+
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustConnector]
+
+        server.stubFor(
+          post(urlEqualTo(amendBusinessSettlorUrl(utr, index)))
+            .willReturn(badRequest)
+        )
+
+        val result = connector.amendBusinessSettlor(utr, index, business)
 
         result.map(response => response.status mustBe BAD_REQUEST)
 
