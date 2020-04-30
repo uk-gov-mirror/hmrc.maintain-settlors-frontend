@@ -17,7 +17,6 @@
 package navigation
 
 import base.SpecBase
-import models.NormalMode
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.individual.deceased._
 
@@ -25,11 +24,126 @@ class DeceasedSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
   val navigator = new DeceasedSettlorNavigator
 
-  "deceaeds settlor navigator" when {
+  "deceased settlor navigator" when {
 
-      "Name page -> Do you know date of birth page" ignore {
-//        navigator.nextPage(NamePage, emptyUserAnswers)
-//          .mustBe(controllers.individual.deceased.routes.DateOfBirthYesNoController.onPageLoad(NormalMode))
-      }
+    "Name page -> Do you know date of death page" in {
+      navigator.nextPage(NamePage, emptyUserAnswers)
+        .mustBe(controllers.individual.deceased.routes.DateOfDeathYesNoController.onPageLoad())
+    }
+
+    "Do you know date of death page -> Yes -> Date of death page" in {
+      val answers = emptyUserAnswers
+        .set(DateOfDeathYesNoPage, true).success.value
+
+      navigator.nextPage(DateOfDeathYesNoPage, answers)
+        .mustBe(controllers.individual.deceased.routes.DateOfDeathController.onPageLoad())
+    }
+
+    "Date of death page -> Do you know Date of birth page" in {
+      navigator.nextPage(DateOfDeathPage, emptyUserAnswers)
+        .mustBe(controllers.individual.deceased.routes.DateOfBirthYesNoController.onPageLoad())
+    }
+
+    "Do you know date of death page -> No -> Do you know Date of birth page" in {
+      val answers = emptyUserAnswers
+        .set(DateOfDeathYesNoPage, false).success.value
+
+      navigator.nextPage(DateOfDeathYesNoPage, answers)
+        .mustBe(controllers.individual.deceased.routes.DateOfBirthYesNoController.onPageLoad())
+    }
+
+    "Do you know date of birth page -> Yes -> Date of birth page" in {
+      val answers = emptyUserAnswers
+        .set(DateOfBirthYesNoPage, true).success.value
+
+      navigator.nextPage(DateOfBirthYesNoPage, answers)
+        .mustBe(controllers.individual.deceased.routes.DateOfBirthController.onPageLoad())
+    }
+
+    "Date of birth page -> Do you know NINO page" in {
+      navigator.nextPage(DateOfBirthPage, emptyUserAnswers)
+        .mustBe(controllers.individual.deceased.routes.NationalInsuranceNumberYesNoController.onPageLoad())
+    }
+
+    "Do you know date of birth page -> No -> Do you know NINO page" in {
+      val answers = emptyUserAnswers
+        .set(DateOfBirthYesNoPage, false).success.value
+
+      navigator.nextPage(DateOfBirthYesNoPage, answers)
+        .mustBe(controllers.individual.deceased.routes.NationalInsuranceNumberYesNoController.onPageLoad())
+    }
+
+    "Do you know NINO page -> Yes -> NINO page" in {
+      val answers = emptyUserAnswers
+        .set(NationalInsuranceNumberYesNoPage, true).success.value
+
+      navigator.nextPage(NationalInsuranceNumberYesNoPage, answers)
+        .mustBe(controllers.individual.deceased.routes.NationalInsuranceNumberController.onPageLoad())
+    }
+
+    "NINO page -> Check Details page" in {
+      val answers = emptyUserAnswers
+        .set(IndexPage, 0).success.value
+
+      navigator.nextPage(NationalInsuranceNumberPage, answers)
+        .mustBe(controllers.individual.deceased.routes.CheckDetailsController.renderFromUserAnswers(0))
+    }
+
+    "Do you know NINO page -> No -> Do you know address page" in {
+      val answers = emptyUserAnswers
+        .set(NationalInsuranceNumberYesNoPage, false).success.value
+
+      navigator.nextPage(NationalInsuranceNumberYesNoPage, answers)
+        .mustBe(controllers.individual.deceased.routes.AddressYesNoController.onPageLoad())
+    }
+
+    "Do you know address page -> Yes -> Was address in UK page" in {
+      val answers = emptyUserAnswers
+        .set(AddressYesNoPage, true).success.value
+
+      navigator.nextPage(AddressYesNoPage, answers)
+        .mustBe(controllers.individual.deceased.routes.LivedInTheUkYesNoController.onPageLoad())
+    }
+
+    "Do you know address page -> No -> Check Details page" in {
+      val answers = emptyUserAnswers
+        .set(AddressYesNoPage, false).success.value
+        .set(IndexPage, 0).success.value
+
+      navigator.nextPage(AddressYesNoPage, answers)
+        .mustBe(controllers.individual.deceased.routes.CheckDetailsController.renderFromUserAnswers(0))
+    }
+
+    "Is address in UK page -> Yes -> UK address page" in {
+      val answers = emptyUserAnswers
+        .set(LivedInTheUkYesNoPage, true).success.value
+
+      navigator.nextPage(LivedInTheUkYesNoPage, answers)
+        .mustBe(controllers.individual.deceased.routes.UkAddressController.onPageLoad())
+    }
+
+    "UK address page -> Check Details page" in {
+      val answers = emptyUserAnswers
+        .set(IndexPage, 0).success.value
+
+      navigator.nextPage(UkAddressPage, answers)
+        .mustBe(controllers.individual.deceased.routes.CheckDetailsController.renderFromUserAnswers(0))
+    }
+
+    "Is address in UK page -> No -> Non-UK address page" in {
+      val answers = emptyUserAnswers
+        .set(LivedInTheUkYesNoPage, false).success.value
+
+      navigator.nextPage(LivedInTheUkYesNoPage, answers)
+        .mustBe(controllers.individual.deceased.routes.NonUkAddressController.onPageLoad())
+    }
+
+    "Non-UK address page -> Check Details page" in {
+      val answers = emptyUserAnswers
+        .set(IndexPage, 0).success.value
+
+      navigator.nextPage(NonUkAddressPage, answers)
+        .mustBe(controllers.individual.deceased.routes.CheckDetailsController.renderFromUserAnswers(0))
+    }
   }
 }
