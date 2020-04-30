@@ -16,11 +16,14 @@
 
 package models.settlors
 
-import play.api.libs.json.{Reads, __}
+import play.api.libs.json.{Json, Reads, __}
 
-case class DeceasedSettlors(settlor: List[DeceasedSettlor])
+case class DeceasedSettlors(deceasedSettlors: List[DeceasedSettlor])
 
 object DeceasedSettlors {
+//  implicit val reads: Reads[DeceasedSettlors] =
+//    (__ \ "deceasedSettlors" \ "settlor").readWithDefault[List[DeceasedSettlor]](Nil).map(DeceasedSettlors.apply)
+
   implicit val reads: Reads[DeceasedSettlors] =
-    (__ \ "deceasedSettlors" \ "settlor").readWithDefault[List[DeceasedSettlor]](Nil).map(DeceasedSettlors.apply)
+    Json.reads[DeceasedSettlors]
 }

@@ -67,7 +67,7 @@ class AddASettlorViewHelper(settlors: Settlors, deceasedSettlors: DeceasedSettlo
 
   def rows: AddToRows = {
     val complete =
-      deceasedSettlors.settlor.zipWithIndex.map(x => deceasedSettlorRow(x._1, x._2)) ++
+      deceasedSettlors.deceasedSettlors.zipWithIndex.map(x => deceasedSettlorRow(x._1, x._2)) ++
       settlors.settlor.zipWithIndex.map(x => individualSettlorRow(x._1, x._2)) ++
       settlors.settlorCompany.zipWithIndex.map(x => businessSettlorRow(x._1, x._2))
 

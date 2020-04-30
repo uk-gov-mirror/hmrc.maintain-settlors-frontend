@@ -240,8 +240,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
         val json = Json.parse(
           """
             |{
-            | "deceasedSettlors" : {
-            |   "settlor" : [
+            | "deceasedSettlors" : [
             |     {
             |       "lineNo" : "79",
             |       "name" : {
@@ -250,7 +249,6 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
             |       }
             |     }
             |   ]
-            | }
             |}
             |""".stripMargin)
 
@@ -274,7 +272,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
         whenReady(processed) {
           result =>
             result mustBe DeceasedSettlors(
-              settlor = List(
+              deceasedSettlors = List(
                 DeceasedSettlor(
                   name = Name("Carmel", None, "Settlor"),
                   dateOfDeath = None,

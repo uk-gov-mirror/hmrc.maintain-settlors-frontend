@@ -37,7 +37,7 @@ class TrustServiceImpl @Inject()(connector: TrustConnector) extends TrustService
     connector.getDeceasedSettlors(utr)
 
   override def getDeceasedSettlor(utr: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[DeceasedSettlor] =
-    connector.getDeceasedSettlors(utr).map(_.settlor(index))
+    connector.getDeceasedSettlors(utr).map(_.deceasedSettlors(index))
 
   override def getBusinessSettlor(utr: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[BusinessSettlor] =
     getSettlors(utr).map(_.settlorCompany(index))
