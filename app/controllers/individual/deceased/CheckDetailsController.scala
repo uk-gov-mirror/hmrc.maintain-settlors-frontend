@@ -84,8 +84,14 @@ class CheckDetailsController @Inject()(
 
       mapper(request.userAnswers).map {
         deceasedSettlor =>
-          connector.amendDeceasedSettlor(request.userAnswers.utr, deceasedSettlor).map(_ =>
-            Redirect(controllers.routes.AddASettlorController.onPageLoad())
+          connector.amendDeceasedSettlor(request.userAnswers.utr, deceasedSettlor).flatMap(_ =>
+            service.getSettlors(request.userAnswers.utr).map { settlors =>
+              if (settlors.settlor.isEmpty && settlors.settlorCompany.isEmpty) {
+                Redirect(appConfig.maintainATrustOverview)
+              } else {
+                Redirect(controllers.routes.AddASettlorController.onPageLoad())
+              }
+            }
           )
       }.getOrElse(Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate)))
   }
