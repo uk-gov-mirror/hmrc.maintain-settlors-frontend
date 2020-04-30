@@ -18,9 +18,9 @@ package controllers.individual.living
 
 import config.annotations.LivingSettlor
 import controllers.actions._
+import controllers.actions.individual.living.NameRequiredAction
 import forms.NationalInsuranceNumberFormProvider
 import javax.inject.Inject
-import controllers.actions.living.NameRequiredAction
 import models.Mode
 import navigation.Navigator
 import pages.individual.living.NationalInsuranceNumberPage

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package controllers.actions.living
+package controllers.actions.individual.deceased
 
 import controllers.actions.SettlorNameRequest
 import javax.inject.Inject
 import models.requests.DataRequest
-import pages.individual.living.NamePage
+import pages.individual.deceased.NamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.ActionTransformer
 
@@ -37,7 +37,7 @@ class NameRequiredAction @Inject()(val executionContext: ExecutionContext, val m
   private def getName[A](request: DataRequest[A]): String = {
     request.userAnswers.get(NamePage) match {
       case Some(name) => name.displayName
-      case _ => request.messages(messagesApi)("livingSettlor.name.default")
+      case _ => request.messages(messagesApi)("deceasedSettlor.name.default")
     }
   }
 }

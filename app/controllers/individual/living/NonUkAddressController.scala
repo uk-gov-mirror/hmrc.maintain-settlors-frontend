@@ -18,7 +18,7 @@ package controllers.individual.living
 
 import config.annotations.LivingSettlor
 import controllers.actions._
-import controllers.actions.living.NameRequiredAction
+import controllers.actions.individual.living.NameRequiredAction
 import forms.NonUkAddressFormProvider
 import javax.inject.Inject
 import models.Mode

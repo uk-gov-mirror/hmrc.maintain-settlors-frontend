@@ -19,7 +19,7 @@ package controllers.individual.living.amend
 import config.{ErrorHandler, FrontendAppConfig}
 import connectors.TrustConnector
 import controllers.actions._
-import controllers.actions.living.NameRequiredAction
+import controllers.actions.individual.living.NameRequiredAction
 import extractors.IndividualSettlorExtractor
 import javax.inject.Inject
 import models.UserAnswers
