@@ -18,6 +18,7 @@ package models
 
 import java.time.{LocalDate, LocalDateTime}
 
+import pages.AddNowPage
 import play.api.Logger
 import play.api.libs.json._
 import queries.{Gettable, Settable}
@@ -37,6 +38,8 @@ final case class UserAnswers(
   def cleanup : Try[UserAnswers] = {
     this
       .deleteAtPath(pages.individual.living.basePath)
+      .flatMap(_.deleteAtPath(pages.business.basePath))
+      .flatMap(_.remove(AddNowPage))
   }
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] = {
