@@ -16,13 +16,25 @@
 
 package pages.individual.deceased
 
+import models.UserAnswers
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+
+import scala.util.Try
 
 case object DateOfDeathYesNoPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = basePath \ toString
 
   override def toString: String = "dateOfDeathYesNo"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    value match {
+      case Some(false) =>
+        userAnswers.remove(DateOfDeathPage)
+      case _ =>
+        super.cleanup(value, userAnswers)
+    }
+  }
 
 }
