@@ -19,7 +19,7 @@ package controllers.business.add
 import config.FrontendAppConfig
 import connectors.TrustConnector
 import controllers.actions._
-import controllers.actions.living.NameRequiredAction
+import controllers.actions.business.NameRequiredAction
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

@@ -42,13 +42,14 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
   private lazy val onwardRoute = controllers.routes.AddASettlorController.onPageLoad().url
 
   private val name = "Test"
+  private val utr = "1234567890"
   private val startDate = LocalDate.parse("2010-02-03")
-
 
   private val userAnswers = emptyUserAnswers
     .set(NamePage, name).success.value
+    .set(UtrYesNoPage, true).success.value
+    .set(UtrPage, utr).success.value
     .set(StartDatePage, startDate).success.value
-
 
   "CheckDetails Controller" must {
 
@@ -62,7 +63,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       val view = application.injector.instanceOf[CheckDetailsView]
       val printHelper = application.injector.instanceOf[BusinessSettlorPrintHelper]
-      val answerSection = printHelper(userAnswers, true, name)
+      val answerSection = printHelper(userAnswers, provisional = true, name)
 
       status(result) mustEqual OK
 
