@@ -77,7 +77,7 @@ class AddNowController @Inject()(
               } yield {
                 value match {
                   case Individual => Redirect(controllers.individual.living.routes.NameController.onPageLoad(NormalMode))
-                  case _ => Redirect(controllers.routes.FeatureNotAvailableController.onPageLoad())
+                  case _ => Redirect(controllers.business.routes.NameController.onPageLoad(NormalMode))
                 }
               }
           )

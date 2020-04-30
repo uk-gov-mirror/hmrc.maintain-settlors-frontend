@@ -47,6 +47,9 @@ POST       /change-been-in-existence-for-at-least-two-years controllers.business
 GET        /start-date                                      controllers.business.StartDateController.onPageLoad()
 POST       /start-date                                      controllers.business.StartDateController.onSubmit()
 
+GET         /check-details                                  controllers.business.add.CheckDetailsController.onPageLoad()
+POST        /check-details                                  controllers.business.add.CheckDetailsController.onSubmit()
+
 GET        /:index/check-details                            controllers.business.amend.CheckDetailsController.extractAndRender(index: Int)
 GET        /:index/updated-details                          controllers.business.amend.CheckDetailsController.renderFromUserAnswers(index: Int)
 POST       /:index/check-details                            controllers.business.amend.CheckDetailsController.onSubmit(index: Int)

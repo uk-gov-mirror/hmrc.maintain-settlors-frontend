@@ -42,8 +42,14 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
 
   private def addIndividualSettlorUrl(utr: String) = s"${config.trustsUrl}/trusts/add-individual-settlor/$utr"
 
+  private def addBusinessSettlorUrl(utr: String) = s"${config.trustsUrl}/trusts/add-buisness-settlor/$utr"
+
   def addIndividualSettlor(utr: String, settlor: IndividualSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     http.POST[JsValue, HttpResponse](addIndividualSettlorUrl(utr), Json.toJson(settlor))
+  }
+
+  def addBusinessSettlor(utr: String, settlor: BusinessSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    http.POST[JsValue, HttpResponse](addBusinessSettlorUrl(utr), Json.toJson(settlor))
   }
 
   private def amendIndividualSettlorUrl(utr: String, index: Int) = s"${config.trustsUrl}/trusts/amend-individual-settlor/$utr/$index"

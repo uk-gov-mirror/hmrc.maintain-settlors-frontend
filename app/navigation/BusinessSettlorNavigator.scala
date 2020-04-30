@@ -38,7 +38,7 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
   private def simpleNavigation(mode: Mode): PartialFunction[Page, Call] = {
     case NamePage => rts.UtrYesNoController.onPageLoad(mode)
     case CompanyTypePage => rts.CompanyTimeController.onPageLoad(mode)
-    case StartDatePage => rts.StartDateController.onPageLoad()
+    case StartDatePage => controllers.business.add.routes.CheckDetailsController.onPageLoad()
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
