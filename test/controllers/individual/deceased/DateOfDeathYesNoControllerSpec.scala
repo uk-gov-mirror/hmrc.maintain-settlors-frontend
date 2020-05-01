@@ -126,7 +126,7 @@ class DateOfDeathYesNoControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.individual.deceased.routes.CheckDetails01Controller.renderFromUserAnswers().url
+      redirectLocation(result).value mustEqual controllers.individual.deceased.routes.CheckDetailsController.renderFromUserAnswers().url
 
       application.stop()
     }

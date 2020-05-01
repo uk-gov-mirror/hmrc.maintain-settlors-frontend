@@ -35,7 +35,3 @@ POST       /change-non-uk-address                           controllers.individu
 GET        /check-details                                   controllers.individual.deceased.CheckDetailsController.extractAndRender()
 GET        /updated-details                                 controllers.individual.deceased.CheckDetailsController.renderFromUserAnswers()
 POST       /check-details                                   controllers.individual.deceased.CheckDetailsController.onSubmit()
-
-GET        /check-details-01                                controllers.individual.deceased.CheckDetails01Controller.extractAndRender()
-GET        /updated-details-01                              controllers.individual.deceased.CheckDetails01Controller.renderFromUserAnswers()
-POST       /check-details-01                                controllers.individual.deceased.CheckDetails01Controller.onSubmit()

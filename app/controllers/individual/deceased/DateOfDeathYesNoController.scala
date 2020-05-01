@@ -69,7 +69,7 @@ class DateOfDeathYesNoController @Inject()(
           } yield {
             (value, updatedAnswers.get(BpMatchStatusPage)) match {
               case (false, Some("01")) =>
-                Redirect(routes.CheckDetails01Controller.renderFromUserAnswers())
+                Redirect(routes.CheckDetailsController.renderFromUserAnswers())
               case _ =>
                 Redirect(navigator.nextPage(DateOfDeathYesNoPage, updatedAnswers))
             }

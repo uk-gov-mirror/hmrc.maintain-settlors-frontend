@@ -27,12 +27,7 @@ class AddASettlorViewHelper(settlors: Settlors)(implicit messages: Messages) {
       name = settlor.name.displayName,
       typeLabel = messages("entities.settlor.deceased"),
       changeLabel = messages("site.change.details"),
-      changeUrl = settlor.bpMatchStatus match {
-        case Some("01") =>
-          Some(controllers.individual.deceased.routes.CheckDetails01Controller.extractAndRender().url)
-        case _ =>
-          Some(controllers.individual.deceased.routes.CheckDetailsController.extractAndRender().url)
-      },
+      changeUrl = Some(controllers.individual.deceased.routes.CheckDetailsController.extractAndRender().url),
       removeLabel =  messages("site.delete"),
       removeUrl = None
     )

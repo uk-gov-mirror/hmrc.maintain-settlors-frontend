@@ -61,13 +61,8 @@ class AddASettlorController @Inject()(
         _ <- repository.set(updatedAnswers)
       } yield {
         settlors match {
-          case Settlors(Nil, Nil, Some(deceased)) =>
-            deceased.bpMatchStatus match {
-              case Some("01") =>
-                Redirect(CheckDetails01Controller.extractAndRender())
-              case _ =>
-                Redirect(CheckDetailsController.extractAndRender())
-            }
+          case Settlors(Nil, Nil, Some(_)) =>
+            Redirect(CheckDetailsController.extractAndRender())
           case _ =>
             val settlorRows = new AddASettlorViewHelper(settlors).rows
 
