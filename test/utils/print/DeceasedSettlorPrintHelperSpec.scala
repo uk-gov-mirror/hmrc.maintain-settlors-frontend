@@ -87,7 +87,7 @@ class DeceasedSettlorPrintHelperSpec extends SpecBase {
 
     "generate deceased settlor section for all possible data for 01 match status when date of death is known to ETMP" in {
 
-      val helper = injector.instanceOf[DeceasedSettlor01PrintHelper]
+      val helper = injector.instanceOf[DeceasedSettlorPrintHelper]
 
       val userAnswers = fillUserAnswers("01", isDateOfDeathRecorded = true)
 
@@ -112,7 +112,7 @@ class DeceasedSettlorPrintHelperSpec extends SpecBase {
 
     "generate deceased settlor section for all possible for 01 match status data when date of death is not known to ETMP" in {
 
-      val helper = injector.instanceOf[DeceasedSettlor01PrintHelper]
+      val helper = injector.instanceOf[DeceasedSettlorPrintHelper]
 
       val userAnswers = fillUserAnswers("01", isDateOfDeathRecorded = false)
 

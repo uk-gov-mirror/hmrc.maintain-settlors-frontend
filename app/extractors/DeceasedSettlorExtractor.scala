@@ -43,7 +43,7 @@ class DeceasedSettlorExtractor @Inject()() {
     }
   }
 
-  private def extractAddress(address: Option[Address], answers: UserAnswers) : Try[UserAnswers] = {
+  private def extractAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
     address match {
       case Some(uk: UkAddress) =>
         answers.set(AddressYesNoPage, true)
@@ -58,33 +58,27 @@ class DeceasedSettlorExtractor @Inject()() {
     }
   }
 
-  private def extractDateOfBirth(individual: DeceasedSettlor, answers: UserAnswers) : Try[UserAnswers] =
-  {
+  private def extractDateOfBirth(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
     individual.dateOfBirth match {
       case Some(dob) =>
         answers.set(DateOfBirthYesNoPage, true)
           .flatMap(_.set(DateOfBirthPage, dob))
       case None =>
-        // Assumption that user answered no as dob is not provided
         answers.set(DateOfBirthYesNoPage, false)
     }
   }
 
-  private def extractDateOfDeath(individual: DeceasedSettlor, answers: UserAnswers) : Try[UserAnswers] =
-  {
+  private def extractDateOfDeath(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
     individual.dateOfDeath match {
       case Some(dob) =>
         answers.set(DateOfDeathYesNoPage, true)
           .flatMap(_.set(DateOfDeathPage, dob))
       case None =>
-        // Assumption that user answered no as dob is not provided
         answers.set(DateOfDeathYesNoPage, false)
     }
   }
 
-  private def extractIdentification(individual: DeceasedSettlor,
-                                    answers: UserAnswers) : Try[UserAnswers] =
-  {
+  private def extractIdentification(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
     individual.identification match {
       case Some(NationalInsuranceNumber(nino)) =>
         answers.set(NationalInsuranceNumberYesNoPage, true)

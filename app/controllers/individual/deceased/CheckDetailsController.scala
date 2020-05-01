@@ -52,10 +52,7 @@ class CheckDetailsController @Inject()(
                                         errorHandler: ErrorHandler
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def render(userAnswers: UserAnswers,
-                     name: String)
-                    (implicit request: Request[AnyContent]): Result=
-  {
+  private def render(userAnswers: UserAnswers, name: String)(implicit request: Request[AnyContent]): Result = {
     val section: AnswerSection = printHelper(userAnswers, name)
     Ok(view(section))
   }
@@ -75,7 +72,7 @@ class CheckDetailsController @Inject()(
       }
   }
 
-  def renderFromUserAnswers() : Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
+  def renderFromUserAnswers(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
       render(request.userAnswers, request.settlorName)
   }
