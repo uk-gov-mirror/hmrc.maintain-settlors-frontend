@@ -40,12 +40,6 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
     http.GET[Settlors](getSettlorsUrl(utr))
   }
 
-//  private def getDeceasedSettlorsUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/transformed/deceased-settlors"
-//
-//  def getDeceasedSettlors(utr: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[DeceasedSettlors] = {
-//    http.GET[DeceasedSettlors](getDeceasedSettlorsUrl(utr))
-//  }
-
   private def getIsDeceasedSettlorDateOfDeathRecordedUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/transformed/deceased-settlor-death-recorded"
 
   def getIsDeceasedSettlorDateOfDeathRecorded(utr: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[JsBoolean] = {
@@ -54,11 +48,11 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
 
   private def addIndividualSettlorUrl(utr: String) = s"${config.trustsUrl}/trusts/add-individual-settlor/$utr"
 
-  private def addBusinessSettlorUrl(utr: String) = s"${config.trustsUrl}/trusts/add-business-settlor/$utr"
-
   def addIndividualSettlor(utr: String, settlor: IndividualSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     http.POST[JsValue, HttpResponse](addIndividualSettlorUrl(utr), Json.toJson(settlor))
   }
+
+  private def addBusinessSettlorUrl(utr: String) = s"${config.trustsUrl}/trusts/add-business-settlor/$utr"
 
   def addBusinessSettlor(utr: String, settlor: BusinessSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     http.POST[JsValue, HttpResponse](addBusinessSettlorUrl(utr), Json.toJson(settlor))

@@ -65,6 +65,6 @@ object Settlors {
   implicit val reads: Reads[Settlors] =
     ((__ \ "settlors" \ "settlor").readWithDefault[List[IndividualSettlor]](Nil)
       and (__ \ "settlors" \ "settlorCompany").readWithDefault[List[BusinessSettlor]](Nil)
-      and (__ \ "deceased").readNullable[DeceasedSettlor]
+      and (__ \ "settlors" \ "deceased").readNullable[DeceasedSettlor]
       ).apply((settlor: List[IndividualSettlor], settlorCompany: List[BusinessSettlor], deceased: Option[DeceasedSettlor]) => Settlors.apply(settlor, settlorCompany, deceased))
 }
