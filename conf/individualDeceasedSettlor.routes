@@ -32,6 +32,6 @@ POST       /change-uk-address                               controllers.individu
 GET        /change-non-uk-address                           controllers.individual.deceased.NonUkAddressController.onPageLoad()
 POST       /change-non-uk-address                           controllers.individual.deceased.NonUkAddressController.onSubmit()
 
-GET        /:index/check-details                            controllers.individual.deceased.CheckDetailsController.extractAndRender(index: Int)
-GET        /:index/updated-details                          controllers.individual.deceased.CheckDetailsController.renderFromUserAnswers(index: Int)
+GET        /check-details                                   controllers.individual.deceased.CheckDetailsController.extractAndRender()
+GET        /updated-details                                 controllers.individual.deceased.CheckDetailsController.renderFromUserAnswers()
 POST       /check-details                                   controllers.individual.deceased.CheckDetailsController.onSubmit()

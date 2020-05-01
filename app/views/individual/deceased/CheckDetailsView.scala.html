@@ -22,7 +22,7 @@
     formHelper: FormWithCSRF
 )
 
-@(answerSection: AnswerSection, index: Int)(implicit request: Request[_], messages: Messages)
+@(answerSection: AnswerSection)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("deceasedSettlor.checkDetails.title")

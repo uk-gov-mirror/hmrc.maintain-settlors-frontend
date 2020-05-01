@@ -25,14 +25,13 @@ import scala.util.Try
 
 class DeceasedSettlorExtractor @Inject()() {
 
-  def apply(answers: UserAnswers, individual : DeceasedSettlor, index: Int): Try[UserAnswers] =
+  def apply(answers: UserAnswers, individual : DeceasedSettlor): Try[UserAnswers] =
     answers.deleteAtPath(pages.individual.deceased.basePath)
       .flatMap(_.set(NamePage, individual.name))
       .flatMap(answers => extractDateOfBirth(individual, answers))
       .flatMap(answers => extractDateOfDeath(individual, answers))
       .flatMap(answers => extractAddress(individual.address, answers))
       .flatMap(answers => extractIdentification(individual, answers))
-      .flatMap(_.set(IndexPage, index))
 
   private def extractAddress(address: Option[Address], answers: UserAnswers) : Try[UserAnswers] = {
     address match {

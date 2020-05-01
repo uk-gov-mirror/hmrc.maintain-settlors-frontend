@@ -70,7 +70,7 @@ class RemoveBusinessSettlorControllerSpec extends SpecBase with ScalaCheckProper
       implicit val hc : HeaderCarrier = HeaderCarrier()
 
       when(mockConnector.getSettlors(any())(any(), any()))
-        .thenReturn(Future.successful(Settlors(Nil, settlors)))
+        .thenReturn(Future.successful(Settlors(Nil, settlors, None)))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[TrustConnector].toInstance(mockConnector))
@@ -96,7 +96,7 @@ class RemoveBusinessSettlorControllerSpec extends SpecBase with ScalaCheckProper
       implicit val hc : HeaderCarrier = HeaderCarrier()
 
       when(mockConnector.getSettlors(any())(any(), any()))
-        .thenReturn(Future.successful(Settlors(Nil, settlors)))
+        .thenReturn(Future.successful(Settlors(Nil, settlors, None)))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[TrustConnector].toInstance(mockConnector))
@@ -148,7 +148,7 @@ class RemoveBusinessSettlorControllerSpec extends SpecBase with ScalaCheckProper
           .build()
 
         when(mockConnector.getSettlors(any())(any(), any()))
-          .thenReturn(Future.successful(Settlors(Nil, settlors)))
+          .thenReturn(Future.successful(Settlors(Nil, settlors, None)))
 
         when(mockConnector.removeSettlor(any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(200)))

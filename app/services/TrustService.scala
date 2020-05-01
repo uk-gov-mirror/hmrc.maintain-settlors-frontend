@@ -33,11 +33,8 @@ class TrustServiceImpl @Inject()(connector: TrustConnector) extends TrustService
   override def getIndividualSettlor(utr: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[IndividualSettlor] =
     getSettlors(utr).map(_.settlor(index))
 
-  override def getDeceasedSettlors(utr: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[DeceasedSettlors] =
-    connector.getDeceasedSettlors(utr)
-
-  override def getDeceasedSettlor(utr: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[DeceasedSettlor] =
-    connector.getDeceasedSettlors(utr).map(_.deceasedSettlors(index))
+  override def getDeceasedSettlor(utr: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Option[DeceasedSettlor]] =
+    connector.getSettlors(utr).map(_.deceased)
 
   override def getBusinessSettlor(utr: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[BusinessSettlor] =
     getSettlors(utr).map(_.settlorCompany(index))
@@ -54,9 +51,7 @@ trait TrustService {
 
   def getIndividualSettlor(utr: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[IndividualSettlor]
 
-  def getDeceasedSettlors(utr: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[DeceasedSettlors]
-
-  def getDeceasedSettlor(utr: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[DeceasedSettlor]
+  def getDeceasedSettlor(utr: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Option[DeceasedSettlor]]
 
   def getBusinessSettlor(utr: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[BusinessSettlor]
 

@@ -53,31 +53,30 @@ class CheckDetailsController @Inject()(
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private def render(userAnswers: UserAnswers,
-                     index: Int,
                      name: String)
                     (implicit request: Request[AnyContent]): Result=
   {
     val section: AnswerSection = printHelper(userAnswers, name)
-    Ok(view(section, index))
+    Ok(view(section))
   }
 
-  def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
+  def extractAndRender(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
-      service.getDeceasedSettlor(request.userAnswers.utr, index) flatMap {
-        trust =>
+      service.getDeceasedSettlor(request.userAnswers.utr) flatMap {
+        maybeDeceasedSettlor =>
           for {
-            extractedF <- Future.fromTry(extractor(request.userAnswers, trust, index))
+            extractedF <- Future.fromTry(extractor(request.userAnswers, maybeDeceasedSettlor.get))
             _ <- playbackRepository.set(extractedF)
           } yield {
-              render(extractedF, index, trust.name.displayName)
+              render(extractedF, maybeDeceasedSettlor.get.name.displayName)
           }
       }
   }
 
-  def renderFromUserAnswers(index: Int) : Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
+  def renderFromUserAnswers() : Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
-      render(request.userAnswers, index, request.settlorName)
+      render(request.userAnswers, request.settlorName)
   }
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {

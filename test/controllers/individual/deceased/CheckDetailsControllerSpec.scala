@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import base.SpecBase
 import config.FrontendAppConfig
-import connectors.TrustConnector
+import connectors.{TrustConnector, TrustStoreConnector}
 import models.settlors.{DeceasedSettlor, IndividualSettlor, Settlors}
 import models.{Name, NationalInsuranceNumber}
 import org.mockito.Matchers.any
@@ -44,7 +44,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 val appConfig = app.injector.instanceOf[FrontendAppConfig]
   private val index = 0
 
-  private lazy val checkDetailsRoute = routes.CheckDetailsController.extractAndRender(index).url
+  private lazy val checkDetailsRoute = routes.CheckDetailsController.extractAndRender().url
   private lazy val submitDetailsRoute = routes.CheckDetailsController.onSubmit().url
 
   private lazy val onwardRoute = controllers.routes.AddASettlorController.onPageLoad().url
@@ -101,8 +101,8 @@ val appConfig = app.injector.instanceOf[FrontendAppConfig]
         )
         .build()
 
-      when(mockService.getDeceasedSettlor(any(), any())(any(), any()))
-        .thenReturn(Future.successful(deceasedSettlor))
+      when(mockService.getDeceasedSettlor(any())(any(), any()))
+        .thenReturn(Future.successful(Some(deceasedSettlor)))
 
       val request = FakeRequest(GET, checkDetailsRoute)
 
@@ -115,7 +115,7 @@ val appConfig = app.injector.instanceOf[FrontendAppConfig]
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(answerSection, index)(fakeRequest, messages).toString
+        view(answerSection)(fakeRequest, messages).toString
     }
 
     "redirect to the 'add a settlor' page when submitted if there are other settlors" in {
@@ -130,7 +130,7 @@ val appConfig = app.injector.instanceOf[FrontendAppConfig]
           .build()
 
       when(mockTrustConnector.amendDeceasedSettlor(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
-      when(mockTrustService.getSettlors(any())(any(), any())).thenReturn(Future.successful(Settlors(List(individualSettlor), Nil)))
+      when(mockTrustService.getSettlors(any())(any(), any())).thenReturn(Future.successful(Settlors(List(individualSettlor), Nil, Some(deceasedSettlor))))
 
       val request = FakeRequest(POST, submitDetailsRoute)
 
@@ -146,6 +146,7 @@ val appConfig = app.injector.instanceOf[FrontendAppConfig]
 
       val mockTrustConnector = mock[TrustConnector]
       val mockTrustService = mock[TrustService]
+      val mockTrustStoreConnector = mock[TrustStoreConnector]
 
       val application =
         applicationBuilder(userAnswers = Some(userAnswers), affinityGroup = Agent)
@@ -154,7 +155,8 @@ val appConfig = app.injector.instanceOf[FrontendAppConfig]
           .build()
 
       when(mockTrustConnector.amendDeceasedSettlor(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
-      when(mockTrustService.getSettlors(any())(any(), any())).thenReturn(Future.successful(Settlors(Nil, Nil)))
+      when(mockTrustService.getSettlors(any())(any(), any())).thenReturn(Future.successful(Settlors(Nil, Nil, Some(deceasedSettlor))))
+      when(mockTrustStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
 
       val request = FakeRequest(POST, submitDetailsRoute)
 

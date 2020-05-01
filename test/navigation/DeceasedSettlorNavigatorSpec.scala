@@ -86,7 +86,7 @@ class DeceasedSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         .set(IndexPage, 0).success.value
 
       navigator.nextPage(NationalInsuranceNumberPage, answers)
-        .mustBe(controllers.individual.deceased.routes.CheckDetailsController.renderFromUserAnswers(0))
+        .mustBe(controllers.individual.deceased.routes.CheckDetailsController.renderFromUserAnswers())
     }
 
     "Do you know NINO page -> No -> Do you know address page" in {
@@ -111,7 +111,7 @@ class DeceasedSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         .set(IndexPage, 0).success.value
 
       navigator.nextPage(AddressYesNoPage, answers)
-        .mustBe(controllers.individual.deceased.routes.CheckDetailsController.renderFromUserAnswers(0))
+        .mustBe(controllers.individual.deceased.routes.CheckDetailsController.renderFromUserAnswers())
     }
 
     "Is address in UK page -> Yes -> UK address page" in {
@@ -127,7 +127,7 @@ class DeceasedSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         .set(IndexPage, 0).success.value
 
       navigator.nextPage(UkAddressPage, answers)
-        .mustBe(controllers.individual.deceased.routes.CheckDetailsController.renderFromUserAnswers(0))
+        .mustBe(controllers.individual.deceased.routes.CheckDetailsController.renderFromUserAnswers())
     }
 
     "Is address in UK page -> No -> Non-UK address page" in {
@@ -143,7 +143,7 @@ class DeceasedSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
         .set(IndexPage, 0).success.value
 
       navigator.nextPage(NonUkAddressPage, answers)
-        .mustBe(controllers.individual.deceased.routes.CheckDetailsController.renderFromUserAnswers(0))
+        .mustBe(controllers.individual.deceased.routes.CheckDetailsController.renderFromUserAnswers())
     }
   }
 }

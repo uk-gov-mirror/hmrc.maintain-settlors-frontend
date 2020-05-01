@@ -39,6 +39,9 @@ class DeceasedSettlorNavigator @Inject()() extends Navigator {
     case NamePage => rts.DateOfDeathYesNoController.onPageLoad()
     case DateOfDeathPage => rts.DateOfBirthYesNoController.onPageLoad()
     case DateOfBirthPage => rts.NationalInsuranceNumberYesNoController.onPageLoad()
+    case NationalInsuranceNumberPage => rts.CheckDetailsController.renderFromUserAnswers()
+    case UkAddressPage => rts.CheckDetailsController.renderFromUserAnswers()
+    case NonUkAddressPage => rts.CheckDetailsController.renderFromUserAnswers()
 
   }
 
@@ -49,30 +52,16 @@ class DeceasedSettlorNavigator @Inject()() extends Navigator {
       yesNoNav(ua, DateOfBirthYesNoPage, rts.DateOfBirthController.onPageLoad(), rts.NationalInsuranceNumberYesNoController.onPageLoad())
     case NationalInsuranceNumberYesNoPage => ua =>
       yesNoNav(ua, NationalInsuranceNumberYesNoPage, rts.NationalInsuranceNumberController.onPageLoad(), rts.AddressYesNoController.onPageLoad())
-    case NationalInsuranceNumberPage => ua =>
-      checkDetailsRoute(ua)
     case AddressYesNoPage => ua =>
-      yesNoNav(ua, AddressYesNoPage, rts.LivedInTheUkYesNoController.onPageLoad(), checkDetailsRoute(ua))
+      yesNoNav(ua, AddressYesNoPage, rts.LivedInTheUkYesNoController.onPageLoad(), rts.CheckDetailsController.renderFromUserAnswers())
     case LivedInTheUkYesNoPage => ua =>
       yesNoNav(ua, LivedInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad())
-    case UkAddressPage => ua =>
-      checkDetailsRoute(ua)
-    case NonUkAddressPage => ua =>
-      checkDetailsRoute(ua)
   }
 
   def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {
     ua.get(fromPage)
       .map(if (_) yesCall else noCall)
       .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
-  }
-
-  def checkDetailsRoute(answers: UserAnswers): Call = {
-    answers.get(IndexPage) match {
-      case None => controllers.routes.SessionExpiredController.onPageLoad()
-      case Some(x) =>
-        rts.CheckDetailsController.renderFromUserAnswers(x)
-    }
   }
 
   val routes: PartialFunction[Page, UserAnswers => Call] =

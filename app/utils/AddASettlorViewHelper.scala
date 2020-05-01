@@ -16,18 +16,18 @@
 
 package utils
 
-import models.settlors.{BusinessSettlor, DeceasedSettlor, DeceasedSettlors, IndividualSettlor, Settlors}
+import models.settlors.{BusinessSettlor, DeceasedSettlor, IndividualSettlor, Settlors}
 import play.api.i18n.Messages
 import viewmodels.addAnother.{AddRow, AddToRows}
 
-class AddASettlorViewHelper(settlors: Settlors, deceasedSettlors: DeceasedSettlors)(implicit messages: Messages) {
+class AddASettlorViewHelper(settlors: Settlors)(implicit messages: Messages) {
 
-  private def deceasedSettlorRow(settlor: DeceasedSettlor, index: Int): AddRow = {
+  private def deceasedSettlorRow(settlor: DeceasedSettlor): AddRow = {
     AddRow(
       name = settlor.name.displayName,
       typeLabel = messages("entities.settlor.deceased"),
       changeLabel = messages("site.change.details"),
-      changeUrl = Some(controllers.individual.deceased.routes.CheckDetailsController.extractAndRender(index).url),
+      changeUrl = Some(controllers.individual.deceased.routes.CheckDetailsController.extractAndRender().url),
       removeLabel =  messages("site.delete"),
       removeUrl = None
     )
@@ -67,7 +67,7 @@ class AddASettlorViewHelper(settlors: Settlors, deceasedSettlors: DeceasedSettlo
 
   def rows: AddToRows = {
     val complete =
-      deceasedSettlors.deceasedSettlors.zipWithIndex.map(x => deceasedSettlorRow(x._1, x._2)) ++
+      settlors.deceased.map(deceasedSettlorRow).toList ++
       settlors.settlor.zipWithIndex.map(x => individualSettlorRow(x._1, x._2)) ++
       settlors.settlorCompany.zipWithIndex.map(x => businessSettlorRow(x._1, x._2))
 
