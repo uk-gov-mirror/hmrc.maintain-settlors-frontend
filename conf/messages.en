@@ -290,7 +290,7 @@ businessSettlor.name.title = What is the business’s name?
 businessSettlor.name.heading = What is the business’s name?
 businessSettlor.name.error.required = Enter the business’s name
 businessSettlor.name.error.length = Business’s name must be 105 characters or less
-businessSettlor.name.error.invalid = Business’s name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+businessSettlor.name.error.invalidFormat = Business’s name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
 
 businessSettlor.utrYesNo.checkYourAnswersLabel = Do you know {0}’s Unique Taxpayer Reference (UTR)?
 businessSettlor.utrYesNo.title = Do you know the settlor’s Unique Taxpayer Reference (UTR)?
