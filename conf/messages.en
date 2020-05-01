@@ -5,6 +5,7 @@ site.edit = Change
 site.hidden-delete = Delete {0}
 site.hidden-cannot-delete = You cannot remove {0} as they have already been declared
 site.hidden-edit = Change {0}
+site.hidden-cannot-edit = You cannot change {0}
 site.change.details = Change details
 site.no = No
 site.yes = Yes
