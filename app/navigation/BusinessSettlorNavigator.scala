@@ -38,7 +38,7 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
   private def simpleNavigation(mode: Mode): PartialFunction[Page, Call] = {
     case NamePage => rts.UtrYesNoController.onPageLoad(mode)
     case CompanyTypePage => rts.CompanyTimeController.onPageLoad(mode)
-    case StartDatePage => rts.StartDateController.onPageLoad()
+    case StartDatePage => controllers.business.add.routes.CheckDetailsController.onPageLoad()
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
@@ -51,8 +51,13 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
   private def navigationWithCheckAndTrustType(mode: Mode, trustType: TypeOfTrust): PartialFunction[Page, UserAnswers => Call] = {
     mode match {
       case NormalMode => {
-        case UtrPage | UkAddressPage | NonUkAddressPage => ua =>
-          trustTypeNav(mode, ua, trustType)
+        case UtrPage | UkAddressPage | NonUkAddressPage => _ =>
+          trustType match {
+            case EmployeeRelated =>
+              rts.CompanyTypeController.onPageLoad(mode)
+            case _ =>
+              rts.StartDateController.onPageLoad()
+          }
         case CompanyTimePage => _ =>
           rts.StartDateController.onPageLoad()
         case AddressYesNoPage => ua =>
@@ -60,25 +65,17 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
       }
       case CheckMode => {
         case UtrPage | UkAddressPage | NonUkAddressPage => ua =>
-          trustTypeNav(mode, ua, trustType)
+          trustType match {
+            case EmployeeRelated =>
+              rts.CompanyTypeController.onPageLoad(mode)
+            case _ =>
+              checkDetailsRoute(ua)
+          }
         case CompanyTimePage => ua =>
           checkDetailsRoute(ua)
         case AddressYesNoPage => ua =>
           yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(mode), checkDetailsRoute(ua))
       }
-    }
-  }
-
-  private def trustTypeNav(mode: Mode, ua: UserAnswers, trustType: TypeOfTrust): Call = {
-    trustType match {
-      case EmployeeRelated => rts.CompanyTypeController.onPageLoad(mode)
-      case _ =>
-        mode match {
-          case NormalMode =>
-            rts.StartDateController.onPageLoad()
-          case CheckMode =>
-            checkDetailsRoute(ua)
-        }
     }
   }
 

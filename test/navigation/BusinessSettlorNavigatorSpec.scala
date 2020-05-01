@@ -126,7 +126,7 @@ class BusinessSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
       "Start date page -> Check details page" in {
         navigator.nextPage(StartDatePage, mode, emptyUserAnswers)
-          .mustBe(controllers.business.routes.StartDateController.onPageLoad())
+          .mustBe(controllers.business.add.routes.CheckDetailsController.onPageLoad())
       }
     }
 

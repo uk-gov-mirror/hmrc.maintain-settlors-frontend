@@ -291,43 +291,46 @@ businessSettlor.name.title = What is the business’s name?
 businessSettlor.name.heading = What is the business’s name?
 businessSettlor.name.error.required = Enter the business’s name
 businessSettlor.name.error.length = Business’s name must be 105 characters or less
-businessSettlor.name.error.invalid = Business’s name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+businessSettlor.name.error.invalidFormat = Business’s name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
 
 businessSettlor.utrYesNo.checkYourAnswersLabel = Do you know {0}’s Unique Taxpayer Reference (UTR)?
-businessSettlor.utrYesNo.title = Do you know the business’s Unique Taxpayer Reference (UTR)?
+businessSettlor.utrYesNo.title = Do you know the settlor’s Unique Taxpayer Reference (UTR)?
 businessSettlor.utrYesNo.heading = Do you know {0}’s Unique Taxpayer Reference (UTR)?
-businessSettlor.utrYesNo.error.required = Select yes if you know the business’s Unique Taxpayer Reference (UTR)?
+businessSettlor.utrYesNo.error.required = Select yes if you know the settlor’s Unique Taxpayer Reference (UTR)?
 
 businessSettlor.utr.checkYourAnswersLabel = What is {0} Unique Taxpayer Reference (UTR)?
-businessSettlor.utr.title = What is the business’s Unique Taxpayer Reference (UTR)?
+businessSettlor.utr.title = What is the settlor’s Unique Taxpayer Reference (UTR)?
 businessSettlor.utr.heading = What is {0}’s Unique Taxpayer Reference (UTR)?
 businessSettlor.utr.hint = This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Self Assessment. It may be called ‘reference’, ‘UTR’ or ‘official use’.
 businessSettlor.utr.hint.reader = This is 10 numbers, for example 1 2 3 4 5 6 7 8 9 0. It will be on tax returns and other letters about Self Assessment. It may be called ‘reference’, ‘UTR’ or ‘official use’.
 businessSettlor.utr.p1 = You can
 businessSettlor.utr.link = find a lost UTR number (opens in a new window or tab)
+businessSettlor.utr.error.required = Enter the settlor’s Unique Taxpayer Reference
+businessSettlor.utr.error.length = Unique Taxpayer Reference must be a 10 digit number
+businessSettlor.utr.error.invalid = Enter the settlor’s Unique Taxpayer Reference in the correct format
 
 businessSettlor.addressYesNo.checkYourAnswersLabel = Do you know {0}’s address?
-businessSettlor.addressYesNo.title = Do you know the business’s address?
+businessSettlor.addressYesNo.title = Do you know the settlor’s address?
 businessSettlor.addressYesNo.heading = Do you know {0}’s address?
-businessSettlor.addressYesNo.error.required = Select yes if you know the business’s address
+businessSettlor.addressYesNo.error.required = Select yes if you know the settlor’s address
 
 businessSettlor.liveInTheUkYesNo.checkYourAnswersLabel = Is {0}’s address in the UK?
-businessSettlor.liveInTheUkYesNo.title = Is the business’s address in the UK?
+businessSettlor.liveInTheUkYesNo.title = Is the settlor’s address in the UK?
 businessSettlor.liveInTheUkYesNo.heading = Is {0}’s address in the UK?
-businessSettlor.liveInTheUkYesNo.error.required = Select yes if the business’s address is in the UK
+businessSettlor.liveInTheUkYesNo.error.required = Select yes if the settlor’s address is in the UK
 
 businessSettlor.ukAddress.checkYourAnswersLabel = What is {0}’s address?
-businessSettlor.ukAddress.title = What is the business’s address?
+businessSettlor.ukAddress.title = What is the settlor’s address?
 businessSettlor.ukAddress.heading = What is {0}’s address?
 
 businessSettlor.nonUkAddress.checkYourAnswersLabel = What is {0}’s address?
-businessSettlor.nonUkAddress.title = What is the business’s address?
+businessSettlor.nonUkAddress.title = What is the settlor’s address?
 businessSettlor.nonUkAddress.heading = What is {0}’s address?
 
 businessSettlor.companyType.checkYourAnswersLabel = What kind of business is {0}?
-businessSettlor.companyType.title = What kind of business is the business?
+businessSettlor.companyType.title = What kind of business is the settlor?
 businessSettlor.companyType.heading = What kind of business is {0}?
-businessSettlor.companyType.error.required = Select what kind of business the business is
+businessSettlor.companyType.error.required = Select what kind of business the settlor is
 
 companyType.Trading = Trading
 companyType.Investment = Investment
