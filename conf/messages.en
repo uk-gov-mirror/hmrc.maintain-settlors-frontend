@@ -40,7 +40,7 @@ site.address.nonUk.country = Country
 
 entities.settlor = Settlors
 entities.settlor.individual = Individual settlor
-entities.settlor.deceased = Deceased settlor
+entities.settlor.deceased = Will settlor
 entities.settlor.business = Business settlor
 
 timeout.title=Your application will time out soon
@@ -442,5 +442,5 @@ deceasedSettlor.nonUkAddress.checkYourAnswersLabel = What was {0}’s address?
 deceasedSettlor.nonUkAddress.title = What was the settlor’s address?
 deceasedSettlor.nonUkAddress.heading = What was {0}’s address?
 
-deceasedSettlor.checkDetails.title = Check settlor details
-deceasedSettlor.checkDetails.heading = Check settlor details
+deceasedSettlor.checkDetails.title = Check will settlor details
+deceasedSettlor.checkDetails.heading = Check will settlor details
