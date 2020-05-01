@@ -32,9 +32,8 @@ case class Settlors(settlor: List[IndividualSettlor],
   type SettlorOptions = List[SettlorOption]
 
   def addToHeading()(implicit mp: MessagesProvider): String = {
-    val deceasedSettlorCount = if (deceased.isDefined) 1 else 0
 
-    (deceasedSettlorCount + (settlor ++ settlorCompany).size) match {
+    (settlor ++ settlorCompany ++ deceased).size match {
       case 0 => Messages("addASettlor.heading")
       case 1 => Messages("addASettlor.singular.heading")
       case l => Messages("addASettlor.count.heading", l)
