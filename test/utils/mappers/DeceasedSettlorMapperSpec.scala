@@ -49,7 +49,7 @@ class DeceasedSettlorMapperSpec extends SpecBase {
 
       val result = mapper(userAnswers).get
 
-      result.bpMatchStatus mustBe bpMatchStatus
+      result.bpMatchStatus.get mustBe bpMatchStatus
       result.name mustBe name
       result.dateOfDeath mustBe Some(dateOfDeath)
       result.dateOfBirth mustBe Some(dateOfBirth)
@@ -72,7 +72,7 @@ class DeceasedSettlorMapperSpec extends SpecBase {
 
       val result = mapper(userAnswers).get
 
-      result.bpMatchStatus mustBe bpMatchStatus
+      result.bpMatchStatus.get mustBe bpMatchStatus
       result.name mustBe name
       result.dateOfDeath mustBe Some(dateOfDeath)
       result.dateOfBirth mustBe Some(dateOfBirth)
@@ -95,7 +95,7 @@ class DeceasedSettlorMapperSpec extends SpecBase {
 
       val result = mapper(userAnswers).get
 
-      result.bpMatchStatus mustBe bpMatchStatus
+      result.bpMatchStatus.get mustBe bpMatchStatus
       result.name mustBe name
       result.dateOfDeath mustBe Some(dateOfDeath)
       result.dateOfBirth mustBe Some(dateOfBirth)
@@ -117,7 +117,7 @@ class DeceasedSettlorMapperSpec extends SpecBase {
 
       val result = mapper(userAnswers).get
 
-      result.bpMatchStatus mustBe bpMatchStatus
+      result.bpMatchStatus.get mustBe bpMatchStatus
       result.name mustBe name
       result.dateOfDeath mustBe Some(dateOfDeath)
       result.dateOfBirth mustBe Some(dateOfBirth)
