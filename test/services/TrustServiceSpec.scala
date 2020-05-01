@@ -46,6 +46,7 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
   )
 
   val deceasedSettlor = DeceasedSettlor(
+    bpMatchStatus = None,
     name = Name(firstName = "first", middleName = None, lastName = "last"),
     dateOfDeath = Some(LocalDate.parse("1993-09-24")),
     dateOfBirth = Some(LocalDate.parse("1983-09-24")),

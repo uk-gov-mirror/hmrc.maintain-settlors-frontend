@@ -48,6 +48,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
   val addTrusteeForm = new AddASettlorFormProvider()()
 
   private val deceasedSettlor = DeceasedSettlor(
+    bpMatchStatus = None,
     name = Name(firstName = "Some", middleName = None, lastName = "One"),
     dateOfDeath = Some(LocalDate.parse("1993-09-24")),
     dateOfBirth = Some(LocalDate.parse("1983-09-24")),

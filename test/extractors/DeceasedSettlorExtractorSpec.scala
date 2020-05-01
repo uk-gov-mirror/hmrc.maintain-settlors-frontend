@@ -34,6 +34,7 @@ class DeceasedSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyCheck
     LocalDate.of(1987, 12, 31),
     TypeOfTrust.WillTrustOrIntestacyTrust,
     None,
+    isDateOfDeathRecorded = true,
     Json.obj()
   )
 
@@ -49,6 +50,7 @@ class DeceasedSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyCheck
     val nino = NationalInsuranceNumber("nino")
 
     val individual = DeceasedSettlor(
+      bpMatchStatus = None,
       name = name,
       dateOfDeath = Some(dateOfDeath),
       dateOfBirth = Some(date),
@@ -76,6 +78,7 @@ class DeceasedSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyCheck
     val nino = NationalInsuranceNumber("nino")
 
     val individual = DeceasedSettlor(
+      bpMatchStatus = None,
       name = name,
       dateOfDeath = Some(dateOfDeath),
       dateOfBirth = Some(date),
@@ -101,6 +104,7 @@ class DeceasedSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyCheck
   "should populate user answers when individual has only a name" in {
 
     val individual = DeceasedSettlor(
+      bpMatchStatus = None,
       name = name,
       dateOfDeath = None,
       dateOfBirth = None,

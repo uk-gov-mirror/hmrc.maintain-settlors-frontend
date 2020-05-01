@@ -175,16 +175,14 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
             |       "companyTime" : false,
             |       "entityStart" : "2019-09-23"
             |     }
-            |   ]
-            | },
-            |
-            | "deceased" : {
-            |       "name" : {
-            |         "firstName" : "Carmel",
-            |         "lastName" : "Settlor"
-            |       }
+            |   ],
+            |   "deceased" : {
+            |     "name" : {
+            |       "firstName" : "Carmel",
+            |       "lastName" : "Settlor"
             |     }
-            |
+            |   }
+            | }
             |}
             |""".stripMargin)
 
@@ -208,27 +206,27 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
         whenReady(processed) {
           result =>
             result mustBe Settlors(settlor = List(
-                            IndividualSettlor(
-                              name = Name("Carmel", None, "Settlor"),
-                              dateOfBirth = None,
-                              identification = None,
-                              address = None,
-                              entityStart = LocalDate.parse("2019-09-23"),
-                              provisional = false
-                            )
-                          ), settlorCompany = List(
-                            BusinessSettlor(
-                              name = "Settlor Org 24",
-                              companyType = Some(CompanyType.Investment),
-                              companyTime = Some(false),
-                              utr = None,
-                              address = None,
-                              entityStart = LocalDate.parse("2019-09-23"),
-                              provisional = false
-                            )
-                          ), deceased = Some(
-                            DeceasedSettlor(Name("Carmel", None, "Settlor"), None, None, None, None))
-                          )
+              IndividualSettlor(
+                name = Name("Carmel", None, "Settlor"),
+                dateOfBirth = None,
+                identification = None,
+                address = None,
+                entityStart = LocalDate.parse("2019-09-23"),
+                provisional = false
+              )
+            ), settlorCompany = List(
+              BusinessSettlor(
+                name = "Settlor Org 24",
+                companyType = Some(CompanyType.Investment),
+                companyTime = Some(false),
+                utr = None,
+                address = None,
+                entityStart = LocalDate.parse("2019-09-23"),
+                provisional = false
+              )
+            ), deceased = Some(
+              DeceasedSettlor(None, Name("Carmel", None, "Settlor"), None, None, None, None))
+            )
         }
 
         application.stop()
@@ -407,6 +405,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       )
 
       val individual = DeceasedSettlor(
+        bpMatchStatus = None,
         name = Name(
           firstName = "First",
           middleName = None,
@@ -443,6 +442,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       )
 
       val individual = DeceasedSettlor(
+        bpMatchStatus = None,
         name = Name(
           firstName = "First",
           middleName = None,

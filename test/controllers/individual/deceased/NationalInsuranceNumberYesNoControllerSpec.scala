@@ -41,7 +41,7 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
   val form = formProvider.withPrefix("deceasedSettlor.nationalInsuranceNumberYesNo")
   val name = Name("FirstName", None, "LastName")
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), TypeOfTrust.WillTrustOrIntestacyTrust, None)
+  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), TypeOfTrust.WillTrustOrIntestacyTrust, None, isDateOfDeathRecorded = true)
     .set(NamePage, name).success.value
 
   lazy val nationalInsuranceNumberYesNoRoute = routes.NationalInsuranceNumberYesNoController.onPageLoad().url

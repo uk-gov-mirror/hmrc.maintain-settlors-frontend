@@ -44,7 +44,7 @@ class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
   val form = formProvider.withPrefix("deceasedSettlor.addressYesNo")
   val name = Name("FirstName", None, "LastName")
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), TypeOfTrust.WillTrustOrIntestacyTrust, None)
+  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), TypeOfTrust.WillTrustOrIntestacyTrust, None, isDateOfDeathRecorded = true)
     .set(NamePage, name).success.value
 
   lazy val addressYesNoControllerRoute = routes.AddressYesNoController.onPageLoad().url

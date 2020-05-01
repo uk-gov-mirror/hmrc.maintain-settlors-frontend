@@ -57,6 +57,7 @@ val appConfig = app.injector.instanceOf[FrontendAppConfig]
   private val startDate = LocalDate.parse("2019-03-09")
 
   private val deceasedSettlor = DeceasedSettlor(
+    bpMatchStatus = None,
     name = Name(
       firstName = "First",
       middleName = None,
