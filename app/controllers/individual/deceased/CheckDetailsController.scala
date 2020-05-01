@@ -17,7 +17,7 @@
 package controllers.individual.deceased
 
 import config.{ErrorHandler, FrontendAppConfig}
-import connectors.TrustConnector
+import connectors.{TrustConnector, TrustStoreConnector}
 import controllers.actions._
 import controllers.actions.individual.deceased.NameRequiredAction
 import extractors.DeceasedSettlorExtractor
@@ -42,6 +42,7 @@ class CheckDetailsController @Inject()(
                                         view: CheckDetailsView,
                                         service: TrustService,
                                         connector: TrustConnector,
+                                        trustStoreConnector: TrustStoreConnector,
                                         val appConfig: FrontendAppConfig,
                                         playbackRepository: PlaybackRepository,
                                         printHelper: DeceasedSettlorPrintHelper,
@@ -85,11 +86,13 @@ class CheckDetailsController @Inject()(
       mapper(request.userAnswers).map {
         deceasedSettlor =>
           connector.amendDeceasedSettlor(request.userAnswers.utr, deceasedSettlor).flatMap(_ =>
-            service.getSettlors(request.userAnswers.utr).map { settlors =>
+            service.getSettlors(request.userAnswers.utr).flatMap { settlors =>
               if (settlors.settlor.isEmpty && settlors.settlorCompany.isEmpty) {
-                Redirect(appConfig.maintainATrustOverview)
+                for {
+                  _ <- trustStoreConnector.setTaskComplete(request.userAnswers.utr)
+                } yield Redirect(appConfig.maintainATrustOverview)
               } else {
-                Redirect(controllers.routes.AddASettlorController.onPageLoad())
+                Future.successful(Redirect(controllers.routes.AddASettlorController.onPageLoad()))
               }
             }
           )
