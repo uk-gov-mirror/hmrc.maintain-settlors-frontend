@@ -31,6 +31,7 @@ final case class UserAnswers(
                               whenTrustSetup: LocalDate,
                               trustType: TypeOfTrust,
                               deedOfVariation: Option[DeedOfVariation],
+                              isDateOfDeathRecorded: Boolean,
                               data: JsObject = Json.obj(),
                               updatedAt: LocalDateTime = LocalDateTime.now
                             ) {
@@ -113,6 +114,7 @@ object UserAnswers {
         (__ \ "whenTrustSetup").read[LocalDate] and
         (__ \ "trustType").read[TypeOfTrust] and
         (__ \ "deedOfVariation").readNullable[DeedOfVariation] and
+        (__ \ "isDateOfDeathRecorded").read[Boolean] and
         (__ \ "data").read[JsObject] and
         (__ \ "updatedAt").read(MongoDateTimeFormats.localDateTimeRead)
       ) (UserAnswers.apply _)
@@ -128,6 +130,7 @@ object UserAnswers {
         (__ \ "whenTrustSetup").write[LocalDate] and
         (__ \ "trustType").write[TypeOfTrust] and
         (__ \ "deedOfVariation").writeNullable[DeedOfVariation] and
+        (__ \ "isDateOfDeathRecorded").write[Boolean] and
         (__ \ "data").write[JsObject] and
         (__ \ "updatedAt").write(MongoDateTimeFormats.localDateTimeWrite)
       ) (unlift(UserAnswers.unapply))

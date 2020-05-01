@@ -26,7 +26,7 @@ import controllers.actions.individual.deceased.NameRequiredAction
 import forms.DateOfDeathFormProvider
 import javax.inject.Inject
 import navigation.Navigator
-import pages.individual.deceased.DateOfDeathPage
+import pages.individual.deceased.{BpMatchStatusPage, DateOfDeathPage}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -77,7 +77,14 @@ class DateOfDeathController @Inject()(
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(DateOfDeathPage, value))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(DateOfDeathPage, updatedAnswers))
+            } yield {
+              updatedAnswers.get(BpMatchStatusPage) match {
+                case Some("01") =>
+                  Redirect(routes.CheckDetails01Controller.renderFromUserAnswers())
+                case _ =>
+                  Redirect(navigator.nextPage(DateOfDeathPage, updatedAnswers))
+              }
+            }
         )
       }
   }

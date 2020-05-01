@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import javax.inject.Inject
 import models.settlors.{BusinessSettlor, DeceasedSettlor, IndividualSettlor, Settlors}
 import models.{RemoveSettlor, TrustDetails}
-import play.api.libs.json.{JsValue, Json, Writes}
+import play.api.libs.json.{JsBoolean, JsValue, Json, Writes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -45,6 +45,12 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
 //  def getDeceasedSettlors(utr: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[DeceasedSettlors] = {
 //    http.GET[DeceasedSettlors](getDeceasedSettlorsUrl(utr))
 //  }
+
+  private def getIsDeceasedSettlorDateOfDeathRecordedUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/transformed/deceased-settlor-death-recorded"
+
+  def getIsDeceasedSettlorDateOfDeathRecorded(utr: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[JsBoolean] = {
+    http.GET[JsBoolean](getIsDeceasedSettlorDateOfDeathRecordedUrl(utr))
+  }
 
   private def addIndividualSettlorUrl(utr: String) = s"${config.trustsUrl}/trusts/add-individual-settlor/$utr"
 

@@ -32,6 +32,7 @@ class DeceasedSettlorMapper {
   def apply(answers: UserAnswers): Option[DeceasedSettlor] = {
     val readFromUserAnswers: Reads[DeceasedSettlor] =
       (
+        BpMatchStatusPage.path.readNullable[String] and
         NamePage.path.read[Name] and
         DateOfBirthPage.path.readNullable[LocalDate] and
         DateOfDeathPage.path.readNullable[LocalDate] and
