@@ -52,28 +52,28 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
     http.POST[JsValue, HttpResponse](addIndividualSettlorUrl(utr), Json.toJson(settlor))
   }
 
-  private def addBusinessSettlorUrl(utr: String) = s"${config.trustsUrl}/trusts/add-business-settlor/$utr"
-
-  def addBusinessSettlor(utr: String, settlor: BusinessSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    http.POST[JsValue, HttpResponse](addBusinessSettlorUrl(utr), Json.toJson(settlor))
-  }
-
   private def amendIndividualSettlorUrl(utr: String, index: Int) = s"${config.trustsUrl}/trusts/amend-individual-settlor/$utr/$index"
 
   def amendIndividualSettlor(utr: String, index: Int, individual: IndividualSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     http.POST[JsValue, HttpResponse](amendIndividualSettlorUrl(utr, index), Json.toJson(individual))(implicitly[Writes[JsValue]], HttpReads.readRaw, hc, ec)
   }
 
-  private def amendDeceasedSettlorUrl(utr: String) = s"${config.trustsUrl}/trusts/amend-deceased-settlor/$utr"
+  private def addBusinessSettlorUrl(utr: String) = s"${config.trustsUrl}/trusts/add-business-settlor/$utr"
 
-  def amendDeceasedSettlor(utr: String, deceasedSettlor: DeceasedSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    http.POST[JsValue, HttpResponse](amendDeceasedSettlorUrl(utr), Json.toJson(deceasedSettlor))(implicitly[Writes[JsValue]], HttpReads.readRaw, hc, ec)
+  def addBusinessSettlor(utr: String, settlor: BusinessSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    http.POST[JsValue, HttpResponse](addBusinessSettlorUrl(utr), Json.toJson(settlor))
   }
 
   private def amendBusinessSettlorUrl(utr: String, index: Int) = s"${config.trustsUrl}/trusts/amend-business-settlor/$utr/$index"
 
   def amendBusinessSettlor(utr: String, index: Int, business: BusinessSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     http.POST[JsValue, HttpResponse](amendBusinessSettlorUrl(utr, index), Json.toJson(business))(implicitly[Writes[JsValue]], HttpReads.readRaw, hc, ec)
+  }
+
+  private def amendDeceasedSettlorUrl(utr: String) = s"${config.trustsUrl}/trusts/amend-deceased-settlor/$utr"
+
+  def amendDeceasedSettlor(utr: String, deceasedSettlor: DeceasedSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    http.POST[JsValue, HttpResponse](amendDeceasedSettlorUrl(utr), Json.toJson(deceasedSettlor))(implicitly[Writes[JsValue]], HttpReads.readRaw, hc, ec)
   }
 
   private def removeSettlorUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/settlors/remove"

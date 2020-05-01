@@ -28,7 +28,7 @@ import models.settlors.{BusinessSettlor, DeceasedSettlor, IndividualSettlor, Set
 import models.{CompanyType, Name, TrustDetails, TypeOfTrust}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsBoolean, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -380,85 +380,116 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
     }
 
-  }
+    "amending a deceasd settlor" must {
 
-  "amending a deceasd settlor" must {
+      def amendDeceasedSettlorUrl(utr: String) =
+        s"/trusts/amend-deceased-settlor/$utr"
 
-    def amendDeceasedSettlorUrl(utr: String) =
-      s"/trusts/amend-deceased-settlor/$utr"
+      "Return OK when the request is successful" in {
 
-    "Return OK when the request is successful" in {
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
 
-      val application = applicationBuilder()
-        .configure(
-          Seq(
-            "microservice.services.trusts.port" -> server.port(),
-            "auditing.enabled" -> false
-          ): _*
-        ).build()
+        val connector = application.injector.instanceOf[TrustConnector]
 
-      val connector = application.injector.instanceOf[TrustConnector]
+        server.stubFor(
+          post(urlEqualTo(amendDeceasedSettlorUrl(utr)))
+            .willReturn(ok)
+        )
 
-      server.stubFor(
-        post(urlEqualTo(amendDeceasedSettlorUrl(utr)))
-          .willReturn(ok)
-      )
+        val individual = DeceasedSettlor(
+          bpMatchStatus = None,
+          name = Name(
+            firstName = "First",
+            middleName = None,
+            lastName = "Last"
+          ),
+          dateOfDeath = None,
+          dateOfBirth = None,
+          identification = None,
+          address = None
+        )
 
-      val individual = DeceasedSettlor(
-        bpMatchStatus = None,
-        name = Name(
-          firstName = "First",
-          middleName = None,
-          lastName = "Last"
-        ),
-        dateOfDeath = None,
-        dateOfBirth = None,
-        identification = None,
-        address = None
-      )
+        val result = connector.amendDeceasedSettlor(utr, individual)
 
-      val result = connector.amendDeceasedSettlor(utr, individual)
+        result.futureValue.status mustBe OK
 
-      result.futureValue.status mustBe OK
+        application.stop()
+      }
 
-      application.stop()
+      "return Bad Request when the request is unsuccessful" in {
+
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustConnector]
+
+        server.stubFor(
+          post(urlEqualTo(amendDeceasedSettlorUrl(utr)))
+            .willReturn(badRequest)
+        )
+
+        val individual = DeceasedSettlor(
+          bpMatchStatus = None,
+          name = Name(
+            firstName = "First",
+            middleName = None,
+            lastName = "Last"
+          ),
+          dateOfDeath = None,
+          dateOfBirth = None,
+          identification = None,
+          address = None
+        )
+
+        val result = connector.amendDeceasedSettlor(utr, individual)
+
+        result.map(response => response.status mustBe BAD_REQUEST)
+
+        application.stop()
+      }
     }
 
-    "return Bad Request when the request is unsuccessful" in {
+    "get whether deceased settlor date of death is known to ETMP" must {
 
-      val application = applicationBuilder()
-        .configure(
-          Seq(
-            "microservice.services.trusts.port" -> server.port(),
-            "auditing.enabled" -> false
-          ): _*
-        ).build()
+      "Return true or false when the request is successful" in {
 
-      val connector = application.injector.instanceOf[TrustConnector]
+        val json = JsBoolean(true)
 
-      server.stubFor(
-        post(urlEqualTo(amendDeceasedSettlorUrl(utr)))
-          .willReturn(badRequest)
-      )
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
 
-      val individual = DeceasedSettlor(
-        bpMatchStatus = None,
-        name = Name(
-          firstName = "First",
-          middleName = None,
-          lastName = "Last"
-        ),
-        dateOfDeath = None,
-        dateOfBirth = None,
-        identification = None,
-        address = None
-      )
+        val connector = application.injector.instanceOf[TrustConnector]
 
-      val result = connector.amendDeceasedSettlor(utr, individual)
+        server.stubFor(
+          get(urlEqualTo(s"/trusts/$utr/transformed/deceased-settlor-death-recorded"))
+            .willReturn(okJson(json.toString))
+        )
 
-      result.map(response => response.status mustBe BAD_REQUEST)
+        val processed = connector.getIsDeceasedSettlorDateOfDeathRecorded(utr)
 
-      application.stop()
+        whenReady(processed) {
+          result =>
+            result.value mustBe true
+        }
+
+        application.stop()
+      }
     }
   }
 }
