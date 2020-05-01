@@ -51,7 +51,14 @@ object DeceasedSettlor {
       (__ \ 'dateOfDeath).writeNullable[LocalDate] and
       (__ \ 'identification).writeNullable[IndividualIdentification] and
       (__ \ 'identification \ 'address).writeNullable[Address]
-      ).apply(unlift(DeceasedSettlor.unapply))
+      ).apply(settlor => (
+      None,
+      settlor.name,
+      settlor.dateOfBirth,
+      settlor.dateOfDeath,
+      settlor.identification,
+      settlor.address
+    ))
 
   def readNullableAtSubPath[T:Reads](subPath : JsPath) : Reads[Option[T]] = Reads (
     _.transform(subPath.json.pick)

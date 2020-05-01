@@ -359,9 +359,7 @@ removeBusinessSettlor.title = Are you sure you want to remove the business settl
 removeBusinessSettlor.heading = Are you sure you want to remove {0}?
 removeBusinessSettlor.error.required = Select yes if you want to remove the business settlor
 
-
-# Adam todo come back to this what should the default be?
-deceasedSettlor.name.default = the individual settlor
+deceasedSettlor.name.default = the will settlor
 
 deceasedSettlor.name.checkYourAnswersLabel = What was the name of the settlor?
 deceasedSettlor.name.title = What was the name of the settlor?

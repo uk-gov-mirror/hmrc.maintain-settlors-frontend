@@ -380,7 +380,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
     }
 
-    "amending a deceasd settlor" must {
+    "amending a deceased settlor" must {
 
       def amendDeceasedSettlorUrl(utr: String) =
         s"/trusts/amend-deceased-settlor/$utr"

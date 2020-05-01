@@ -45,7 +45,7 @@ class DeceasedSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyCheck
 
   val extractor = new DeceasedSettlorExtractor()
 
-  "should populate user answers when an individual has a NINO" in {
+  "should populate user answers when a deceased individual has a NINO" in {
 
     val nino = NationalInsuranceNumber("nino")
 
@@ -60,6 +60,7 @@ class DeceasedSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyCheck
 
     val result = extractor(answers, individual).get
 
+    result.get(BpMatchStatusPage) mustNot be(defined)
     result.get(NamePage).get mustBe name
     result.get(DateOfDeathYesNoPage).get mustBe true
     result.get(DateOfDeathPage).get mustBe dateOfDeath
@@ -73,9 +74,7 @@ class DeceasedSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyCheck
     result.get(NonUkAddressPage) mustNot be(defined)
   }
 
-  "should populate user answers when an individual has no Nino but an Address" in {
-
-    val nino = NationalInsuranceNumber("nino")
+  "should populate user answers when a deceased individual has an address but no NINO" in {
 
     val individual = DeceasedSettlor(
       bpMatchStatus = None,
@@ -88,6 +87,7 @@ class DeceasedSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyCheck
 
     val result = extractor(answers, individual).get
 
+    result.get(BpMatchStatusPage) mustNot be(defined)
     result.get(NamePage).get mustBe name
     result.get(DateOfDeathYesNoPage).get mustBe true
     result.get(DateOfDeathPage).get mustBe dateOfDeath
@@ -101,10 +101,10 @@ class DeceasedSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyCheck
     result.get(NonUkAddressPage) mustNot be(defined)
   }
 
-  "should populate user answers when individual has only a name" in {
+  "should populate user answers when a deceased individual has only a name" in {
 
     val individual = DeceasedSettlor(
-      bpMatchStatus = None,
+      bpMatchStatus = Some("01"),
       name = name,
       dateOfDeath = None,
       dateOfBirth = None,
@@ -114,6 +114,7 @@ class DeceasedSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyCheck
 
     val result = extractor(answers, individual).get
 
+    result.get(BpMatchStatusPage).get mustBe "01"
     result.get(NamePage).get mustBe name
     result.get(DateOfBirthYesNoPage).get mustBe false
     result.get(DateOfBirthPage) mustNot be(defined)

@@ -65,5 +65,5 @@ object Settlors {
     ((__ \ "settlors" \ "settlor").readWithDefault[List[IndividualSettlor]](Nil)
       and (__ \ "settlors" \ "settlorCompany").readWithDefault[List[BusinessSettlor]](Nil)
       and (__ \ "settlors" \ "deceased").readNullable[DeceasedSettlor]
-      ).apply((settlor: List[IndividualSettlor], settlorCompany: List[BusinessSettlor], deceased: Option[DeceasedSettlor]) => Settlors.apply(settlor, settlorCompany, deceased))
+      ).apply(Settlors.apply _)
 }
