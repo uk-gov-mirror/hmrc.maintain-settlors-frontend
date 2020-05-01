@@ -22,7 +22,7 @@ import controllers.actions.individual.deceased.NameRequiredAction
 import forms.YesNoFormProvider
 import javax.inject.Inject
 import navigation.Navigator
-import pages.individual.deceased.DateOfDeathYesNoPage
+import pages.individual.deceased.{BpMatchStatusPage, DateOfDeathPage, DateOfDeathYesNoPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -66,7 +66,14 @@ class DateOfDeathYesNoController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(DateOfDeathYesNoPage, value))
             _              <- playbackRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(DateOfDeathYesNoPage, updatedAnswers))
+          } yield {
+            (value, updatedAnswers.get(BpMatchStatusPage)) match {
+              case (false, Some("01")) =>
+                Redirect(routes.CheckDetails01Controller.renderFromUserAnswers())
+              case _ =>
+                Redirect(navigator.nextPage(DateOfDeathYesNoPage, updatedAnswers))
+            }
+          }
       )
   }
 }

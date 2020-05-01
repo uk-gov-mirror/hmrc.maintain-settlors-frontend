@@ -31,7 +31,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.mappers.DeceasedSettlorMapper
 import utils.print.DeceasedSettlor01PrintHelper
 import viewmodels.AnswerSection
-import views.html.individual.deceased.CheckDetailsView
+import views.html.individual.deceased.CheckDetails01View
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -39,7 +39,7 @@ class CheckDetails01Controller @Inject()(
                                         override val messagesApi: MessagesApi,
                                         standardActionSets: StandardActionSets,
                                         val controllerComponents: MessagesControllerComponents,
-                                        view: CheckDetailsView,
+                                        view: CheckDetails01View,
                                         service: TrustService,
                                         connector: TrustConnector,
                                         trustStoreConnector: TrustStoreConnector,

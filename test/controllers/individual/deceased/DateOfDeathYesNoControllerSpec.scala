@@ -24,7 +24,7 @@ import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.individual.deceased.{DateOfDeathYesNoPage, NamePage}
+import pages.individual.deceased.{BpMatchStatusPage, DateOfDeathYesNoPage, NamePage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -105,6 +105,28 @@ class DateOfDeathYesNoControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+      application.stop()
+    }
+
+    "redirect to check your answers page when NO is submitted and settlor has 01 match status" in {
+
+      val mockPlaybackRepository = mock[PlaybackRepository]
+
+      when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers.set(BpMatchStatusPage, "01").success.value)).build()
+
+      val request =
+        FakeRequest(POST, dateOfDeathYesNoRoute)
+          .withFormUrlEncodedBody(("value", "false"))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual controllers.individual.deceased.routes.CheckDetails01Controller.renderFromUserAnswers().url
 
       application.stop()
     }

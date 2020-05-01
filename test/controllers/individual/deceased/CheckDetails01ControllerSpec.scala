@@ -34,17 +34,17 @@ import play.api.test.Helpers._
 import services.TrustService
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.http.HttpResponse
-import utils.print.DeceasedSettlorPrintHelper
-import views.html.individual.deceased.CheckDetailsView
+import utils.print.DeceasedSettlor01PrintHelper
+import views.html.individual.deceased.CheckDetails01View
 
 import scala.concurrent.Future
 
-class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
+class CheckDetails01ControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
 val appConfig = app.injector.instanceOf[FrontendAppConfig]
 
-  private lazy val checkDetailsRoute = routes.CheckDetailsController.extractAndRender().url
-  private lazy val submitDetailsRoute = routes.CheckDetailsController.onSubmit().url
+  private lazy val checkDetailsRoute = routes.CheckDetails01Controller.extractAndRender().url
+  private lazy val submitDetailsRoute = routes.CheckDetails01Controller.onSubmit().url
 
   private lazy val onwardRoute = controllers.routes.AddASettlorController.onPageLoad().url
   private lazy val finishedRoute = appConfig.maintainATrustOverview
@@ -108,9 +108,9 @@ val appConfig = app.injector.instanceOf[FrontendAppConfig]
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[CheckDetailsView]
-      val printHelper = application.injector.instanceOf[DeceasedSettlorPrintHelper]
-      val answerSection = printHelper(userAnswers, name.displayName)
+      val view = application.injector.instanceOf[CheckDetails01View]
+      val printHelper = application.injector.instanceOf[DeceasedSettlor01PrintHelper]
+      val answerSection = printHelper(userAnswers, name.displayName, isDateOfDeathRecorded = true)
 
       status(result) mustEqual OK
 
@@ -142,6 +142,7 @@ val appConfig = app.injector.instanceOf[FrontendAppConfig]
 
       application.stop()
     }
+
     "redirect to 'maintain a trust overview' when submitted if there are no other settlors" in {
 
       val mockTrustConnector = mock[TrustConnector]
