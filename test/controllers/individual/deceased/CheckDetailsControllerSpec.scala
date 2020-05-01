@@ -152,6 +152,7 @@ val appConfig = app.injector.instanceOf[FrontendAppConfig]
         applicationBuilder(userAnswers = Some(userAnswers), affinityGroup = Agent)
           .overrides(bind[TrustConnector].toInstance(mockTrustConnector))
           .overrides(bind[TrustService].toInstance(mockTrustService))
+          .overrides(bind[TrustStoreConnector].toInstance(mockTrustStoreConnector))
           .build()
 
       when(mockTrustConnector.amendDeceasedSettlor(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
