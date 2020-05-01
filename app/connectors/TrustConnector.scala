@@ -40,12 +40,6 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
     http.GET[Settlors](getSettlorsUrl(utr))
   }
 
-//  private def getDeceasedSettlorsUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/transformed/deceased-settlors"
-//
-//  def getDeceasedSettlors(utr: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[DeceasedSettlors] = {
-//    http.GET[DeceasedSettlors](getDeceasedSettlorsUrl(utr))
-//  }
-
   private def addIndividualSettlorUrl(utr: String) = s"${config.trustsUrl}/trusts/add-individual-settlor/$utr"
 
   def addIndividualSettlor(utr: String, settlor: IndividualSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
