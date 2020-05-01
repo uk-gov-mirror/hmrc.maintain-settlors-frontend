@@ -29,7 +29,7 @@ class StringFormProvider @Inject() extends Mappings {
           firstError(
             nonEmptyString("value", s"$prefix.error.required"),
             maxLength(length, s"$prefix.error.length"),
-            regexp(Validation.nameRegex, s"$prefix.error.invalidFormat")
+            regexp(Validation.nameRegex, s"$prefix.error.invalid")
           )
         )
     )
