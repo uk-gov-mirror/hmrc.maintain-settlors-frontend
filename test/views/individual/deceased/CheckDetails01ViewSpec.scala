@@ -26,7 +26,7 @@ class CheckDetails01ViewSpec extends ViewBehaviours {
   val messageKeyPrefix = "deceasedSettlor.checkDetails"
 
   "CheckDetails view" must {
-    
+
     val view = viewFor[CheckDetails01View](Some(emptyUserAnswers))
 
     def applyView(): HtmlFormat.Appendable =
