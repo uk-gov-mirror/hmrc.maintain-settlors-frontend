@@ -64,13 +64,14 @@ class CheckDetailsController @Inject()(
     implicit request =>
 
       service.getDeceasedSettlor(request.userAnswers.utr) flatMap {
-        maybeDeceasedSettlor =>
+        case Some(deceasedSettlor) =>
           for {
-            extractedF <- Future.fromTry(extractor(request.userAnswers, maybeDeceasedSettlor.get))
+            extractedF <- Future.fromTry(extractor(request.userAnswers, deceasedSettlor))
             _ <- playbackRepository.set(extractedF)
           } yield {
-              render(extractedF, maybeDeceasedSettlor.get.name.displayName)
+              render(extractedF, deceasedSettlor.name.displayName)
           }
+        case None => throw new Exception("Deceased Settlor Information not found")
       }
   }
 
