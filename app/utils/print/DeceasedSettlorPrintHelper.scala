@@ -31,10 +31,10 @@ class DeceasedSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverte
 
     val bound = answerRowConverter.bind(userAnswers, settlorName, countryOptions)
 
-    userAnswers.get(BpMatchStatusPage) match {
-      case Some("01") =>
-        AnswerSection(
-          None,
+    AnswerSection(
+      None,
+      (userAnswers.get(BpMatchStatusPage) match {
+        case Some("01") =>
           Seq(
             bound.nameQuestion(NamePage, "deceasedSettlor.name", None),
             bound.yesNoQuestion(DateOfDeathYesNoPage, "deceasedSettlor.dateOfDeathYesNo", if (userAnswers.isDateOfDeathRecorded) None else Some(controllers.individual.deceased.routes.DateOfDeathYesNoController.onPageLoad().url)),
@@ -47,11 +47,8 @@ class DeceasedSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverte
             bound.yesNoQuestion(LivedInTheUkYesNoPage, "deceasedSettlor.liveInTheUkYesNo", None),
             bound.addressQuestion(UkAddressPage, "deceasedSettlor.ukAddress", None),
             bound.addressQuestion(NonUkAddressPage, "deceasedSettlor.nonUkAddress", None)
-          ).flatten
-        )
-      case _ =>
-        AnswerSection(
-          None,
+          )
+        case _ =>
           Seq(
             bound.nameQuestion(NamePage, "deceasedSettlor.name", Some(controllers.individual.deceased.routes.NameController.onPageLoad().url)),
             bound.yesNoQuestion(DateOfDeathYesNoPage, "deceasedSettlor.dateOfDeathYesNo", Some(controllers.individual.deceased.routes.DateOfDeathYesNoController.onPageLoad().url)),
@@ -64,8 +61,8 @@ class DeceasedSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverte
             bound.yesNoQuestion(LivedInTheUkYesNoPage, "deceasedSettlor.liveInTheUkYesNo", Some(controllers.individual.deceased.routes.LivedInTheUkYesNoController.onPageLoad().url)),
             bound.addressQuestion(UkAddressPage, "deceasedSettlor.ukAddress", Some(controllers.individual.deceased.routes.UkAddressController.onPageLoad().url)),
             bound.addressQuestion(NonUkAddressPage, "deceasedSettlor.nonUkAddress", Some(controllers.individual.deceased.routes.NonUkAddressController.onPageLoad().url))
-          ).flatten
-        )
-    }
+          )
+      }).flatten
+    )
   }
 }
