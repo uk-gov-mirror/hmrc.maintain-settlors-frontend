@@ -30,7 +30,12 @@ class CheckDetailsViewSpec extends ViewBehaviours {
     val view = viewFor[CheckDetailsView](Some(emptyUserAnswers))
 
     def applyView(): HtmlFormat.Appendable =
-      view.apply(AnswerSection(None, Seq()))(fakeRequest, messages)
+      view.apply(
+        AnswerSection(None, Seq()),
+        "Name",
+        is01MatchStatus = true,
+        isDateOfDeathRecorded = true
+      )(fakeRequest, messages)
 
     behave like normalPage(applyView(), messageKeyPrefix)
 

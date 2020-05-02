@@ -23,6 +23,7 @@ import controllers.actions.individual.deceased.NameRequiredAction
 import extractors.DeceasedSettlorExtractor
 import javax.inject.Inject
 import models.UserAnswers
+import pages.individual.deceased.BpMatchStatusPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import repositories.PlaybackRepository
@@ -54,7 +55,15 @@ class CheckDetailsController @Inject()(
 
   private def render(userAnswers: UserAnswers, name: String)(implicit request: Request[AnyContent]): Result = {
     val section: AnswerSection = printHelper(userAnswers, name)
-    Ok(view(section))
+    Ok(view(
+      section,
+      name,
+      userAnswers.get(BpMatchStatusPage) match {
+        case Some("01") => true
+        case _ => false
+      },
+      userAnswers.isDateOfDeathRecorded
+    ))
   }
 
   def extractAndRender(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {

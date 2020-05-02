@@ -444,3 +444,5 @@ deceasedSettlor.nonUkAddress.heading = What was {0}’s address?
 
 deceasedSettlor.checkDetails.title = Check will settlor details
 deceasedSettlor.checkDetails.heading = Check will settlor details
+deceasedSettlor.checkDetails.p1 = You cannot change these details as they are based on {0}’s will.
+deceasedSettlor.checkDetails.p2 = You can only add {0}’s date of death. After this date has been declared, no more changes can be made.
