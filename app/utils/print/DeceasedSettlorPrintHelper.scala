@@ -44,7 +44,7 @@ class DeceasedSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverte
             bound.yesNoQuestion(NationalInsuranceNumberYesNoPage, "deceasedSettlor.nationalInsuranceNumberYesNo", None),
             bound.ninoQuestion(NationalInsuranceNumberPage, "deceasedSettlor.nationalInsuranceNumber", None),
             bound.yesNoQuestion(AddressYesNoPage, "deceasedSettlor.addressYesNo", None),
-            bound.yesNoQuestion(LivedInTheUkYesNoPage, "deceasedSettlor.liveInTheUkYesNo", None),
+            bound.yesNoQuestion(LivedInTheUkYesNoPage, "deceasedSettlor.livedInTheUkYesNo", None),
             bound.addressQuestion(UkAddressPage, "deceasedSettlor.ukAddress", None),
             bound.addressQuestion(NonUkAddressPage, "deceasedSettlor.nonUkAddress", None)
           )
@@ -58,7 +58,7 @@ class DeceasedSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverte
             bound.yesNoQuestion(NationalInsuranceNumberYesNoPage, "deceasedSettlor.nationalInsuranceNumberYesNo", Some(controllers.individual.deceased.routes.NationalInsuranceNumberYesNoController.onPageLoad().url)),
             bound.ninoQuestion(NationalInsuranceNumberPage, "deceasedSettlor.nationalInsuranceNumber", Some(controllers.individual.deceased.routes.NationalInsuranceNumberYesNoController.onPageLoad().url)),
             bound.yesNoQuestion(AddressYesNoPage, "deceasedSettlor.addressYesNo", Some(controllers.individual.deceased.routes.AddressYesNoController.onPageLoad().url)),
-            bound.yesNoQuestion(LivedInTheUkYesNoPage, "deceasedSettlor.liveInTheUkYesNo", Some(controllers.individual.deceased.routes.LivedInTheUkYesNoController.onPageLoad().url)),
+            bound.yesNoQuestion(LivedInTheUkYesNoPage, "deceasedSettlor.livedInTheUkYesNo", Some(controllers.individual.deceased.routes.LivedInTheUkYesNoController.onPageLoad().url)),
             bound.addressQuestion(UkAddressPage, "deceasedSettlor.ukAddress", Some(controllers.individual.deceased.routes.UkAddressController.onPageLoad().url)),
             bound.addressQuestion(NonUkAddressPage, "deceasedSettlor.nonUkAddress", Some(controllers.individual.deceased.routes.NonUkAddressController.onPageLoad().url))
           )
