@@ -24,6 +24,7 @@ import controllers.actions.StandardActionSets
 import controllers.actions.individual.deceased.NameRequiredAction
 import forms.DateOfDeathFormProvider
 import javax.inject.Inject
+import models.BpMatchStatus.FullyMatched
 import navigation.Navigator
 import pages.individual.deceased.{BpMatchStatusPage, DateOfDeathPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -77,7 +78,7 @@ class DateOfDeathController @Inject()(
               _ <- sessionRepository.set(updatedAnswers)
             } yield {
               updatedAnswers.get(BpMatchStatusPage) match {
-                case Some("01") =>
+                case Some(FullyMatched) =>
                   Redirect(routes.CheckDetailsController.renderFromUserAnswers())
                 case _ =>
                   Redirect(navigator.nextPage(DateOfDeathPage, updatedAnswers))

@@ -22,6 +22,7 @@ import base.SpecBase
 import config.annotations.DeceasedSettlor
 import connectors.TrustConnector
 import forms.DateOfDeathFormProvider
+import models.BpMatchStatus.FullyMatched
 import models.{Name, TrustDetails, TypeOfTrust}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
@@ -170,7 +171,7 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
         )))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers.set(BpMatchStatusPage, "01").success.value))
+        applicationBuilder(userAnswers = Some(emptyUserAnswers.set(BpMatchStatusPage, FullyMatched).success.value))
           .overrides(
             bind[TrustConnector].toInstance(mockTrustConnector)
           )

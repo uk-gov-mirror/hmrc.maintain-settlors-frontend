@@ -19,8 +19,9 @@ package extractors
 import java.time.LocalDate
 
 import generators.ModelGenerators
+import models.BpMatchStatus.FullyMatched
 import models.settlors.DeceasedSettlor
-import models.{CombinedPassportOrIdCard, Name, NationalInsuranceNumber, TypeOfTrust, UkAddress, UserAnswers}
+import models.{Name, NationalInsuranceNumber, TypeOfTrust, UkAddress, UserAnswers}
 import org.scalatest.{FreeSpec, MustMatchers}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.individual.deceased._
@@ -104,7 +105,7 @@ class DeceasedSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyCheck
   "should populate user answers when a deceased individual has only a name" in {
 
     val individual = DeceasedSettlor(
-      bpMatchStatus = Some("01"),
+      bpMatchStatus = Some(FullyMatched),
       name = name,
       dateOfDeath = None,
       dateOfBirth = None,
@@ -114,7 +115,7 @@ class DeceasedSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyCheck
 
     val result = extractor(answers, individual).get
 
-    result.get(BpMatchStatusPage).get mustBe "01"
+    result.get(BpMatchStatusPage).get mustBe FullyMatched
     result.get(NamePage).get mustBe name
     result.get(DateOfBirthYesNoPage).get mustBe false
     result.get(DateOfBirthPage) mustNot be(defined)

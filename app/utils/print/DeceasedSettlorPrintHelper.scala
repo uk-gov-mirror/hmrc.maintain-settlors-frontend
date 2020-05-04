@@ -17,6 +17,7 @@
 package utils.print
 
 import com.google.inject.Inject
+import models.BpMatchStatus.FullyMatched
 import models.UserAnswers
 import pages.individual.deceased._
 import play.api.i18n.Messages
@@ -34,7 +35,7 @@ class DeceasedSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverte
     AnswerSection(
       None,
       (userAnswers.get(BpMatchStatusPage) match {
-        case Some("01") =>
+        case Some(FullyMatched) =>
           Seq(
             bound.nameQuestion(NamePage, "deceasedSettlor.name", None),
             bound.yesNoQuestion(DateOfDeathYesNoPage, "deceasedSettlor.dateOfDeathYesNo", if (userAnswers.isDateOfDeathRecorded) None else Some(controllers.individual.deceased.routes.DateOfDeathYesNoController.onPageLoad().url)),

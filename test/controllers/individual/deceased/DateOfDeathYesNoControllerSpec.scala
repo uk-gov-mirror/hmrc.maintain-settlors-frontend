@@ -19,6 +19,7 @@ package controllers.individual.deceased
 import base.SpecBase
 import config.annotations.DeceasedSettlor
 import forms.YesNoFormProvider
+import models.BpMatchStatus.FullyMatched
 import models.Name
 import navigation.Navigator
 import org.mockito.Matchers.any
@@ -116,7 +117,7 @@ class DateOfDeathYesNoControllerSpec extends SpecBase with MockitoSugar {
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers.set(BpMatchStatusPage, "01").success.value)).build()
+        applicationBuilder(userAnswers = Some(emptyUserAnswers.set(BpMatchStatusPage, FullyMatched).success.value)).build()
 
       val request =
         FakeRequest(POST, dateOfDeathYesNoRoute)

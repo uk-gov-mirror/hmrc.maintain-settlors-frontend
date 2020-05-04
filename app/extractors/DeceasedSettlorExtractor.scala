@@ -18,7 +18,7 @@ package extractors
 
 import com.google.inject.Inject
 import models.settlors.DeceasedSettlor
-import models.{Address, NationalInsuranceNumber, NonUkAddress, UkAddress, UserAnswers}
+import models.{Address, BpMatchStatus, NationalInsuranceNumber, NonUkAddress, UkAddress, UserAnswers}
 import pages.individual.deceased._
 
 import scala.util.{Success, Try}
@@ -34,7 +34,7 @@ class DeceasedSettlorExtractor @Inject()() {
       .flatMap(answers => extractAddress(settlor.address, answers))
       .flatMap(answers => extractIdentification(settlor, answers))
 
-  private def extractBpMatchStatus(bpMatchStatus: Option[String], answers: UserAnswers): Try[UserAnswers] = {
+  private def extractBpMatchStatus(bpMatchStatus: Option[BpMatchStatus], answers: UserAnswers): Try[UserAnswers] = {
     bpMatchStatus match {
       case Some(matchStatus) =>
         answers.set(BpMatchStatusPage, matchStatus)
