@@ -18,11 +18,11 @@ package models.settlors
 
 import java.time.LocalDate
 
-import models.{Address, IndividualIdentification, Name}
+import models.{Address, BpMatchStatus, IndividualIdentification, Name}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-final case class DeceasedSettlor(bpMatchStatus: Option[String],
+final case class DeceasedSettlor(bpMatchStatus: Option[BpMatchStatus],
                                  name: Name,
                                  dateOfBirth: Option[LocalDate],
                                  dateOfDeath: Option[LocalDate],
@@ -32,7 +32,7 @@ final case class DeceasedSettlor(bpMatchStatus: Option[String],
 object DeceasedSettlor {
 
   implicit val reads: Reads[DeceasedSettlor] =
-    ((__ \ 'bpMatchStatus).readNullable[String] and
+    ((__ \ 'bpMatchStatus).readNullable[BpMatchStatus] and
       (__ \ 'name).read[Name] and
       (__ \ 'dateOfBirth).readNullable[LocalDate] and
       (__ \ 'dateOfDeath).readNullable[LocalDate] and
@@ -45,7 +45,7 @@ object DeceasedSettlor {
     }
 
   implicit val writes: Writes[DeceasedSettlor] =
-    ((__ \ 'bpMatchStatus).writeNullable[String] and
+    ((__ \ 'bpMatchStatus).writeNullable[BpMatchStatus] and
       (__ \ 'name).write[Name] and
       (__ \ 'dateOfBirth).writeNullable[LocalDate] and
       (__ \ 'dateOfDeath).writeNullable[LocalDate] and

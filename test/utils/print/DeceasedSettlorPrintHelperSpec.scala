@@ -19,7 +19,8 @@ package utils.print
 import java.time.LocalDate
 
 import base.SpecBase
-import models.{Name, NonUkAddress, TypeOfTrust, UkAddress, UserAnswers}
+import models.BpMatchStatus.{FailedToMatch, FullyMatched}
+import models.{BpMatchStatus, Name, NonUkAddress, TypeOfTrust, UkAddress, UserAnswers}
 import pages.individual.deceased._
 import play.twirl.api.Html
 import viewmodels.{AnswerRow, AnswerSection}
@@ -30,7 +31,7 @@ class DeceasedSettlorPrintHelperSpec extends SpecBase {
   private val ukAddress = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
   private val nonUkAddress = NonUkAddress("value 1", "value 2", None, "DE")
 
-  private def fillUserAnswers(bpMatchStatus: String,
+  private def fillUserAnswers(bpMatchStatus: BpMatchStatus,
                               isDateOfDeathRecorded: Boolean
                              ): UserAnswers = {
 
@@ -64,7 +65,7 @@ class DeceasedSettlorPrintHelperSpec extends SpecBase {
 
       val helper = injector.instanceOf[DeceasedSettlorPrintHelper]
 
-      val userAnswers = fillUserAnswers("99", isDateOfDeathRecorded = true)
+      val userAnswers = fillUserAnswers(FailedToMatch, isDateOfDeathRecorded = true)
 
       val result = helper(userAnswers, name.displayName)
       result mustBe AnswerSection(
@@ -89,7 +90,7 @@ class DeceasedSettlorPrintHelperSpec extends SpecBase {
 
       val helper = injector.instanceOf[DeceasedSettlorPrintHelper]
 
-      val userAnswers = fillUserAnswers("01", isDateOfDeathRecorded = true)
+      val userAnswers = fillUserAnswers(FullyMatched, isDateOfDeathRecorded = true)
 
       val result = helper(userAnswers, name.displayName)
       result mustBe AnswerSection(
@@ -114,7 +115,7 @@ class DeceasedSettlorPrintHelperSpec extends SpecBase {
 
       val helper = injector.instanceOf[DeceasedSettlorPrintHelper]
 
-      val userAnswers = fillUserAnswers("01", isDateOfDeathRecorded = false)
+      val userAnswers = fillUserAnswers(FullyMatched, isDateOfDeathRecorded = false)
 
       val result = helper(userAnswers, name.displayName)
       result mustBe AnswerSection(

@@ -14,15 +14,24 @@
  * limitations under the License.
  */
 
-package pages.individual.deceased
+package models
 
-import models.BpMatchStatus
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+sealed trait BpMatchStatus
 
-case object BpMatchStatusPage extends QuestionPage[BpMatchStatus] {
+object BpMatchStatus extends Enumerable.Implicits {
 
-  override def path: JsPath = basePath \ toString
+  case object FullyMatched extends WithName("01") with BpMatchStatus
+  case object Unmatched extends WithName("02") with BpMatchStatus
+  case object NoMatchAttempted extends WithName("98") with BpMatchStatus
+  case object FailedToMatch extends WithName("99") with BpMatchStatus
 
-  override def toString: String = "bpMatchStatus"
+  val values: Set[BpMatchStatus] = Set(
+    FullyMatched,
+    Unmatched,
+    NoMatchAttempted,
+    FailedToMatch
+  )
+
+  implicit val enumerable: Enumerable[BpMatchStatus] =
+    Enumerable(values.toSeq.map(v => v.toString -> v): _*)
 }

@@ -19,12 +19,13 @@ package utils.mappers
 import java.time.LocalDate
 
 import base.SpecBase
-import models.{IdCard, Name, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress}
+import models.BpMatchStatus.FullyMatched
+import models.{Name, NationalInsuranceNumber, NonUkAddress, UkAddress}
 import pages.individual.deceased._
 
 class DeceasedSettlorMapperSpec extends SpecBase {
 
-  private val bpMatchStatus = "01"
+  private val bpMatchStatus = FullyMatched
   private val name = Name("First", None, "Last")
   private val dateOfDeath = LocalDate.parse("2011-02-03")
   private val dateOfBirth = LocalDate.parse("2010-02-03")

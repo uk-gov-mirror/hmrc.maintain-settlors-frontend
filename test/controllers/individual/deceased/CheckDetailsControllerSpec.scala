@@ -21,8 +21,9 @@ import java.time.LocalDate
 import base.SpecBase
 import config.FrontendAppConfig
 import connectors.{TrustConnector, TrustStoreConnector}
+import models.BpMatchStatus.{FailedToMatch, FullyMatched}
 import models.settlors.{DeceasedSettlor, IndividualSettlor, Settlors}
-import models.{Name, NationalInsuranceNumber, TypeOfTrust, UserAnswers}
+import models.{BpMatchStatus, Name, NationalInsuranceNumber, TypeOfTrust, UserAnswers}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -68,7 +69,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
     provisional = false
   )
 
-  private def userAnswers(bpMatchStatus: String = "01",
+  private def userAnswers(bpMatchStatus: BpMatchStatus = FullyMatched,
                       isDateOfDeathRecorded: Boolean = true
                      ): UserAnswers = {
 
@@ -92,7 +93,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       .set(NationalInsuranceNumberPage, nino).success.value
   }
 
-  private def deceasedSettlor(matchStatus: String = "01") = DeceasedSettlor(
+  private def deceasedSettlor(matchStatus: BpMatchStatus = FullyMatched) = DeceasedSettlor(
     bpMatchStatus = Some(matchStatus),
     name = name,
     dateOfDeath = Some(dateOfDeath),
@@ -107,7 +108,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       "01 match status and date of death is known to ETMP" in {
 
-        val matchStatus = "01"
+        val matchStatus = FullyMatched
 
         val ua = userAnswers(matchStatus)
 
@@ -143,7 +144,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       "01 match status and date of death is not known to ETMP" in {
 
-        val matchStatus = "01"
+        val matchStatus = FullyMatched
 
         val ua = userAnswers(matchStatus, isDateOfDeathRecorded = false)
 
@@ -179,7 +180,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       "not a 01 match status" in {
 
-        val matchStatus = "99"
+        val matchStatus = FailedToMatch
 
         val ua = userAnswers(matchStatus)
 

@@ -21,6 +21,7 @@ import java.time.LocalDate
 import base.SpecBase
 import connectors.TrustStoreConnector
 import forms.AddASettlorFormProvider
+import models.BpMatchStatus.FullyMatched
 import models.settlors.{BusinessSettlor, DeceasedSettlor, IndividualSettlor, Settlors}
 import models.{AddASettlor, CompanyType, Name, NationalInsuranceNumber, RemoveSettlor}
 import org.mockito.Matchers.any
@@ -385,7 +386,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
       "redirect to check details controller" in {
 
         val deceasedSettlor = DeceasedSettlor(
-          bpMatchStatus = Some("01"),
+          bpMatchStatus = Some(FullyMatched),
           name = Name(firstName = "Some", middleName = None, lastName = "One"),
           dateOfDeath = Some(LocalDate.parse("1993-09-24")),
           dateOfBirth = Some(LocalDate.parse("1983-09-24")),

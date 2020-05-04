@@ -22,6 +22,7 @@ import controllers.actions._
 import controllers.actions.individual.deceased.NameRequiredAction
 import extractors.DeceasedSettlorExtractor
 import javax.inject.Inject
+import models.BpMatchStatus.FullyMatched
 import models.UserAnswers
 import pages.individual.deceased.BpMatchStatusPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -59,7 +60,7 @@ class CheckDetailsController @Inject()(
       section,
       name,
       userAnswers.get(BpMatchStatusPage) match {
-        case Some("01") => true
+        case Some(FullyMatched) => true
         case _ => false
       },
       userAnswers.isDateOfDeathRecorded

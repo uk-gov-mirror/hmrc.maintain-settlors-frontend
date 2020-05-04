@@ -19,7 +19,7 @@ package utils.mappers
 import java.time.LocalDate
 
 import models.settlors.DeceasedSettlor
-import models.{Address, IndividualIdentification, Name, NationalInsuranceNumber, NonUkAddress, UkAddress, UserAnswers}
+import models.{Address, BpMatchStatus, IndividualIdentification, Name, NationalInsuranceNumber, NonUkAddress, UkAddress, UserAnswers}
 import org.slf4j.LoggerFactory
 import pages.individual.deceased._
 import play.api.libs.functional.syntax._
@@ -32,7 +32,7 @@ class DeceasedSettlorMapper {
   def apply(answers: UserAnswers): Option[DeceasedSettlor] = {
     val readFromUserAnswers: Reads[DeceasedSettlor] =
       (
-        BpMatchStatusPage.path.readNullable[String] and
+        BpMatchStatusPage.path.readNullable[BpMatchStatus] and
         NamePage.path.read[Name] and
         DateOfBirthPage.path.readNullable[LocalDate] and
         DateOfDeathPage.path.readNullable[LocalDate] and
