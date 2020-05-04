@@ -38,19 +38,26 @@ class IndexController @Inject()(
 
     identifierAction.async {
       implicit request =>
-        (for {
+        for {
           details <- connector.getTrustDetails(utr)
+          allSettlors <- connector.getSettlors(utr)
           isDateOfDeathRecorded <- connector.getIsDeceasedSettlorDateOfDeathRecorded(utr)
           _ <- repo.set(UserAnswers(
-            internalAuthId = request.user.internalId,
-            utr = utr,
-            whenTrustSetup = details.startDate,
-            trustType = details.typeOfTrust,
-            deedOfVariation = details.deedOfVariation,
-            isDateOfDeathRecorded = isDateOfDeathRecorded.value
-          ))
+              internalAuthId = request.user.internalId,
+              utr = utr,
+              whenTrustSetup = details.startDate,
+              trustType = details.typeOfTrust,
+              deedOfVariation = details.deedOfVariation,
+              isDateOfDeathRecorded = isDateOfDeathRecorded.value
+            ))
         } yield {
-          Redirect(controllers.routes.AddASettlorController.onPageLoad())
-        }).recover {case _ => InternalServerError}
+          val combined = allSettlors.settlor ::: allSettlors.settlorCompany
+
+          if (combined.nonEmpty) {
+            Redirect(controllers.routes.AddASettlorController.onPageLoad())
+          } else {
+            Redirect(controllers.individual.deceased.routes.CheckDetailsController.extractAndRender())
+          }
+        }
     }
 }
