@@ -18,7 +18,6 @@ package controllers.individual.deceased
 
 import java.time.LocalDate
 
-import config.ErrorHandler
 import config.annotations.DeceasedSettlor
 import connectors.TrustConnector
 import controllers.actions.StandardActionSets
@@ -26,8 +25,7 @@ import controllers.actions.individual.deceased.NameRequiredAction
 import forms.DateOfDeathFormProvider
 import javax.inject.Inject
 import navigation.Navigator
-import pages.individual.deceased.DateOfDeathPage
-import play.api.Logger
+import pages.individual.deceased.{BpMatchStatusPage, DateOfDeathPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -77,7 +75,14 @@ class DateOfDeathController @Inject()(
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(DateOfDeathPage, value))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(DateOfDeathPage, updatedAnswers))
+            } yield {
+              updatedAnswers.get(BpMatchStatusPage) match {
+                case Some("01") =>
+                  Redirect(routes.CheckDetailsController.renderFromUserAnswers())
+                case _ =>
+                  Redirect(navigator.nextPage(DateOfDeathPage, updatedAnswers))
+              }
+            }
         )
       }
   }

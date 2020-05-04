@@ -45,7 +45,7 @@ class AddNowControllerSpec extends SpecBase with MockitoSugar {
   val mockTrustService: TrustService = mock[TrustService]
 
   when(mockTrustService.getSettlors(any())(any(), any()))
-    .thenReturn(Future.successful(Settlors(Nil, Nil)))
+    .thenReturn(Future.successful(Settlors(Nil, Nil, None)))
 
   val values: List[TypeOfSettlorToAdd] = List(
     Individual, Business

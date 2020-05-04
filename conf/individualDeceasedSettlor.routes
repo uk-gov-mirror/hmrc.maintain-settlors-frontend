@@ -2,17 +2,17 @@
 GET        /change-name                                     controllers.individual.deceased.NameController.onPageLoad()
 POST       /change-name                                     controllers.individual.deceased.NameController.onSubmit()
 
+GET        /change-know-date-of-death                       controllers.individual.deceased.DateOfDeathYesNoController.onPageLoad()
+POST       /change-know-date-of-death                       controllers.individual.deceased.DateOfDeathYesNoController.onSubmit()
+
+GET        /change-date-of-death                            controllers.individual.deceased.DateOfDeathController.onPageLoad()
+POST       /change-date-of-death                            controllers.individual.deceased.DateOfDeathController.onSubmit()
+
 GET        /change-know-date-of-birth                       controllers.individual.deceased.DateOfBirthYesNoController.onPageLoad()
 POST       /change-know-date-of-birth                       controllers.individual.deceased.DateOfBirthYesNoController.onSubmit()
 
 GET        /change-date-of-birth                            controllers.individual.deceased.DateOfBirthController.onPageLoad()
 POST       /change-date-of-birth                            controllers.individual.deceased.DateOfBirthController.onSubmit()
-
-GET        /change-know-date-of-death                              controllers.individual.deceased.DateOfDeathYesNoController.onPageLoad()
-POST       /change-know-date-of-death                              controllers.individual.deceased.DateOfDeathYesNoController.onSubmit()
-
-GET        /change-date-of-death                            controllers.individual.deceased.DateOfDeathController.onPageLoad()
-POST       /change-date-of-death                            controllers.individual.deceased.DateOfDeathController.onSubmit()
 
 GET        /change-has-national-insurance-number            controllers.individual.deceased.NationalInsuranceNumberYesNoController.onPageLoad()
 POST       /change-has-national-insurance-number            controllers.individual.deceased.NationalInsuranceNumberYesNoController.onSubmit()
@@ -32,4 +32,6 @@ POST       /change-uk-address                               controllers.individu
 GET        /change-non-uk-address                           controllers.individual.deceased.NonUkAddressController.onPageLoad()
 POST       /change-non-uk-address                           controllers.individual.deceased.NonUkAddressController.onSubmit()
 
-
+GET        /check-details                                   controllers.individual.deceased.CheckDetailsController.extractAndRender()
+GET        /updated-details                                 controllers.individual.deceased.CheckDetailsController.renderFromUserAnswers()
+POST       /check-details                                   controllers.individual.deceased.CheckDetailsController.onSubmit()

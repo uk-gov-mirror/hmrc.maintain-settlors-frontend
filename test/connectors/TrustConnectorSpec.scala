@@ -24,11 +24,11 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import generators.Generators
 import models.DeedOfVariation.PreviouslyAbsoluteInterestUnderWill
-import models.settlors.{BusinessSettlor, IndividualSettlor, Settlors}
+import models.settlors.{BusinessSettlor, DeceasedSettlor, IndividualSettlor, Settlors}
 import models.{CompanyType, Name, TrustDetails, TypeOfTrust}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsBoolean, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -139,10 +139,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
         whenReady(processed) {
           result =>
-            result mustBe Settlors(
-              settlor = Nil,
-              settlorCompany = Nil
-            )
+            result mustBe Settlors(settlor = Nil, settlorCompany = Nil, None)
         }
 
         application.stop()
@@ -178,7 +175,13 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
             |       "companyTime" : false,
             |       "entityStart" : "2019-09-23"
             |     }
-            |   ]
+            |   ],
+            |   "deceased" : {
+            |     "name" : {
+            |       "firstName" : "Carmel",
+            |       "lastName" : "Settlor"
+            |     }
+            |   }
             | }
             |}
             |""".stripMargin)
@@ -202,28 +205,27 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
         whenReady(processed) {
           result =>
-            result mustBe Settlors(
-              settlor = List(
-                IndividualSettlor(
-                  name = Name("Carmel", None, "Settlor"),
-                  dateOfBirth = None,
-                  identification = None,
-                  address = None,
-                  entityStart = LocalDate.parse("2019-09-23"),
-                  provisional = false
-                )
-              ),
-              settlorCompany = List(
-                BusinessSettlor(
-                  name = "Settlor Org 24",
-                  companyType = Some(CompanyType.Investment),
-                  companyTime = Some(false),
-                  utr = None,
-                  address = None,
-                  entityStart = LocalDate.parse("2019-09-23"),
-                  provisional = false
-                )
+            result mustBe Settlors(settlor = List(
+              IndividualSettlor(
+                name = Name("Carmel", None, "Settlor"),
+                dateOfBirth = None,
+                identification = None,
+                address = None,
+                entityStart = LocalDate.parse("2019-09-23"),
+                provisional = false
               )
+            ), settlorCompany = List(
+              BusinessSettlor(
+                name = "Settlor Org 24",
+                companyType = Some(CompanyType.Investment),
+                companyTime = Some(false),
+                utr = None,
+                address = None,
+                entityStart = LocalDate.parse("2019-09-23"),
+                provisional = false
+              )
+            ), deceased = Some(
+              DeceasedSettlor(None, Name("Carmel", None, "Settlor"), None, None, None, None))
             )
         }
 
@@ -378,6 +380,116 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
     }
 
-  }
+    "amending a deceased settlor" must {
 
+      def amendDeceasedSettlorUrl(utr: String) =
+        s"/trusts/amend-deceased-settlor/$utr"
+
+      "Return OK when the request is successful" in {
+
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustConnector]
+
+        server.stubFor(
+          post(urlEqualTo(amendDeceasedSettlorUrl(utr)))
+            .willReturn(ok)
+        )
+
+        val individual = DeceasedSettlor(
+          bpMatchStatus = None,
+          name = Name(
+            firstName = "First",
+            middleName = None,
+            lastName = "Last"
+          ),
+          dateOfDeath = None,
+          dateOfBirth = None,
+          identification = None,
+          address = None
+        )
+
+        val result = connector.amendDeceasedSettlor(utr, individual)
+
+        result.futureValue.status mustBe OK
+
+        application.stop()
+      }
+
+      "return Bad Request when the request is unsuccessful" in {
+
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustConnector]
+
+        server.stubFor(
+          post(urlEqualTo(amendDeceasedSettlorUrl(utr)))
+            .willReturn(badRequest)
+        )
+
+        val individual = DeceasedSettlor(
+          bpMatchStatus = None,
+          name = Name(
+            firstName = "First",
+            middleName = None,
+            lastName = "Last"
+          ),
+          dateOfDeath = None,
+          dateOfBirth = None,
+          identification = None,
+          address = None
+        )
+
+        val result = connector.amendDeceasedSettlor(utr, individual)
+
+        result.map(response => response.status mustBe BAD_REQUEST)
+
+        application.stop()
+      }
+    }
+
+    "get whether deceased settlor date of death is known to ETMP" must {
+
+      "Return true or false when the request is successful" in {
+
+        val json = JsBoolean(true)
+
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustConnector]
+
+        server.stubFor(
+          get(urlEqualTo(s"/trusts/$utr/transformed/deceased-settlor-death-recorded"))
+            .willReturn(okJson(json.toString))
+        )
+
+        val processed = connector.getIsDeceasedSettlorDateOfDeathRecorded(utr)
+
+        whenReady(processed) {
+          result =>
+            result.value mustBe true
+        }
+
+        application.stop()
+      }
+    }
+  }
 }

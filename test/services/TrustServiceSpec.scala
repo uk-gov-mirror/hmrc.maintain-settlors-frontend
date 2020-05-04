@@ -45,6 +45,15 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
     provisional = false
   )
 
+  val deceasedSettlor = DeceasedSettlor(
+    bpMatchStatus = None,
+    name = Name(firstName = "first", middleName = None, lastName = "last"),
+    dateOfDeath = Some(LocalDate.parse("1993-09-24")),
+    dateOfBirth = Some(LocalDate.parse("1983-09-24")),
+    identification = None,
+    address = None
+  )
+
   val businessSettlor = BusinessSettlor(
     name = "Company Settlor Name",
     companyType = None,
@@ -61,10 +70,7 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
 
       when(mockConnector.getSettlors(any())(any(), any()))
         .thenReturn(Future.successful(
-          Settlors(
-            List(individualSettlor),
-            List(businessSettlor)
-          )
+          Settlors(List(individualSettlor), List(businessSettlor), Some(deceasedSettlor))
         ))
 
       val service = new TrustServiceImpl(mockConnector)
@@ -74,10 +80,7 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
       val result = service.getSettlors("1234567890")
 
       whenReady(result) {
-        _ mustBe Settlors(
-          List(individualSettlor),
-          List(businessSettlor)
-        )
+        _ mustBe Settlors(List(individualSettlor), List(businessSettlor), Some(deceasedSettlor))
       }
     }
 
@@ -86,7 +89,7 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
       val index = 0
 
       when(mockConnector.getSettlors(any())(any(), any()))
-        .thenReturn(Future.successful(Settlors(List(individualSettlor), List(businessSettlor))))
+        .thenReturn(Future.successful(Settlors(List(individualSettlor), List(businessSettlor), Some(deceasedSettlor))))
 
       val service = new TrustServiceImpl(mockConnector)
 
@@ -100,6 +103,9 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
         _ mustBe businessSettlor
       }
 
+      whenReady(service.getDeceasedSettlor("1234567890")) {
+        _ mustBe Some(deceasedSettlor)
+      }
     }
 
     "remove settlor" in {

@@ -45,7 +45,7 @@ class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
   val trusteeName = "FirstName LastName"
   val name = Name("FirstName", None, "LastName")
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), TypeOfTrust.WillTrustOrIntestacyTrust, None)
+  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), TypeOfTrust.WillTrustOrIntestacyTrust, None, isDateOfDeathRecorded = true)
     .set(NamePage, name).success.value
 
   lazy val addressYesNoControllerRoute = routes.AddressYesNoController.onPageLoad(NormalMode).url

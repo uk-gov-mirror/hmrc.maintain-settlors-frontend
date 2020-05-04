@@ -46,7 +46,7 @@ class UtrControllerSpec extends SpecBase with MockitoSugar {
 
   val validAnswer = "1234567890"
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), TypeOfTrust.WillTrustOrIntestacyTrust, None)
+  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), TypeOfTrust.WillTrustOrIntestacyTrust, None, isDateOfDeathRecorded = true)
     .set(NamePage, name).success.value
 
   lazy val utrRoute = routes.UtrController.onPageLoad(NormalMode).url

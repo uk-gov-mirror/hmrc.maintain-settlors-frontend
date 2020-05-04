@@ -25,17 +25,20 @@ import viewmodels.RadioOption
 trait Settlor
 
 case class Settlors(settlor: List[IndividualSettlor],
-                    settlorCompany: List[BusinessSettlor]) {
+                    settlorCompany: List[BusinessSettlor],
+                    deceased: Option[DeceasedSettlor]) {
 
   type SettlorOption = (Int, TypeOfSettlorToAdd)
   type SettlorOptions = List[SettlorOption]
 
-  def addToHeading()(implicit mp: MessagesProvider): String =
-    (settlor ++ settlorCompany).size match {
+  def addToHeading()(implicit mp: MessagesProvider): String = {
+
+    (settlor ++ settlorCompany ++ deceased).size match {
       case 0 => Messages("addASettlor.heading")
       case 1 => Messages("addASettlor.singular.heading")
       case l => Messages("addASettlor.count.heading", l)
     }
+  }
 
   private val options: SettlorOptions = {
     (settlor.size, Individual) ::
@@ -61,5 +64,6 @@ object Settlors {
   implicit val reads: Reads[Settlors] =
     ((__ \ "settlors" \ "settlor").readWithDefault[List[IndividualSettlor]](Nil)
       and (__ \ "settlors" \ "settlorCompany").readWithDefault[List[BusinessSettlor]](Nil)
+      and (__ \ "settlors" \ "deceased").readNullable[DeceasedSettlor]
       ).apply(Settlors.apply _)
 }

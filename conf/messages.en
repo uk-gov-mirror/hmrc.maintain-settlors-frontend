@@ -5,6 +5,7 @@ site.edit = Change
 site.hidden-delete = Delete {0}
 site.hidden-cannot-delete = You cannot remove {0} as they have already been declared
 site.hidden-edit = Change {0}
+site.hidden-cannot-edit = You cannot change {0}
 site.change.details = Change details
 site.no = No
 site.yes = Yes
@@ -39,6 +40,7 @@ site.address.nonUk.country = Country
 
 entities.settlor = Settlors
 entities.settlor.individual = Individual settlor
+entities.settlor.deceased = Will settlor
 entities.settlor.business = Business settlor
 
 timeout.title=Your application will time out soon
@@ -357,9 +359,7 @@ removeBusinessSettlor.title = Are you sure you want to remove the business settl
 removeBusinessSettlor.heading = Are you sure you want to remove {0}?
 removeBusinessSettlor.error.required = Select yes if you want to remove the business settlor
 
-
-# Adam todo come back to this what should the default be?
-deceasedSettlor.name.default = the individual settlor
+deceasedSettlor.name.default = the will settlor
 
 deceasedSettlor.name.checkYourAnswersLabel = What was the name of the settlor?
 deceasedSettlor.name.title = What was the name of the settlor?
@@ -403,7 +403,7 @@ deceasedSettlor.dateOfDeath.error.required.all = Enter a date of death
 deceasedSettlor.dateOfDeath.error.required.two = Date of death must include a {0} and a {1}
 deceasedSettlor.dateOfDeath.error.required = Date of death must include a {0}
 deceasedSettlor.dateOfDeath.error.invalid = Enter a real date of death
-deceasedSettlor.dateOfDeath.error.future = Date of death must be the trusts start date or in the past
+deceasedSettlor.dateOfDeath.error.future = Date of death must be on or before the trust's start date
 deceasedSettlor.dateOfDeath.error.past = Date of death must be after 31 December 1499
 
 deceasedSettlor.nationalInsuranceNumberYesNo.checkYourAnswersLabel = Do you know {0}’s National Insurance number?
@@ -441,3 +441,8 @@ deceasedSettlor.ukAddress.postcode.hint = For example AB1 1AB
 deceasedSettlor.nonUkAddress.checkYourAnswersLabel = What was {0}’s address?
 deceasedSettlor.nonUkAddress.title = What was the settlor’s address?
 deceasedSettlor.nonUkAddress.heading = What was {0}’s address?
+
+deceasedSettlor.checkDetails.title = Check will settlor details
+deceasedSettlor.checkDetails.heading = Check will settlor details
+deceasedSettlor.checkDetails.p1 = You cannot change these details as they are based on {0}’s will.
+deceasedSettlor.checkDetails.p2 = You can only add {0}’s date of death. After this date has been declared, no more changes can be made.
