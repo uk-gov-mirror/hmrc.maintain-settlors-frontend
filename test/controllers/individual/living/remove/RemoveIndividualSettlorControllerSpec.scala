@@ -70,7 +70,7 @@ class RemoveIndividualSettlorControllerSpec extends SpecBase with ScalaCheckProp
       implicit val hc : HeaderCarrier = HeaderCarrier()
 
       when(mockConnector.getSettlors(any())(any(), any()))
-        .thenReturn(Future.successful(Settlors(settlors, Nil)))
+        .thenReturn(Future.successful(Settlors(settlors, Nil, None)))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[TrustConnector].toInstance(mockConnector))
@@ -96,7 +96,7 @@ class RemoveIndividualSettlorControllerSpec extends SpecBase with ScalaCheckProp
       implicit val hc : HeaderCarrier = HeaderCarrier()
 
       when(mockConnector.getSettlors(any())(any(), any()))
-        .thenReturn(Future.successful(Settlors(settlors, Nil)))
+        .thenReturn(Future.successful(Settlors(settlors, Nil, None)))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[TrustConnector].toInstance(mockConnector))
@@ -148,7 +148,7 @@ class RemoveIndividualSettlorControllerSpec extends SpecBase with ScalaCheckProp
           .build()
 
         when(mockConnector.getSettlors(any())(any(), any()))
-          .thenReturn(Future.successful(Settlors(settlors, Nil)))
+          .thenReturn(Future.successful(Settlors(settlors, Nil, None)))
 
         when(mockConnector.removeSettlor(any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(200)))

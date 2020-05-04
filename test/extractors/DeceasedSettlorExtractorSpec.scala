@@ -36,7 +36,6 @@ class DeceasedSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyCheck
     None,
     Json.obj()
   )
-  val index = 0
 
   val name = Name("First", None, "Last")
   val date = LocalDate.parse("1967-02-03")
@@ -57,9 +56,8 @@ class DeceasedSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyCheck
       address = None
     )
 
-    val result = extractor(answers, individual, index).get
+    val result = extractor(answers, individual).get
 
-    result.get(IndexPage).get mustBe index
     result.get(NamePage).get mustBe name
     result.get(DateOfDeathYesNoPage).get mustBe true
     result.get(DateOfDeathPage).get mustBe dateOfDeath
@@ -85,9 +83,8 @@ class DeceasedSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyCheck
       address = Some(address)
     )
 
-    val result = extractor(answers, individual, index).get
+    val result = extractor(answers, individual).get
 
-    result.get(IndexPage).get mustBe index
     result.get(NamePage).get mustBe name
     result.get(DateOfDeathYesNoPage).get mustBe true
     result.get(DateOfDeathPage).get mustBe dateOfDeath
@@ -111,9 +108,8 @@ class DeceasedSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyCheck
       address = None
     )
 
-    val result = extractor(answers, individual, index).get
+    val result = extractor(answers, individual).get
 
-    result.get(IndexPage).get mustBe index
     result.get(NamePage).get mustBe name
     result.get(DateOfBirthYesNoPage).get mustBe false
     result.get(DateOfBirthPage) mustNot be(defined)

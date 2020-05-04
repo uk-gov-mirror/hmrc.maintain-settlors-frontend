@@ -55,12 +55,11 @@ class AddASettlorController @Inject()(
 
       for {
         settlors <- trustService.getSettlors(request.userAnswers.utr)
-        deceasedSettlors <- trustService.getDeceasedSettlors(request.userAnswers.utr)
         updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
         _ <- repository.set(updatedAnswers)
       } yield {
         
-        val settlorRows = new AddASettlorViewHelper(settlors, deceasedSettlors).rows
+        val settlorRows = new AddASettlorViewHelper(settlors).rows
 
         if (settlors.nonMaxedOutOptions.isEmpty) {
           Ok(completeView(
@@ -86,11 +85,10 @@ class AddASettlorController @Inject()(
     implicit request =>
 
       trustService.getSettlors(request.userAnswers.utr).flatMap { settlors =>
-        trustService.getDeceasedSettlors(request.userAnswers.utr).flatMap { deceasedSettlors =>
           addAnotherForm.bindFromRequest().fold(
             (formWithErrors: Form[_]) => {
 
-              val rows = new AddASettlorViewHelper(settlors, deceasedSettlors).rows
+              val rows = new AddASettlorViewHelper(settlors).rows
 
               Future.successful(BadRequest(
                 addAnotherView(
@@ -121,7 +119,6 @@ class AddASettlorController @Inject()(
                 }
             }
           )
-        }
       }
   }
 

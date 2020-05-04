@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import base.SpecBase
 import connectors.TrustConnector
-import models.settlors.{AllSettlors, DeceasedSettlor, IndividualSettlor, Settlors}
+import models.settlors.{DeceasedSettlor, IndividualSettlor, Settlors}
 import models.{Name, TrustDetails, TypeOfTrust}
 import org.mockito.Matchers.any
 import org.mockito.Mockito._
@@ -41,11 +41,11 @@ class IndexControllerSpec extends SpecBase {
       when(mockTrustConnector.getTrustDetails(any())(any(), any()))
         .thenReturn(Future.successful(TrustDetails(startDate = LocalDate.parse("2019-06-01"), typeOfTrust = TypeOfTrust.WillTrustOrIntestacyTrust, deedOfVariation = None)))
 
-      when(mockTrustConnector.getAllSettlors(any())(any(), any()))
+      when(mockTrustConnector.getSettlors(any())(any(), any()))
         .thenReturn(Future.successful(
-            AllSettlors(
-              settlors = List(IndividualSettlor(Name("Adam", None, "Test"), None, None, None, LocalDate.now, false)),
-              settlorsCompany = Nil,
+            Settlors(
+              settlor = List(IndividualSettlor(Name("Adam", None, "Test"), None, None, None, LocalDate.now, false)),
+              settlorCompany = Nil,
               deceased = Some(DeceasedSettlor(
                 Name("First", None, "Last"),
                 None, None, None, None
@@ -75,11 +75,11 @@ class IndexControllerSpec extends SpecBase {
       when(mockTrustConnector.getTrustDetails(any())(any(), any()))
         .thenReturn(Future.successful(TrustDetails(startDate = LocalDate.parse("2019-06-01"), typeOfTrust = TypeOfTrust.WillTrustOrIntestacyTrust, deedOfVariation = None)))
 
-      when(mockTrustConnector.getAllSettlors(any())(any(), any()))
+      when(mockTrustConnector.getSettlors(any())(any(), any()))
         .thenReturn(Future.successful(
-          AllSettlors(
-            settlors = Nil,
-            settlorsCompany = Nil,
+          Settlors(
+            settlor = Nil,
+            settlorCompany = Nil,
             deceased = Some(DeceasedSettlor(
               Name("First", None, "Last"),
               None, None, None, None
@@ -97,7 +97,7 @@ class IndexControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result) mustBe Some(controllers.individual.deceased.routes.CheckDetailsController.extractAndRender(0).url)
+      redirectLocation(result) mustBe Some(controllers.individual.deceased.routes.CheckDetailsController.extractAndRender().url)
 
       application.stop()
     }

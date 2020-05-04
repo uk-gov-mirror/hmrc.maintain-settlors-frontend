@@ -17,7 +17,7 @@
 package controllers.individual.deceased
 
 import config.{ErrorHandler, FrontendAppConfig}
-import connectors.TrustConnector
+import connectors.{TrustConnector, TrustStoreConnector}
 import controllers.actions._
 import controllers.actions.individual.deceased.NameRequiredAction
 import extractors.DeceasedSettlorExtractor
@@ -42,6 +42,7 @@ class CheckDetailsController @Inject()(
                                         view: CheckDetailsView,
                                         service: TrustService,
                                         connector: TrustConnector,
+                                        trustStoreConnector: TrustStoreConnector,
                                         val appConfig: FrontendAppConfig,
                                         playbackRepository: PlaybackRepository,
                                         printHelper: DeceasedSettlorPrintHelper,
@@ -52,31 +53,31 @@ class CheckDetailsController @Inject()(
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private def render(userAnswers: UserAnswers,
-                     index: Int,
                      name: String)
                     (implicit request: Request[AnyContent]): Result=
   {
     val section: AnswerSection = printHelper(userAnswers, name)
-    Ok(view(section, index))
+    Ok(view(section))
   }
 
-  def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
+  def extractAndRender(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
-      service.getDeceasedSettlor(request.userAnswers.utr, index) flatMap {
-        trust =>
+      service.getDeceasedSettlor(request.userAnswers.utr) flatMap {
+        case Some(deceasedSettlor) =>
           for {
-            extractedF <- Future.fromTry(extractor(request.userAnswers, trust, index))
+            extractedF <- Future.fromTry(extractor(request.userAnswers, deceasedSettlor))
             _ <- playbackRepository.set(extractedF)
           } yield {
-              render(extractedF, index, trust.name.displayName)
+              render(extractedF, deceasedSettlor.name.displayName)
           }
+        case None => throw new Exception("Deceased Settlor Information not found")
       }
   }
 
-  def renderFromUserAnswers(index: Int) : Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
+  def renderFromUserAnswers() : Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
-      render(request.userAnswers, index, request.settlorName)
+      render(request.userAnswers, request.settlorName)
   }
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
@@ -85,11 +86,13 @@ class CheckDetailsController @Inject()(
       mapper(request.userAnswers).map {
         deceasedSettlor =>
           connector.amendDeceasedSettlor(request.userAnswers.utr, deceasedSettlor).flatMap(_ =>
-            service.getSettlors(request.userAnswers.utr).map { settlors =>
+            service.getSettlors(request.userAnswers.utr).flatMap { settlors =>
               if (settlors.settlor.isEmpty && settlors.settlorCompany.isEmpty) {
-                Redirect(appConfig.maintainATrustOverview)
+                for {
+                  _ <- trustStoreConnector.setTaskComplete(request.userAnswers.utr)
+                } yield Redirect(appConfig.maintainATrustOverview)
               } else {
-                Redirect(controllers.routes.AddASettlorController.onPageLoad())
+                Future.successful(Redirect(controllers.routes.AddASettlorController.onPageLoad()))
               }
             }
           )

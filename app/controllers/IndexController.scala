@@ -16,8 +16,6 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import connectors.TrustConnector
 import controllers.actions.IdentifierAction
 import javax.inject.Inject
@@ -43,7 +41,7 @@ class IndexController @Inject()(
 
         for {
           details <- connector.getTrustDetails(utr)
-          allSettlors <- connector.getAllSettlors(utr)
+          allSettlors <- connector.getSettlors(utr)
           _ <- repo.set(UserAnswers(
               internalAuthId = request.user.internalId,
               utr = utr,
@@ -52,12 +50,12 @@ class IndexController @Inject()(
               deedOfVariation = details.deedOfVariation
             ))
         } yield {
-          val combined = allSettlors.settlors ::: allSettlors.settlorsCompany
+          val combined = allSettlors.settlor ::: allSettlors.settlorCompany
 
           if (combined.nonEmpty) {
             Redirect(controllers.routes.AddASettlorController.onPageLoad())
           } else {
-            Redirect(controllers.individual.deceased.routes.CheckDetailsController.extractAndRender(0))
+            Redirect(controllers.individual.deceased.routes.CheckDetailsController.extractAndRender())
           }
         }
     }
