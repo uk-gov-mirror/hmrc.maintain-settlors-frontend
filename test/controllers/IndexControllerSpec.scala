@@ -20,7 +20,8 @@ import java.time.LocalDate
 
 import base.SpecBase
 import connectors.TrustConnector
-import models.{TrustDetails, TypeOfTrust}
+import models.settlors.{DeceasedSettlor, IndividualSettlor, Settlors}
+import models.{Name, TrustDetails, TypeOfTrust}
 import org.mockito.Matchers.any
 import org.mockito.Mockito._
 import play.api.inject.bind
@@ -34,17 +35,32 @@ class IndexControllerSpec extends SpecBase {
 
   "Index Controller" must {
 
-    "return OK and the correct view for a GET" in {
+    "redirect to task list when there are living settlors" in {
 
       val mockTrustConnector = mock[TrustConnector]
 
       when(mockTrustConnector.getTrustDetails(any())(any(), any()))
         .thenReturn(Future.successful(TrustDetails(startDate = LocalDate.parse("2019-06-01"), typeOfTrust = TypeOfTrust.WillTrustOrIntestacyTrust, deedOfVariation = None)))
 
+      when(mockTrustConnector.getSettlors(any())(any(), any()))
+        .thenReturn(Future.successful(
+            Settlors(
+              settlor = List(IndividualSettlor(Name("Adam", None, "Test"), None, None, None, LocalDate.now, false)),
+              settlorCompany = Nil,
+              deceased = Some(DeceasedSettlor(
+                None,
+                Name("First", None, "Last"),
+                None, None, None, None
+              )
+            )
+          )
+        ))
+
       when(mockTrustConnector.getIsDeceasedSettlorDateOfDeathRecorded(any())(any(), any()))
         .thenReturn(Future.successful(JsBoolean(true)))
 
-      val application = applicationBuilder(userAnswers = None).overrides(bind[TrustConnector].toInstance(mockTrustConnector)).build()
+      val application = applicationBuilder(userAnswers = None)
+        .overrides(bind[TrustConnector].toInstance(mockTrustConnector)).build()
 
       val request = FakeRequest(GET, routes.IndexController.onPageLoad("UTRUTRUTR").url)
 
@@ -53,6 +69,42 @@ class IndexControllerSpec extends SpecBase {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result) mustBe Some(controllers.routes.AddASettlorController.onPageLoad().url)
+
+      application.stop()
+    }
+
+    "redirect to deceased settlor check answers when there are no living settlors" in {
+      val mockTrustConnector = mock[TrustConnector]
+
+      when(mockTrustConnector.getTrustDetails(any())(any(), any()))
+        .thenReturn(Future.successful(TrustDetails(startDate = LocalDate.parse("2019-06-01"), typeOfTrust = TypeOfTrust.WillTrustOrIntestacyTrust, deedOfVariation = None)))
+
+      when(mockTrustConnector.getIsDeceasedSettlorDateOfDeathRecorded(any())(any(), any()))
+        .thenReturn(Future.successful(JsBoolean(true)))
+
+      when(mockTrustConnector.getSettlors(any())(any(), any()))
+        .thenReturn(Future.successful(
+          Settlors(
+            settlor = Nil,
+            settlorCompany = Nil,
+            deceased = Some(DeceasedSettlor(
+              None, Name("First", None, "Last"),
+              None, None, None, None
+            ))
+          ))
+        )
+
+      val application = applicationBuilder(userAnswers = None)
+        .overrides(bind[TrustConnector].toInstance(mockTrustConnector))
+        .build()
+
+      val request = FakeRequest(GET, routes.IndexController.onPageLoad("UTRUTRUTR").url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result) mustBe Some(controllers.individual.deceased.routes.CheckDetailsController.extractAndRender().url)
 
       application.stop()
     }

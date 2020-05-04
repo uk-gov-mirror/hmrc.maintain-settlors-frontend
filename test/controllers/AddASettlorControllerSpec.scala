@@ -21,7 +21,6 @@ import java.time.LocalDate
 import base.SpecBase
 import connectors.TrustStoreConnector
 import forms.AddASettlorFormProvider
-import models.BpMatchStatus.FullyMatched
 import models.settlors.{BusinessSettlor, DeceasedSettlor, IndividualSettlor, Settlors}
 import models.{AddASettlor, CompanyType, Name, NationalInsuranceNumber, RemoveSettlor}
 import org.mockito.Matchers.any
@@ -379,38 +378,6 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
         application.stop()
       }
-    }
-
-    "only a deceased settlor" must {
-
-      "redirect to check details controller" in {
-
-        val deceasedSettlor = DeceasedSettlor(
-          bpMatchStatus = Some(FullyMatched),
-          name = Name(firstName = "Some", middleName = None, lastName = "One"),
-          dateOfDeath = Some(LocalDate.parse("1993-09-24")),
-          dateOfBirth = Some(LocalDate.parse("1983-09-24")),
-          identification = Some(NationalInsuranceNumber("JS123456A")),
-          address = None
-        )
-
-        val settlors = Settlors(Nil, Nil, Some(deceasedSettlor))
-
-        val fakeService = new FakeService(settlors)
-
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService)
-        )).build()
-
-        val request = FakeRequest(GET, getRoute)
-
-        val result = route(application, request).value
-
-        redirectLocation(result).value mustEqual controllers.individual.deceased.routes.CheckDetailsController.extractAndRender().url
-
-        application.stop()
-      }
-
     }
   }
 }

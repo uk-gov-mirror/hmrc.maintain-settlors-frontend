@@ -176,12 +176,12 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
             |       "entityStart" : "2019-09-23"
             |     }
             |   ],
-            |   "deceased" : {
-            |     "name" : {
-            |       "firstName" : "Carmel",
-            |       "lastName" : "Settlor"
+            |    "deceased" : {
+            |       "name" : {
+            |         "firstName" : "Carmel",
+            |         "lastName" : "Settlor"
+            |       }
             |     }
-            |   }
             | }
             |}
             |""".stripMargin)

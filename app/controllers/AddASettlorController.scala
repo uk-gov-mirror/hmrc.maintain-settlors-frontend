@@ -60,30 +60,25 @@ class AddASettlorController @Inject()(
         updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
         _ <- repository.set(updatedAnswers)
       } yield {
-        settlors match {
-          case Settlors(Nil, Nil, Some(_)) =>
-            Redirect(CheckDetailsController.extractAndRender())
-          case _ =>
-            val settlorRows = new AddASettlorViewHelper(settlors).rows
+          val settlorRows = new AddASettlorViewHelper(settlors).rows
 
-            if (settlors.nonMaxedOutOptions.isEmpty) {
-              Ok(completeView(
-                trustDescription,
-                inProgressSettlors = settlorRows.inProgress,
-                completeSettlors = settlorRows.complete,
-                heading = settlors.addToHeading
-              ))
-            } else {
-              Ok(addAnotherView(
-                form = addAnotherForm,
-                trustDescription,
-                inProgressSettlors = settlorRows.inProgress,
-                completeSettlors = settlorRows.complete,
-                heading = settlors.addToHeading,
-                maxedOut = settlors.maxedOutOptions.map(x => x.messageKey)
-              ))
-            }
-        }
+          if (settlors.nonMaxedOutOptions.isEmpty) {
+            Ok(completeView(
+              trustDescription,
+              inProgressSettlors = settlorRows.inProgress,
+              completeSettlors = settlorRows.complete,
+              heading = settlors.addToHeading
+            ))
+          } else {
+            Ok(addAnotherView(
+              form = addAnotherForm,
+              trustDescription,
+              inProgressSettlors = settlorRows.inProgress,
+              completeSettlors = settlorRows.complete,
+              heading = settlors.addToHeading,
+              maxedOut = settlors.maxedOutOptions.map(x => x.messageKey)
+            ))
+          }
       }
   }
 
