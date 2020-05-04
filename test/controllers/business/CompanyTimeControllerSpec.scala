@@ -44,7 +44,7 @@ class CompanyTimeControllerSpec extends SpecBase with MockitoSugar {
   val form = formProvider.withPrefix("businessSettlor.companyTime")
   val name = "Name"
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), TypeOfTrust.WillTrustOrIntestacyTrust, None)
+  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), TypeOfTrust.WillTrustOrIntestacyTrust, None, isDateOfDeathRecorded = true)
     .set(NamePage, name).success.value
 
   lazy val companyTimeControllerRoute = routes.CompanyTimeController.onPageLoad(NormalMode).url

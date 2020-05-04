@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +12,30 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models.settlors
+@import viewmodels.AnswerSection
+@import controllers.business.add.routes._
 
-import play.api.libs.json.{Json, Reads, __}
+@this(
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF
+)
 
-case class DeceasedSettlors(deceasedSettlors: List[DeceasedSettlor])
+@(answerSection: AnswerSection)(implicit request: Request[_], messages: Messages)
 
-object DeceasedSettlors {
+@main_template(
+    title = messages("businessSettlor.checkDetails.title")
+    ) {
 
-  implicit val reads: Reads[DeceasedSettlors] =
-    Json.reads[DeceasedSettlors]
+    @formHelper(action = CheckDetailsController.onSubmit(), 'autoComplete -> "off") {
+
+        @components.back_link()
+
+        @components.heading("businessSettlor.checkDetails.heading")
+
+        @components.answer_section(answerSection)
+
+        @components.submit_button()
+    }
 }

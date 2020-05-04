@@ -44,7 +44,7 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
 
   val name = "Name"
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), TypeOfTrust.WillTrustOrIntestacyTrust, None)
+  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), TypeOfTrust.WillTrustOrIntestacyTrust, None, isDateOfDeathRecorded = true)
     .set(NamePage, name).success.value
 
   val validAnswer = UkAddress("value 1", "value 2", None, None, "AB1 1AB")

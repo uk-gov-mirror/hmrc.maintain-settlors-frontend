@@ -20,7 +20,7 @@ import com.google.inject.ImplementedBy
 import connectors.TrustConnector
 import javax.inject.Inject
 import models.RemoveSettlor
-import models.settlors.{BusinessSettlor, DeceasedSettlor, DeceasedSettlors, IndividualSettlor, Settlors}
+import models.settlors.{BusinessSettlor, DeceasedSettlor, IndividualSettlor, Settlors}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}

@@ -22,7 +22,8 @@ import models.{Address, IndividualIdentification, Name}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-final case class DeceasedSettlor(name: Name,
+final case class DeceasedSettlor(bpMatchStatus: Option[String],
+                                 name: Name,
                                  dateOfBirth: Option[LocalDate],
                                  dateOfDeath: Option[LocalDate],
                                  identification: Option[IndividualIdentification],
@@ -31,24 +32,33 @@ final case class DeceasedSettlor(name: Name,
 object DeceasedSettlor {
 
   implicit val reads: Reads[DeceasedSettlor] =
-    ((__ \ 'name).read[Name] and
+    ((__ \ 'bpMatchStatus).readNullable[String] and
+      (__ \ 'name).read[Name] and
       (__ \ 'dateOfBirth).readNullable[LocalDate] and
       (__ \ 'dateOfDeath).readNullable[LocalDate] and
       __.lazyRead(readNullableAtSubPath[IndividualIdentification](__ \ 'identification)) and
       __.lazyRead(readNullableAtSubPath[Address](__ \ 'identification \ 'address))).tupled.map{
 
-      case (name, dob, dod, nino, identification) =>
-        DeceasedSettlor(name, dob, dod, nino, identification)
+      case (bpMatchStatus, name, dob, dod, nino, identification) =>
+        DeceasedSettlor(bpMatchStatus, name, dob, dod, nino, identification)
 
     }
 
   implicit val writes: Writes[DeceasedSettlor] =
-    ((__ \ 'name).write[Name] and
+    ((__ \ 'bpMatchStatus).writeNullable[String] and
+      (__ \ 'name).write[Name] and
       (__ \ 'dateOfBirth).writeNullable[LocalDate] and
       (__ \ 'dateOfDeath).writeNullable[LocalDate] and
       (__ \ 'identification).writeNullable[IndividualIdentification] and
       (__ \ 'identification \ 'address).writeNullable[Address]
-      ).apply(unlift(DeceasedSettlor.unapply))
+      ).apply(settlor => (
+      None,
+      settlor.name,
+      settlor.dateOfBirth,
+      settlor.dateOfDeath,
+      settlor.identification,
+      settlor.address
+    ))
 
   def readNullableAtSubPath[T:Reads](subPath : JsPath) : Reads[Option[T]] = Reads (
     _.transform(subPath.json.pick)

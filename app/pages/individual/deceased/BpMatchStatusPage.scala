@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package forms
+package pages.individual.deceased
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class UtrFormProvider @Inject() extends Mappings {
+case object BpMatchStatusPage extends QuestionPage[String] {
 
-  def withPrefix(messagePrefix: String): Form[String] =
-    Form(
-      "value" -> text(s"$messagePrefix.error.required")
-        .verifying(
-          firstError(
-            maxLength(10, s"$messagePrefix.error.length"),
-            minLength(10, s"$messagePrefix.error.length"),
-            regexp(Validation.utrRegex, s"$messagePrefix.error.invalid"),
-            nonEmptyString("value", s"$messagePrefix.error.required")
-          ))
-    )
+  override def path: JsPath = basePath \ toString
+
+  override def toString: String = "bpMatchStatus"
 }

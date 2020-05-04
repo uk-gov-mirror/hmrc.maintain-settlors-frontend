@@ -34,7 +34,7 @@ class NationalInsuranceYesNoPageSpec extends PageBehaviours {
 
     "implement cleanup logic when YES selected" in {
 
-      val userAnswers = UserAnswers("id", "utr", LocalDate.now, TypeOfTrust.WillTrustOrIntestacyTrust, None)
+      val userAnswers = UserAnswers("id", "utr", LocalDate.now, TypeOfTrust.WillTrustOrIntestacyTrust, None, isDateOfDeathRecorded = true)
         .set(UkAddressPage, UkAddress("line1", "line2", None, None, "postcode")).success.value
         .set(LivedInTheUkYesNoPage, true)
         .flatMap(_.set(AddressYesNoPage, true))
@@ -46,7 +46,7 @@ class NationalInsuranceYesNoPageSpec extends PageBehaviours {
     }
 
     "implement cleanup logic when NO selected" in {
-      val userAnswers = UserAnswers("id", "utr", LocalDate.now, TypeOfTrust.WillTrustOrIntestacyTrust, None)
+      val userAnswers = UserAnswers("id", "utr", LocalDate.now, TypeOfTrust.WillTrustOrIntestacyTrust, None, isDateOfDeathRecorded = true)
         .set(NationalInsuranceNumberPage, "nino")
         .flatMap(_.set(NationalInsuranceNumberYesNoPage, false))
 

@@ -19,10 +19,12 @@ package controllers
 import config.FrontendAppConfig
 import connectors.TrustStoreConnector
 import controllers.actions.StandardActionSets
+import controllers.individual.deceased.routes._
 import forms.AddASettlorFormProvider
 import javax.inject.Inject
 import models.DeedOfVariation.AdditionToWillTrust
 import models.requests.DataRequest
+import models.settlors.Settlors
 import models.{AddASettlor, TypeOfTrust}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -58,25 +60,29 @@ class AddASettlorController @Inject()(
         updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
         _ <- repository.set(updatedAnswers)
       } yield {
-        
-        val settlorRows = new AddASettlorViewHelper(settlors).rows
+        settlors match {
+          case Settlors(Nil, Nil, Some(_)) =>
+            Redirect(CheckDetailsController.extractAndRender())
+          case _ =>
+            val settlorRows = new AddASettlorViewHelper(settlors).rows
 
-        if (settlors.nonMaxedOutOptions.isEmpty) {
-          Ok(completeView(
-            trustDescription,
-            inProgressSettlors = settlorRows.inProgress,
-            completeSettlors = settlorRows.complete,
-            heading = settlors.addToHeading
-          ))
-        } else {
-          Ok(addAnotherView(
-            form = addAnotherForm,
-            trustDescription,
-            inProgressSettlors = settlorRows.inProgress,
-            completeSettlors = settlorRows.complete,
-            heading = settlors.addToHeading,
-            maxedOut = settlors.maxedOutOptions.map(x => x.messageKey)
-          ))
+            if (settlors.nonMaxedOutOptions.isEmpty) {
+              Ok(completeView(
+                trustDescription,
+                inProgressSettlors = settlorRows.inProgress,
+                completeSettlors = settlorRows.complete,
+                heading = settlors.addToHeading
+              ))
+            } else {
+              Ok(addAnotherView(
+                form = addAnotherForm,
+                trustDescription,
+                inProgressSettlors = settlorRows.inProgress,
+                completeSettlors = settlorRows.complete,
+                heading = settlors.addToHeading,
+                maxedOut = settlors.maxedOutOptions.map(x => x.messageKey)
+              ))
+            }
         }
       }
   }
@@ -85,40 +91,40 @@ class AddASettlorController @Inject()(
     implicit request =>
 
       trustService.getSettlors(request.userAnswers.utr).flatMap { settlors =>
-          addAnotherForm.bindFromRequest().fold(
-            (formWithErrors: Form[_]) => {
+        addAnotherForm.bindFromRequest().fold(
+          (formWithErrors: Form[_]) => {
 
-              val rows = new AddASettlorViewHelper(settlors).rows
+            val rows = new AddASettlorViewHelper(settlors).rows
 
-              Future.successful(BadRequest(
-                addAnotherView(
-                  formWithErrors,
-                  trustDescription,
-                  rows.inProgress,
-                  rows.complete,
-                  settlors.addToHeading,
-                  maxedOut = settlors.maxedOutOptions.map(x => x.messageKey)
-                )
-              ))
-            },
-            {
-              case AddASettlor.YesNow =>
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
-                  _ <- repository.set(updatedAnswers)
-                } yield Redirect(controllers.routes.AddNowController.onPageLoad())
+            Future.successful(BadRequest(
+              addAnotherView(
+                formWithErrors,
+                trustDescription,
+                rows.inProgress,
+                rows.complete,
+                settlors.addToHeading,
+                maxedOut = settlors.maxedOutOptions.map(x => x.messageKey)
+              )
+            ))
+          },
+          {
+            case AddASettlor.YesNow =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
+                _ <- repository.set(updatedAnswers)
+              } yield Redirect(controllers.routes.AddNowController.onPageLoad())
 
-              case AddASettlor.YesLater =>
-                Future.successful(Redirect(appConfig.maintainATrustOverview))
+            case AddASettlor.YesLater =>
+              Future.successful(Redirect(appConfig.maintainATrustOverview))
 
-              case AddASettlor.NoComplete =>
-                for {
-                  _ <- trustStoreConnector.setTaskComplete(request.userAnswers.utr)
-                } yield {
-                  Redirect(appConfig.maintainATrustOverview)
-                }
-            }
-          )
+            case AddASettlor.NoComplete =>
+              for {
+                _ <- trustStoreConnector.setTaskComplete(request.userAnswers.utr)
+              } yield {
+                Redirect(appConfig.maintainATrustOverview)
+              }
+          }
+        )
       }
   }
 

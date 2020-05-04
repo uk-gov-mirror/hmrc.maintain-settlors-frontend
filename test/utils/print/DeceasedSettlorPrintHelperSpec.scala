@@ -19,16 +19,44 @@ package utils.print
 import java.time.LocalDate
 
 import base.SpecBase
-import models.{IdCard, Name, NonUkAddress, Passport, UkAddress}
+import models.{Name, NonUkAddress, TypeOfTrust, UkAddress, UserAnswers}
 import pages.individual.deceased._
 import play.twirl.api.Html
 import viewmodels.{AnswerRow, AnswerSection}
 
 class DeceasedSettlorPrintHelperSpec extends SpecBase {
 
-  val name: Name = Name("First", Some("Middle"), "Last")
-  val ukAddress = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
-  val nonUkAddress = NonUkAddress("value 1", "value 2", None, "DE")
+  private val name: Name = Name("First", Some("Middle"), "Last")
+  private val ukAddress = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
+  private val nonUkAddress = NonUkAddress("value 1", "value 2", None, "DE")
+
+  private def fillUserAnswers(bpMatchStatus: String,
+                              isDateOfDeathRecorded: Boolean
+                             ): UserAnswers = {
+
+    val userAnswers = UserAnswers(
+      userInternalId,
+      "UTRUTRUTR",
+      LocalDate.now(),
+      TypeOfTrust.WillTrustOrIntestacyTrust,
+      None,
+      isDateOfDeathRecorded = isDateOfDeathRecorded
+    )
+
+    userAnswers
+      .set(BpMatchStatusPage, bpMatchStatus).success.value
+      .set(NamePage, name).success.value
+      .set(DateOfDeathYesNoPage, true).success.value
+      .set(DateOfDeathPage, LocalDate.of(2011, 10, 10)).success.value
+      .set(DateOfBirthYesNoPage, true).success.value
+      .set(DateOfBirthPage, LocalDate.of(2010, 10, 10)).success.value
+      .set(NationalInsuranceNumberYesNoPage, true).success.value
+      .set(NationalInsuranceNumberPage, "AA000000A").success.value
+      .set(AddressYesNoPage, true).success.value
+      .set(LivedInTheUkYesNoPage, true).success.value
+      .set(UkAddressPage, ukAddress).success.value
+      .set(NonUkAddressPage, nonUkAddress).success.value
+  }
 
   "DeceasedSettlorPrintHelper" must {
 
@@ -36,18 +64,7 @@ class DeceasedSettlorPrintHelperSpec extends SpecBase {
 
       val helper = injector.instanceOf[DeceasedSettlorPrintHelper]
 
-      val userAnswers = emptyUserAnswers
-        .set(NamePage, name).success.value
-        .set(DateOfDeathYesNoPage, true).success.value
-        .set(DateOfDeathPage, LocalDate.of(2011, 10, 10)).success.value
-        .set(DateOfBirthYesNoPage, true).success.value
-        .set(DateOfBirthPage, LocalDate.of(2010, 10, 10)).success.value
-        .set(NationalInsuranceNumberYesNoPage, true).success.value
-        .set(NationalInsuranceNumberPage, "AA000000A").success.value
-        .set(AddressYesNoPage, true).success.value
-        .set(LivedInTheUkYesNoPage, true).success.value
-        .set(UkAddressPage, ukAddress).success.value
-        .set(NonUkAddressPage, nonUkAddress).success.value
+      val userAnswers = fillUserAnswers("99", isDateOfDeathRecorded = true)
 
       val result = helper(userAnswers, name.displayName)
       result mustBe AnswerSection(
@@ -61,9 +78,59 @@ class DeceasedSettlorPrintHelperSpec extends SpecBase {
           AnswerRow(label = Html(messages("deceasedSettlor.nationalInsuranceNumberYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = Some(controllers.individual.deceased.routes.NationalInsuranceNumberYesNoController.onPageLoad().url)),
           AnswerRow(label = Html(messages("deceasedSettlor.nationalInsuranceNumber.checkYourAnswersLabel", name.displayName)), answer = Html("AA 00 00 00 A"), changeUrl = Some(controllers.individual.deceased.routes.NationalInsuranceNumberYesNoController.onPageLoad().url)),
           AnswerRow(label = Html(messages("deceasedSettlor.addressYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = Some(controllers.individual.deceased.routes.AddressYesNoController.onPageLoad().url)),
-          AnswerRow(label = Html(messages("deceasedSettlor.liveInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = Some(controllers.individual.deceased.routes.LivedInTheUkYesNoController.onPageLoad().url)),
+          AnswerRow(label = Html(messages("deceasedSettlor.livedInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = Some(controllers.individual.deceased.routes.LivedInTheUkYesNoController.onPageLoad().url)),
           AnswerRow(label = Html(messages("deceasedSettlor.ukAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = Some(controllers.individual.deceased.routes.UkAddressController.onPageLoad().url)),
           AnswerRow(label = Html(messages("deceasedSettlor.nonUkAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = Some(controllers.individual.deceased.routes.NonUkAddressController.onPageLoad().url))
+        )
+      )
+    }
+
+    "generate deceased settlor section for all possible data for 01 match status when date of death is known to ETMP" in {
+
+      val helper = injector.instanceOf[DeceasedSettlorPrintHelper]
+
+      val userAnswers = fillUserAnswers("01", isDateOfDeathRecorded = true)
+
+      val result = helper(userAnswers, name.displayName)
+      result mustBe AnswerSection(
+        headingKey = None,
+        rows = Seq(
+          AnswerRow(label = Html(messages("deceasedSettlor.name.checkYourAnswersLabel")), answer = Html("First Middle Last"), changeUrl = None),
+          AnswerRow(label = Html(messages("deceasedSettlor.dateOfDeathYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = None),
+          AnswerRow(label = Html(messages("deceasedSettlor.dateOfDeath.checkYourAnswersLabel", name.displayName)), answer = Html("10 October 2011"), changeUrl = None),
+          AnswerRow(label = Html(messages("deceasedSettlor.dateOfBirthYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = None),
+          AnswerRow(label = Html(messages("deceasedSettlor.dateOfBirth.checkYourAnswersLabel", name.displayName)), answer = Html("10 October 2010"), changeUrl = None),
+          AnswerRow(label = Html(messages("deceasedSettlor.nationalInsuranceNumberYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = None),
+          AnswerRow(label = Html(messages("deceasedSettlor.nationalInsuranceNumber.checkYourAnswersLabel", name.displayName)), answer = Html("AA 00 00 00 A"), changeUrl = None),
+          AnswerRow(label = Html(messages("deceasedSettlor.addressYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = None),
+          AnswerRow(label = Html(messages("deceasedSettlor.livedInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = None),
+          AnswerRow(label = Html(messages("deceasedSettlor.ukAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = None),
+          AnswerRow(label = Html(messages("deceasedSettlor.nonUkAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = None)
+        )
+      )
+    }
+
+    "generate deceased settlor section for all possible for 01 match status data when date of death is not known to ETMP" in {
+
+      val helper = injector.instanceOf[DeceasedSettlorPrintHelper]
+
+      val userAnswers = fillUserAnswers("01", isDateOfDeathRecorded = false)
+
+      val result = helper(userAnswers, name.displayName)
+      result mustBe AnswerSection(
+        headingKey = None,
+        rows = Seq(
+          AnswerRow(label = Html(messages("deceasedSettlor.name.checkYourAnswersLabel")), answer = Html("First Middle Last"), changeUrl = None),
+          AnswerRow(label = Html(messages("deceasedSettlor.dateOfDeathYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = Some(controllers.individual.deceased.routes.DateOfDeathYesNoController.onPageLoad().url)),
+          AnswerRow(label = Html(messages("deceasedSettlor.dateOfDeath.checkYourAnswersLabel", name.displayName)), answer = Html("10 October 2011"), changeUrl = Some(controllers.individual.deceased.routes.DateOfDeathController.onPageLoad().url)),
+          AnswerRow(label = Html(messages("deceasedSettlor.dateOfBirthYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = None),
+          AnswerRow(label = Html(messages("deceasedSettlor.dateOfBirth.checkYourAnswersLabel", name.displayName)), answer = Html("10 October 2010"), changeUrl = None),
+          AnswerRow(label = Html(messages("deceasedSettlor.nationalInsuranceNumberYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = None),
+          AnswerRow(label = Html(messages("deceasedSettlor.nationalInsuranceNumber.checkYourAnswersLabel", name.displayName)), answer = Html("AA 00 00 00 A"), changeUrl = None),
+          AnswerRow(label = Html(messages("deceasedSettlor.addressYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = None),
+          AnswerRow(label = Html(messages("deceasedSettlor.livedInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = None),
+          AnswerRow(label = Html(messages("deceasedSettlor.ukAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = None),
+          AnswerRow(label = Html(messages("deceasedSettlor.nonUkAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = None)
         )
       )
     }

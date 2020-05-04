@@ -22,7 +22,11 @@
     formHelper: FormWithCSRF
 )
 
-@(answerSection: AnswerSection)(implicit request: Request[_], messages: Messages)
+@(answerSection: AnswerSection,
+    name: String,
+    is01MatchStatus: Boolean,
+    isDateOfDeathRecorded: Boolean
+    )(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("deceasedSettlor.checkDetails.title")
@@ -35,6 +39,13 @@
         @components.heading("deceasedSettlor.checkDetails.heading")
 
         @components.answer_section(answerSection)
+
+        @if(is01MatchStatus){
+            <p>@messages("deceasedSettlor.checkDetails.p1", name)</p>
+            @if(!isDateOfDeathRecorded){
+                <p>@messages("deceasedSettlor.checkDetails.p2", name)</p>
+            }
+        }
 
         @components.submit_button()
     }

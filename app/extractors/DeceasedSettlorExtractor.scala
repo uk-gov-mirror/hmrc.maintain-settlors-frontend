@@ -21,19 +21,29 @@ import models.settlors.DeceasedSettlor
 import models.{Address, NationalInsuranceNumber, NonUkAddress, UkAddress, UserAnswers}
 import pages.individual.deceased._
 
-import scala.util.Try
+import scala.util.{Success, Try}
 
 class DeceasedSettlorExtractor @Inject()() {
 
-  def apply(answers: UserAnswers, individual : DeceasedSettlor): Try[UserAnswers] =
+  def apply(answers: UserAnswers, settlor: DeceasedSettlor): Try[UserAnswers] =
     answers.deleteAtPath(pages.individual.deceased.basePath)
-      .flatMap(_.set(NamePage, individual.name))
-      .flatMap(answers => extractDateOfBirth(individual, answers))
-      .flatMap(answers => extractDateOfDeath(individual, answers))
-      .flatMap(answers => extractAddress(individual.address, answers))
-      .flatMap(answers => extractIdentification(individual, answers))
+      .flatMap(answers => extractBpMatchStatus(settlor.bpMatchStatus, answers))
+      .flatMap(_.set(NamePage, settlor.name))
+      .flatMap(answers => extractDateOfBirth(settlor, answers))
+      .flatMap(answers => extractDateOfDeath(settlor, answers))
+      .flatMap(answers => extractAddress(settlor.address, answers))
+      .flatMap(answers => extractIdentification(settlor, answers))
 
-  private def extractAddress(address: Option[Address], answers: UserAnswers) : Try[UserAnswers] = {
+  private def extractBpMatchStatus(bpMatchStatus: Option[String], answers: UserAnswers): Try[UserAnswers] = {
+    bpMatchStatus match {
+      case Some(matchStatus) =>
+        answers.set(BpMatchStatusPage, matchStatus)
+      case _ =>
+        Success(answers)
+    }
+  }
+
+  private def extractAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
     address match {
       case Some(uk: UkAddress) =>
         answers.set(AddressYesNoPage, true)
@@ -48,33 +58,27 @@ class DeceasedSettlorExtractor @Inject()() {
     }
   }
 
-  private def extractDateOfBirth(individual: DeceasedSettlor, answers: UserAnswers) : Try[UserAnswers] =
-  {
+  private def extractDateOfBirth(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
     individual.dateOfBirth match {
       case Some(dob) =>
         answers.set(DateOfBirthYesNoPage, true)
           .flatMap(_.set(DateOfBirthPage, dob))
       case None =>
-        // Assumption that user answered no as dob is not provided
         answers.set(DateOfBirthYesNoPage, false)
     }
   }
 
-  private def extractDateOfDeath(individual: DeceasedSettlor, answers: UserAnswers) : Try[UserAnswers] =
-  {
+  private def extractDateOfDeath(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
     individual.dateOfDeath match {
       case Some(dob) =>
         answers.set(DateOfDeathYesNoPage, true)
           .flatMap(_.set(DateOfDeathPage, dob))
       case None =>
-        // Assumption that user answered no as dob is not provided
         answers.set(DateOfDeathYesNoPage, false)
     }
   }
 
-  private def extractIdentification(individual: DeceasedSettlor,
-                                    answers: UserAnswers) : Try[UserAnswers] =
-  {
+  private def extractIdentification(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
     individual.identification match {
       case Some(NationalInsuranceNumber(nino)) =>
         answers.set(NationalInsuranceNumberYesNoPage, true)

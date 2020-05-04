@@ -38,16 +38,17 @@ class IndexController @Inject()(
 
     identifierAction.async {
       implicit request =>
-
         for {
           details <- connector.getTrustDetails(utr)
           allSettlors <- connector.getSettlors(utr)
+          isDateOfDeathRecorded <- connector.getIsDeceasedSettlorDateOfDeathRecorded(utr)
           _ <- repo.set(UserAnswers(
               internalAuthId = request.user.internalId,
               utr = utr,
               whenTrustSetup = details.startDate,
               trustType = details.typeOfTrust,
-              deedOfVariation = details.deedOfVariation
+              deedOfVariation = details.deedOfVariation,
+              isDateOfDeathRecorded = isDateOfDeathRecorded.value
             ))
         } yield {
           val combined = allSettlors.settlor ::: allSettlors.settlorCompany

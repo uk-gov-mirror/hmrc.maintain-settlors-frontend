@@ -25,6 +25,7 @@ import models.{Name, TrustDetails, TypeOfTrust}
 import org.mockito.Matchers.any
 import org.mockito.Mockito._
 import play.api.inject.bind
+import play.api.libs.json.JsBoolean
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
@@ -47,6 +48,7 @@ class IndexControllerSpec extends SpecBase {
               settlor = List(IndividualSettlor(Name("Adam", None, "Test"), None, None, None, LocalDate.now, false)),
               settlorCompany = Nil,
               deceased = Some(DeceasedSettlor(
+                None,
                 Name("First", None, "Last"),
                 None, None, None, None
               )
@@ -54,9 +56,11 @@ class IndexControllerSpec extends SpecBase {
           )
         ))
 
+      when(mockTrustConnector.getIsDeceasedSettlorDateOfDeathRecorded(any())(any(), any()))
+        .thenReturn(Future.successful(JsBoolean(true)))
+
       val application = applicationBuilder(userAnswers = None)
-        .overrides(bind[TrustConnector].toInstance(mockTrustConnector))
-        .build()
+        .overrides(bind[TrustConnector].toInstance(mockTrustConnector)).build()
 
       val request = FakeRequest(GET, routes.IndexController.onPageLoad("UTRUTRUTR").url)
 
@@ -75,13 +79,16 @@ class IndexControllerSpec extends SpecBase {
       when(mockTrustConnector.getTrustDetails(any())(any(), any()))
         .thenReturn(Future.successful(TrustDetails(startDate = LocalDate.parse("2019-06-01"), typeOfTrust = TypeOfTrust.WillTrustOrIntestacyTrust, deedOfVariation = None)))
 
+      when(mockTrustConnector.getIsDeceasedSettlorDateOfDeathRecorded(any())(any(), any()))
+        .thenReturn(Future.successful(JsBoolean(true)))
+
       when(mockTrustConnector.getSettlors(any())(any(), any()))
         .thenReturn(Future.successful(
           Settlors(
             settlor = Nil,
             settlorCompany = Nil,
             deceased = Some(DeceasedSettlor(
-              Name("First", None, "Last"),
+              None, Name("First", None, "Last"),
               None, None, None, None
             ))
           ))

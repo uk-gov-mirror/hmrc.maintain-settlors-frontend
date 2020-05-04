@@ -23,6 +23,7 @@ import controllers.actions.individual.deceased.NameRequiredAction
 import extractors.DeceasedSettlorExtractor
 import javax.inject.Inject
 import models.UserAnswers
+import pages.individual.deceased.BpMatchStatusPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import repositories.PlaybackRepository
@@ -52,12 +53,17 @@ class CheckDetailsController @Inject()(
                                         errorHandler: ErrorHandler
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def render(userAnswers: UserAnswers,
-                     name: String)
-                    (implicit request: Request[AnyContent]): Result=
-  {
+  private def render(userAnswers: UserAnswers, name: String)(implicit request: Request[AnyContent]): Result = {
     val section: AnswerSection = printHelper(userAnswers, name)
-    Ok(view(section))
+    Ok(view(
+      section,
+      name,
+      userAnswers.get(BpMatchStatusPage) match {
+        case Some("01") => true
+        case _ => false
+      },
+      userAnswers.isDateOfDeathRecorded
+    ))
   }
 
   def extractAndRender(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
@@ -75,7 +81,7 @@ class CheckDetailsController @Inject()(
       }
   }
 
-  def renderFromUserAnswers() : Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
+  def renderFromUserAnswers(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
       render(request.userAnswers, request.settlorName)
   }

@@ -34,7 +34,7 @@ class DateOfDeathYesNoPageSpec extends PageBehaviours {
     beRemovable[Boolean](DateOfDeathYesNoPage)
 
     "implement cleanup logic when NO selected" in {
-      val userAnswers = UserAnswers("id", "utr", LocalDate.now, TypeOfTrust.WillTrustOrIntestacyTrust, None)
+      val userAnswers = UserAnswers("id", "utr", LocalDate.now, TypeOfTrust.WillTrustOrIntestacyTrust, None, isDateOfDeathRecorded = true)
         .set(DateOfDeathPage, LocalDate.now)
         .flatMap(_.set(DateOfDeathYesNoPage, false))
 

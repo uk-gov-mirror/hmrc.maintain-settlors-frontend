@@ -34,6 +34,7 @@ class BusinessSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyCheck
     LocalDate.of(1987, 12, 31),
     TypeOfTrust.WillTrustOrIntestacyTrust,
     None,
+    isDateOfDeathRecorded = true,
     Json.obj()
   )
 

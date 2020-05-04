@@ -45,7 +45,7 @@ class CompanyTypeControllerSpec extends SpecBase with MockitoSugar {
   val name = "Name"
   val validAnswer = CompanyType.Investment
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), TypeOfTrust.WillTrustOrIntestacyTrust, None)
+  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), TypeOfTrust.WillTrustOrIntestacyTrust, None, isDateOfDeathRecorded = true)
     .set(NamePage, name).success.value
 
   lazy val companyTypeControllerRoute = routes.CompanyTypeController.onPageLoad(NormalMode).url
