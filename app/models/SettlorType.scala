@@ -16,16 +16,24 @@
 
 package models
 
-import play.api.libs.json.{JsString, Writes}
+import viewmodels.RadioOption
 
 sealed trait SettlorType
 
-object SettlorType {
-  case object IndividualSettlor extends SettlorType
-  case object BusinessSettlor extends SettlorType
+object SettlorType extends Enumerable.Implicits {
 
-  implicit val writes: Writes[SettlorType] = Writes {
-    case IndividualSettlor => JsString("settlor")
-    case BusinessSettlor => JsString("settlorCompany")
+  case object IndividualSettlor extends WithName("individual") with SettlorType
+  case object BusinessSettlor extends WithName("business") with SettlorType
+
+  val values: List[SettlorType] = List(
+    IndividualSettlor, BusinessSettlor
+  )
+
+  val options: List[RadioOption] = values.map {
+    value =>
+      RadioOption("whatTypeOfSettlor", value.toString)
   }
+
+  implicit val enumerable: Enumerable[SettlorType] =
+    Enumerable(values.map(v => v.toString -> v): _*)
 }

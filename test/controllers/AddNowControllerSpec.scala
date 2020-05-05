@@ -16,54 +16,28 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import base.SpecBase
 import forms.AddSettlorTypeFormProvider
-import models.NormalMode
-import models.settlors.{Settlors, TypeOfSettlorToAdd}
-import models.settlors.TypeOfSettlorToAdd.{Business, Individual, prefix}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import models.{NormalMode, SettlorType}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.AddNowPage
 import play.api.data.Form
-import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.TrustService
-import viewmodels.RadioOption
 import views.html.AddNowView
-
-import scala.concurrent.Future
 
 class AddNowControllerSpec extends SpecBase with MockitoSugar {
 
-  val form: Form[TypeOfSettlorToAdd] = new AddSettlorTypeFormProvider()()
+  val form: Form[SettlorType] = new AddSettlorTypeFormProvider()()
   lazy val addNowRoute: String = routes.AddNowController.onPageLoad().url
-  val individualSettlorAnswer: TypeOfSettlorToAdd.Individual.type = TypeOfSettlorToAdd.Individual
-  val mockTrustService: TrustService = mock[TrustService]
-
-  when(mockTrustService.getSettlors(any())(any(), any()))
-    .thenReturn(Future.successful(Settlors(Nil, Nil, None)))
-
-  val values: List[TypeOfSettlorToAdd] = List(
-    Individual, Business
-  )
-
-  val options: List[RadioOption] = values.map {
-    value =>
-      RadioOption(prefix, value.toString)
-  }
+  val individualSettlorAnswer: models.SettlorType.IndividualSettlor.type = SettlorType.IndividualSettlor
+  val businessSettlorAnswer: models.SettlorType.BusinessSettlor.type = SettlorType.BusinessSettlor
 
   "AddNow Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(
-          bind[TrustService].toInstance(mockTrustService)
-        ).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       val request = FakeRequest(GET, addNowRoute)
 
@@ -74,7 +48,7 @@ class AddNowControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, options)(request, messages).toString
+        view(form)(request, messages).toString
 
       application.stop()
     }
@@ -83,10 +57,7 @@ class AddNowControllerSpec extends SpecBase with MockitoSugar {
 
       val answers = emptyUserAnswers.set(AddNowPage, individualSettlorAnswer).success.value
 
-      val application = applicationBuilder(userAnswers = Some(answers))
-        .overrides(
-          bind[TrustService].toInstance(mockTrustService)
-        ).build()
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
 
       val request = FakeRequest(GET, addNowRoute)
 
@@ -97,21 +68,18 @@ class AddNowControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(individualSettlorAnswer), options)(fakeRequest, messages).toString
+        view(form.fill(individualSettlorAnswer))(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "redirect to the next page when Individual settlor is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(
-          bind[TrustService].toInstance(mockTrustService)
-        ).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       val request =
         FakeRequest(POST, addNowRoute)
-          .withFormUrlEncodedBody(("value", TypeOfSettlorToAdd.Individual.toString))
+          .withFormUrlEncodedBody(("value", individualSettlorAnswer.toString))
 
       val result = route(application, request).value
 
@@ -123,14 +91,12 @@ class AddNowControllerSpec extends SpecBase with MockitoSugar {
     }
 
     "redirect to the next page when Business settlor is submitted" in {
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(
-          bind[TrustService].toInstance(mockTrustService)
-        ).build()
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       val request =
         FakeRequest(POST, addNowRoute)
-          .withFormUrlEncodedBody(("value", TypeOfSettlorToAdd.Business.toString))
+          .withFormUrlEncodedBody(("value", businessSettlorAnswer.toString))
 
       val result = route(application, request).value
 
@@ -143,10 +109,7 @@ class AddNowControllerSpec extends SpecBase with MockitoSugar {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(
-          bind[TrustService].toInstance(mockTrustService)
-        ).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       val request = FakeRequest(POST, addNowRoute)
 
@@ -159,17 +122,14 @@ class AddNowControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, options)(fakeRequest, messages).toString
+        view(boundForm)(fakeRequest, messages).toString
 
        application.stop()
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None)
-        .overrides(
-          bind[TrustService].toInstance(mockTrustService)
-        ).build()
+      val application = applicationBuilder(userAnswers = None).build()
 
       val request = FakeRequest(GET, addNowRoute)
 
@@ -183,10 +143,7 @@ class AddNowControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to Session Expired for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None)
-        .overrides(
-          bind[TrustService].toInstance(mockTrustService)
-        ).build()
+      val application = applicationBuilder(userAnswers = None).build()
 
       val request =
         FakeRequest(POST, addNowRoute)

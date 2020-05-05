@@ -16,24 +16,26 @@
 
 package pages
 
-import models.UserAnswers
-import models.settlors.TypeOfSettlorToAdd
-import models.settlors.TypeOfSettlorToAdd.Business
+import models.SettlorType.{BusinessSettlor, IndividualSettlor}
+import models.{SettlorType, UserAnswers}
 import play.api.libs.json.JsPath
 
 import scala.util.Try
 
-case object AddNowPage extends QuestionPage[TypeOfSettlorToAdd] {
+case object AddNowPage extends QuestionPage[SettlorType] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "addNow"
 
-  override def cleanup(value: Option[TypeOfSettlorToAdd], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(value: Option[SettlorType], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {
 
-      case Some(Business) =>
+      case Some(BusinessSettlor) =>
         userAnswers.deleteAtPath(individual.living.basePath)
+
+      case Some(IndividualSettlor) =>
+        userAnswers.deleteAtPath(business.basePath)
 
       case _ =>
         super.cleanup(value, userAnswers)

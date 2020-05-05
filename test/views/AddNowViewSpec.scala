@@ -17,11 +17,9 @@
 package views
 
 import forms.AddSettlorTypeFormProvider
-import models.settlors.TypeOfSettlorToAdd
-import models.settlors.TypeOfSettlorToAdd.{Business, Individual, prefix}
+import models.SettlorType
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewmodels.RadioOption
 import views.behaviours.OptionsViewBehaviours
 import views.html.AddNowView
 
@@ -29,28 +27,19 @@ class AddNowViewSpec extends OptionsViewBehaviours {
 
   val messageKeyPrefix = "addNow"
 
-  val form: Form[TypeOfSettlorToAdd] = new AddSettlorTypeFormProvider()()
+  val form: Form[SettlorType] = new AddSettlorTypeFormProvider()()
   val view: AddNowView = viewFor[AddNowView](Some(emptyUserAnswers))
-
-  val values: List[TypeOfSettlorToAdd] = List(
-    Individual, Business
-  )
-
-  val options: List[RadioOption] = values.map {
-    value =>
-      RadioOption(prefix, value.toString)
-  }
 
   "AddNow view" must {
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, options)(fakeRequest, messages)
+      view.apply(form)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like pageWithOptions(form, applyView, options)
+    behave like pageWithOptions(form, applyView, SettlorType.options)
 
     behave like pageWithASubmitButton(applyView(form))
   }
