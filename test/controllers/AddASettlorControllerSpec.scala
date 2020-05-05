@@ -166,8 +166,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
             "This is a will trust. If the trust does not have a will settlor, you will need to change your answers.",
             Nil,
             settlorRows,
-            "The trust has 3 settlors",
-            Nil
+            "The trust has 3 settlors"
           )(fakeRequest, messages).toString
 
         application.stop()
@@ -244,8 +243,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
             "This is a will trust. If the trust does not have a will settlor, you will need to change your answers.",
             Nil,
             settlorRows,
-            "The trust has 3 settlors",
-            Nil
+            "The trust has 3 settlors"
           )(fakeRequest, messages).toString
 
         application.stop()
@@ -254,7 +252,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
     "maxed out settlors" must {
 
-      val settlors = Settlors(List.fill(25)(individualSettlor(true)), List.fill(25)(businessSettlor(true)), None)
+      val settlors = Settlors(List.fill(12)(individualSettlor(true)), List.fill(13)(businessSettlor(true)), None)
 
       val fakeService = new FakeService(settlors)
 
@@ -281,31 +279,10 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
             "This is a will trust. If the trust does not have a will settlor, you will need to change your answers.",
             settlorRows.inProgress,
             settlorRows.complete,
-            "The trust has 50 settlors"
+            "The trust has 25 settlors"
           )(fakeRequest, messages).toString
-        content must include("You cannot enter another settlor as you have entered a maximum of 50.")
+        content must include("You cannot enter another settlor as you have entered a maximum of 25.")
         content must include("If you have further settlors to add, write to HMRC with their details.")
-
-        application.stop()
-
-      }
-
-      "return correct view when one type of settlor is maxed out" in {
-
-        val settlors = Settlors(List.fill(25)(individualSettlor(true)), Nil, None)
-
-        val fakeService = new FakeService(settlors)
-
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService)
-        )).build()
-
-        val request = FakeRequest(GET, getRoute)
-
-        val result = route(application, request).value
-
-        contentAsString(result) must include("You cannot add another individual as you have entered a maximum of 25.")
-        contentAsString(result) must include("If you have further settlors to add within this type, write to HMRC with their details.")
 
         application.stop()
 
@@ -369,8 +346,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
             "This is a will trust. If the trust does not have a will settlor, you will need to change your answers.",
             Nil,
             settlorRows,
-            "The trust has 2 settlors",
-            Nil
+            "The trust has 2 settlors"
           )(fakeRequest, messages).toString
 
         content must include("You cannot remove First Last as they have already been declared")

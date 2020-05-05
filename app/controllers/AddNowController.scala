@@ -19,15 +19,13 @@ package controllers
 import controllers.actions._
 import forms.AddSettlorTypeFormProvider
 import javax.inject.Inject
-import models.NormalMode
-import models.settlors.TypeOfSettlorToAdd
-import models.settlors.TypeOfSettlorToAdd.Individual
+import models.SettlorType.IndividualSettlor
+import models.{NormalMode, SettlorType}
 import pages.AddNowPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
-import services.TrustService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.AddNowView
 
@@ -39,48 +37,39 @@ class AddNowController @Inject()(
                                   val controllerComponents: MessagesControllerComponents,
                                   view: AddNowView,
                                   formProvider: AddSettlorTypeFormProvider,
-                                  repository: PlaybackRepository,
-                                  trustService: TrustService
+                                  repository: PlaybackRepository
                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form: Form[TypeOfSettlorToAdd] = formProvider()
+  val form: Form[SettlorType] = formProvider()
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr {
     implicit request =>
 
-      trustService.getSettlors(request.userAnswers.utr).map {
-        settlors =>
-          val preparedForm = request.userAnswers.get(AddNowPage) match {
-            case None => form
-            case Some(value) => form.fill(value)
-          }
-
-          Ok(view(preparedForm, settlors.nonMaxedOutOptions))
-
+      val preparedForm = request.userAnswers.get(AddNowPage) match {
+        case None => form
+        case Some(value) => form.fill(value)
       }
+
+      Ok(view(preparedForm))
   }
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
-      trustService.getSettlors(request.userAnswers.utr).flatMap {
-        settlors =>
+      form.bindFromRequest().fold(
+        formWithErrors =>
+          Future.successful(BadRequest(view(formWithErrors))),
 
-          form.bindFromRequest().fold(
-            formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, settlors.nonMaxedOutOptions))),
-
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddNowPage, value))
-                _ <- repository.set(updatedAnswers)
-              } yield {
-                value match {
-                  case Individual => Redirect(controllers.individual.living.routes.NameController.onPageLoad(NormalMode))
-                  case _ => Redirect(controllers.business.routes.NameController.onPageLoad(NormalMode))
-                }
-              }
-          )
-      }
+        value =>
+          for {
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddNowPage, value))
+            _ <- repository.set(updatedAnswers)
+          } yield {
+            value match {
+              case IndividualSettlor => Redirect(controllers.individual.living.routes.NameController.onPageLoad(NormalMode))
+              case _ => Redirect(controllers.business.routes.NameController.onPageLoad(NormalMode))
+            }
+          }
+      )
   }
 }

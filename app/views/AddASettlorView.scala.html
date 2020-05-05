@@ -28,8 +28,7 @@
     trustDescription: String,
     inProgressSettlors: Seq[AddRow],
     completeSettlors: Seq[AddRow],
-    heading: String,
-    maxedOut: List[String])(implicit request: Request[_], messages: Messages)
+    heading: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)} $heading"
@@ -50,13 +49,6 @@
         @components.data_list(completeSettlors, "complete")
 
         @components.details("addASettlor.details")
-
-        @if(maxedOut.size > 0) {
-            <ul>
-                <li class="panel-indent"><p>@messages("addASettlor.maxedOut.just1", messages(maxedOut.head).toLowerCase)</p></li>
-                <li class="panel-indent"><p>@messages("addASettlor.maxedOut.just1.paragraph")</p></li>
-            </ul>
-        }
 
         @components.input_radio(
             field = form("value"),

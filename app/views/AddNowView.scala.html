@@ -16,13 +16,14 @@
 
 @import controllers.routes._
 @import viewmodels.RadioOption
+@import models.SettlorType
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], options: List[RadioOption])(implicit request: Request[_], messages: Messages)
+@(form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)} ${messages("addNow.title")}"
@@ -38,7 +39,7 @@
             field = form("value"),
             legend = messages("addNow.heading"),
             legendClass = Some("heading-large"),
-            inputs = options.toSeq,
+            inputs = SettlorType.options,
             headingIsLegend = true,
             fieldSetClass = Some("inline")
         )

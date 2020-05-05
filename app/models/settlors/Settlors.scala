@@ -16,20 +16,15 @@
 
 package models.settlors
 
-import models.settlors.TypeOfSettlorToAdd._
 import play.api.i18n.{Messages, MessagesProvider}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Reads, __}
-import viewmodels.RadioOption
 
 trait Settlor
 
 case class Settlors(settlor: List[IndividualSettlor],
                     settlorCompany: List[BusinessSettlor],
                     deceased: Option[DeceasedSettlor]) {
-
-  type SettlorOption = (Int, TypeOfSettlorToAdd)
-  type SettlorOptions = List[SettlorOption]
 
   def addToHeading()(implicit mp: MessagesProvider): String = {
 
@@ -40,22 +35,8 @@ case class Settlors(settlor: List[IndividualSettlor],
     }
   }
 
-  private val options: SettlorOptions = {
-    (settlor.size, Individual) ::
-    (settlorCompany.size, Business) ::
-    Nil
-  }
-
-  val nonMaxedOutOptions: List[RadioOption] = {
-    options.filter(x => x._1 < 25).map {
-      x => RadioOption(TypeOfSettlorToAdd.prefix, x._2.toString)
-    }
-  }
-
-  val maxedOutOptions: List[RadioOption] = {
-    options.filter(x => x._1 >= 25).map {
-      x => RadioOption(TypeOfSettlorToAdd.prefix, x._2.toString)
-    }
+  val isMaxedOut: Boolean = {
+    (settlor ++ settlorCompany).size >= 25
   }
 
 }

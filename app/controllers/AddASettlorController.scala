@@ -19,12 +19,10 @@ package controllers
 import config.FrontendAppConfig
 import connectors.TrustStoreConnector
 import controllers.actions.StandardActionSets
-import controllers.individual.deceased.routes._
 import forms.AddASettlorFormProvider
 import javax.inject.Inject
 import models.DeedOfVariation.AdditionToWillTrust
 import models.requests.DataRequest
-import models.settlors.Settlors
 import models.{AddASettlor, TypeOfTrust}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -62,7 +60,7 @@ class AddASettlorController @Inject()(
       } yield {
           val settlorRows = new AddASettlorViewHelper(settlors).rows
 
-          if (settlors.nonMaxedOutOptions.isEmpty) {
+          if (settlors.isMaxedOut) {
             Ok(completeView(
               trustDescription,
               inProgressSettlors = settlorRows.inProgress,
@@ -75,8 +73,7 @@ class AddASettlorController @Inject()(
               trustDescription,
               inProgressSettlors = settlorRows.inProgress,
               completeSettlors = settlorRows.complete,
-              heading = settlors.addToHeading,
-              maxedOut = settlors.maxedOutOptions.map(x => x.messageKey)
+              heading = settlors.addToHeading
             ))
           }
       }
@@ -97,8 +94,7 @@ class AddASettlorController @Inject()(
                 trustDescription,
                 rows.inProgress,
                 rows.complete,
-                settlors.addToHeading,
-                maxedOut = settlors.maxedOutOptions.map(x => x.messageKey)
+                settlors.addToHeading
               )
             ))
           },

@@ -18,13 +18,13 @@ package forms
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.settlors.TypeOfSettlorToAdd
+import models.SettlorType
 import play.api.data.Form
 
 class AddSettlorTypeFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[TypeOfSettlorToAdd] =
+  def apply(): Form[SettlorType] =
     Form(
-      "value" -> enumerable[TypeOfSettlorToAdd]("addNow.error.required")
+      "value" -> enumerable[SettlorType]("addNow.error.required")
     )
 }
