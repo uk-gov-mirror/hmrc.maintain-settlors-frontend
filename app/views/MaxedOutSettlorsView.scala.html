@@ -27,17 +27,17 @@
 @(trustDescription: String,
     inProgressSettlors: Seq[AddRow],
     completeSettlors: Seq[AddRow],
-    heading: String)(implicit request: Request[_], messages: Messages)
+    size: Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = heading
+    title = s"${messages("addASettlor.count.heading", size)}"
     ) {
 
     @formHelper(action = AddASettlorController.submitComplete(), 'autoComplete -> "off") {
 
         @components.back_link()
 
-        @components.heading(heading)
+        @components.heading(messages("addASettlor.count.heading", size))
 
         <p>@trustDescription</p>
 
@@ -48,7 +48,7 @@
         @components.details("addASettlor.details")
 
         <ul>
-            <li class="panel-indent"><p>@messages("addASettlor.maxedOut")</p></li>
+            <li class="panel-indent"><p>@messages("addASettlor.maxedOut", size)</p></li>
             <li class="panel-indent"><p>@messages("addASettlor.maxedOut.paragraph")</p></li>
         </ul>
 

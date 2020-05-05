@@ -26,9 +26,11 @@ case class Settlors(settlor: List[IndividualSettlor],
                     settlorCompany: List[BusinessSettlor],
                     deceased: Option[DeceasedSettlor]) {
 
+  val size: Int = (settlor ++ settlorCompany ++ deceased).size
+
   def addToHeading()(implicit mp: MessagesProvider): String = {
 
-    (settlor ++ settlorCompany ++ deceased).size match {
+    size match {
       case 0 => Messages("addASettlor.heading")
       case 1 => Messages("addASettlor.singular.heading")
       case l => Messages("addASettlor.count.heading", l)
