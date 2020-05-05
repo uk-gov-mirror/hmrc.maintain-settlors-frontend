@@ -252,13 +252,13 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
     "maxed out settlors" must {
 
-      val settlors = Settlors(List.fill(12)(individualSettlor(true)), List.fill(13)(businessSettlor(true)), None)
-
-      val fakeService = new FakeService(settlors)
-
-      val settlorRows = new AddASettlorViewHelper(settlors).rows
-
       "return OK and the correct view for a GET" in {
+
+        val settlors = Settlors(List.fill(12)(individualSettlor(true)), List.fill(13)(businessSettlor(true)), None)
+
+        val fakeService = new FakeService(settlors)
+
+        val settlorRows = new AddASettlorViewHelper(settlors).rows
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
           bind(classOf[TrustService]).toInstance(fakeService)
@@ -279,9 +279,49 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
             "This is a will trust. If the trust does not have a will settlor, you will need to change your answers.",
             settlorRows.inProgress,
             settlorRows.complete,
-            "The trust has 25 settlors"
+            25
           )(fakeRequest, messages).toString
         content must include("You cannot enter another settlor as you have entered a maximum of 25.")
+        content must include("If you have further settlors to add, write to HMRC with their details.")
+
+        application.stop()
+
+      }
+
+      "return OK and the correct view for a GET when there is also a will settlor" in {
+
+        val settlors = Settlors(
+          List.fill(12)(individualSettlor(true)),
+          List.fill(13)(businessSettlor(true)),
+          Some(deceasedSettlor)
+        )
+
+        val fakeService = new FakeService(settlors)
+
+        val settlorRows = new AddASettlorViewHelper(settlors).rows
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
+          bind(classOf[TrustService]).toInstance(fakeService)
+        )).build()
+
+        val request = FakeRequest(GET, getRoute)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[MaxedOutSettlorsView]
+
+        status(result) mustEqual OK
+
+        val content = contentAsString(result)
+
+        content mustEqual
+          view(
+            "This is a will trust. If the trust does not have a will settlor, you will need to change your answers.",
+            settlorRows.inProgress,
+            settlorRows.complete,
+            26
+          )(fakeRequest, messages).toString
+        content must include("You cannot enter another settlor as you have entered a maximum of 26.")
         content must include("If you have further settlors to add, write to HMRC with their details.")
 
         application.stop()
