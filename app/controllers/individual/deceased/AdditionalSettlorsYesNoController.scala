@@ -18,7 +18,6 @@ package controllers.individual.deceased
 
 import config.annotations.DeceasedSettlor
 import controllers.actions.StandardActionSets
-import controllers.actions.individual.deceased.NameRequiredAction
 import forms.YesNoFormProvider
 import javax.inject.Inject
 import navigation.Navigator
@@ -36,7 +35,6 @@ class AdditionalSettlorsYesNoController @Inject()(
                                         sessionRepository: PlaybackRepository,
                                         @DeceasedSettlor navigator: Navigator,
                                         standardActionSets: StandardActionSets,
-                                        nameAction: NameRequiredAction,
                                         formProvider: YesNoFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
                                         view: AdditionalSettlorsYesNoView
@@ -44,7 +42,7 @@ class AdditionalSettlorsYesNoController @Inject()(
 
   val form = formProvider.withPrefix("deceasedSettlor.additionalSettlorsYesNo")
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(AdditionalSettlorsYesNoPage) match {
@@ -52,15 +50,15 @@ class AdditionalSettlorsYesNoController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.settlorName))
+      Ok(view(preparedForm))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.settlorName))),
+          Future.successful(BadRequest(view(formWithErrors))),
 
         value =>
           for {

@@ -94,7 +94,7 @@ class CheckDetailsController @Inject()(
         Future.successful(render(
           request.userAnswers,
           request.settlorName,
-          settlors.settlor.nonEmpty && settlors.settlorCompany.nonEmpty
+          settlors.settlor.nonEmpty || settlors.settlorCompany.nonEmpty
         ))
       }
   }

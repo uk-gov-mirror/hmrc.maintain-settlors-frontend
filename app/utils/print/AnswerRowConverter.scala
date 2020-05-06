@@ -151,14 +151,7 @@ class AnswerRowConverter @Inject()() {
       if (hasAdditionalSettlors) {
         None
       } else {
-        Some(AnswerRow(
-          HtmlFormat.escape(messages(s"$labelKey.checkYourAnswersLabel", name)),
-          userAnswers.get(query) match {
-            case Some(x) => yesOrNo(x)
-            case None => HtmlFormat.escape(messages("site.no"))
-          },
-          changeUrl
-        ))
+        yesNoQuestion(query, labelKey, changeUrl)
       }
     }
   }

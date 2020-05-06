@@ -57,6 +57,7 @@ class DeceasedSettlorPrintHelperSpec extends SpecBase {
       .set(LivedInTheUkYesNoPage, true).success.value
       .set(UkAddressPage, ukAddress).success.value
       .set(NonUkAddressPage, nonUkAddress).success.value
+      .set(AdditionalSettlorsYesNoPage, false).success.value
   }
 
   "DeceasedSettlorPrintHelper" must {

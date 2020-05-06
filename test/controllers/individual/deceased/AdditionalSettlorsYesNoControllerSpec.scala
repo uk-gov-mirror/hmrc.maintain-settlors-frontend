@@ -16,17 +16,14 @@
 
 package controllers.individual.deceased
 
-import java.time.LocalDate
-
 import base.SpecBase
 import config.annotations.DeceasedSettlor
 import forms.YesNoFormProvider
-import models.{Name, TypeOfTrust, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.individual.deceased.{AdditionalSettlorsYesNoPage, NamePage}
+import pages.individual.deceased.AdditionalSettlorsYesNoPage
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -42,10 +39,6 @@ class AdditionalSettlorsYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new YesNoFormProvider()
   val form = formProvider.withPrefix("deceasedSettlor.additionalSettlorsYesNo")
-  val name = Name("FirstName", None, "LastName")
-
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), TypeOfTrust.WillTrustOrIntestacyTrust, None, isDateOfDeathRecorded = true)
-    .set(NamePage, name).success.value
 
   lazy val additionalSettlorsYesNoControllerRoute = routes.AdditionalSettlorsYesNoController.onPageLoad().url
 
@@ -64,7 +57,7 @@ class AdditionalSettlorsYesNoControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name.displayName)(fakeRequest, messages).toString
+        view(form)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -84,7 +77,7 @@ class AdditionalSettlorsYesNoControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), name.displayName)(fakeRequest, messages).toString
+        view(form.fill(true))(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -132,7 +125,7 @@ class AdditionalSettlorsYesNoControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name.displayName)(fakeRequest, messages).toString
+        view(boundForm)(fakeRequest, messages).toString
 
       application.stop()
     }

@@ -70,7 +70,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
   )
 
   private def userAnswers(bpMatchStatus: BpMatchStatus = FullyMatched,
-                      isDateOfDeathRecorded: Boolean = true
+                      isDateOfDeathRecorded: Boolean = true,
+                      addAdditionalSettlors: Boolean = false
                      ): UserAnswers = {
 
     val userAnswers = UserAnswers(
@@ -91,6 +92,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       .set(DateOfBirthPage, dateOfBirth).success.value
       .set(NationalInsuranceNumberYesNoPage, true).success.value
       .set(NationalInsuranceNumberPage, nino).success.value
+      .set(AdditionalSettlorsYesNoPage, addAdditionalSettlors).success.value
   }
 
   private def deceasedSettlor(matchStatus: BpMatchStatus = FullyMatched) = DeceasedSettlor(
@@ -342,6 +344,31 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       when(mockTrustConnector.amendDeceasedSettlor(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
       when(mockTrustService.getSettlors(any())(any(), any())).thenReturn(Future.successful(Settlors(List(individualSettlor), Nil, Some(deceasedSettlor()))))
+
+      val request = FakeRequest(POST, submitDetailsRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute
+
+      application.stop()
+    }
+
+    "redirect to the 'add a settlor' page when submitted if there are no other settlors but user selected yes to Are there any additional settlors for the trust?" in {
+
+      val mockTrustConnector = mock[TrustConnector]
+      val mockTrustService = mock[TrustService]
+
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers(addAdditionalSettlors = true)), affinityGroup = Agent)
+          .overrides(bind[TrustConnector].toInstance(mockTrustConnector))
+          .overrides(bind[TrustService].toInstance(mockTrustService))
+          .build()
+
+      when(mockTrustConnector.amendDeceasedSettlor(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
+      when(mockTrustService.getSettlors(any())(any(), any())).thenReturn(Future.successful(Settlors(Nil, Nil, Some(deceasedSettlor()))))
 
       val request = FakeRequest(POST, submitDetailsRoute)
 
