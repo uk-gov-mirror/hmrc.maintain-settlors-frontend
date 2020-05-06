@@ -24,6 +24,7 @@ import models.settlors.{DeceasedSettlor, IndividualSettlor, Settlors}
 import models.{Name, TrustDetails, TypeOfTrust}
 import org.mockito.Matchers.any
 import org.mockito.Mockito._
+import pages.AdditionalSettlorsYesNoPage
 import play.api.inject.bind
 import play.api.libs.json.JsBoolean
 import play.api.test.FakeRequest
@@ -60,6 +61,44 @@ class IndexControllerSpec extends SpecBase {
         .thenReturn(Future.successful(JsBoolean(true)))
 
       val application = applicationBuilder(userAnswers = None)
+        .overrides(bind[TrustConnector].toInstance(mockTrustConnector)).build()
+
+      val request = FakeRequest(GET, routes.IndexController.onPageLoad("UTRUTRUTR").url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result) mustBe Some(controllers.routes.AddASettlorController.onPageLoad().url)
+
+      application.stop()
+    }
+
+    "redirect to task list when there are no living settlors but user has previously answered yes to are there additional settlors to add to the trust" in {
+
+      val mockTrustConnector = mock[TrustConnector]
+
+      when(mockTrustConnector.getTrustDetails(any())(any(), any()))
+        .thenReturn(Future.successful(TrustDetails(startDate = LocalDate.parse("2019-06-01"), typeOfTrust = TypeOfTrust.WillTrustOrIntestacyTrust, deedOfVariation = None)))
+
+      when(mockTrustConnector.getSettlors(any())(any(), any()))
+        .thenReturn(Future.successful(
+          Settlors(
+            settlor = Nil,
+            settlorCompany = Nil,
+            deceased = Some(DeceasedSettlor(
+              None,
+              Name("First", None, "Last"),
+              None, None, None, None
+            )
+            )
+          )
+        ))
+
+      when(mockTrustConnector.getIsDeceasedSettlorDateOfDeathRecorded(any())(any(), any()))
+        .thenReturn(Future.successful(JsBoolean(true)))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.set(AdditionalSettlorsYesNoPage, true).success.value))
         .overrides(bind[TrustConnector].toInstance(mockTrustConnector)).build()
 
       val request = FakeRequest(GET, routes.IndexController.onPageLoad("UTRUTRUTR").url)
