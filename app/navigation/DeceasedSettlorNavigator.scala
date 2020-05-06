@@ -21,7 +21,7 @@ import javax.inject.Inject
 import models.BpMatchStatus.FullyMatched
 import models.{Mode, TypeOfTrust, UserAnswers}
 import pages.individual.deceased._
-import pages.{Page, QuestionPage}
+import pages.{AdditionalSettlorsYesNoPage, Page, QuestionPage}
 import play.api.mvc.Call
 
 class DeceasedSettlorNavigator @Inject()() extends Navigator {

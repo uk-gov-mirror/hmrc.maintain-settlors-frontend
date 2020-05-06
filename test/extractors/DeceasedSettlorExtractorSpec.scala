@@ -23,6 +23,7 @@ import models.BpMatchStatus.FullyMatched
 import models.settlors.DeceasedSettlor
 import models.{Name, NationalInsuranceNumber, UkAddress}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.AdditionalSettlorsYesNoPage
 import pages.individual.deceased._
 
 class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChecks {

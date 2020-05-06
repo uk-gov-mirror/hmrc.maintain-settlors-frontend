@@ -19,7 +19,8 @@ package extractors
 import com.google.inject.Inject
 import models.settlors.DeceasedSettlor
 import models.{Address, BpMatchStatus, NationalInsuranceNumber, NonUkAddress, UkAddress, UserAnswers}
-import pages.individual.deceased.{AdditionalSettlorsYesNoPage, _}
+import pages.AdditionalSettlorsYesNoPage
+import pages.individual.deceased._
 
 import scala.util.{Success, Try}
 
@@ -27,8 +28,9 @@ class DeceasedSettlorExtractor @Inject()() {
 
   def apply(answers: UserAnswers, settlor: DeceasedSettlor, hasAdditionalSettlors: Boolean): Try[UserAnswers] =
     answers
-      .set(NamePage, settlor.name)
+      .deleteAtPath(pages.individual.deceased.basePath)
       .flatMap(answers => extractBpMatchStatus(settlor.bpMatchStatus, answers))
+      .flatMap(_.set(NamePage, settlor.name))
       .flatMap(answers => extractDateOfBirth(settlor, answers))
       .flatMap(answers => extractDateOfDeath(settlor, answers))
       .flatMap(answers => extractAddress(settlor.address, answers))

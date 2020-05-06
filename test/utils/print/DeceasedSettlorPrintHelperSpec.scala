@@ -21,6 +21,7 @@ import java.time.LocalDate
 import base.SpecBase
 import models.BpMatchStatus.{FailedToMatch, FullyMatched}
 import models.{BpMatchStatus, Name, NonUkAddress, TypeOfTrust, UkAddress, UserAnswers}
+import pages.AdditionalSettlorsYesNoPage
 import pages.individual.deceased._
 import play.twirl.api.Html
 import viewmodels.{AnswerRow, AnswerSection}

@@ -21,7 +21,7 @@ import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
 import javax.inject.Inject
 import navigation.Navigator
-import pages.individual.deceased.AdditionalSettlorsYesNoPage
+import pages.AdditionalSettlorsYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository

@@ -19,6 +19,7 @@ package navigation
 import base.SpecBase
 import models.BpMatchStatus.{FailedToMatch, FullyMatched}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.AdditionalSettlorsYesNoPage
 import pages.individual.deceased._
 
 class DeceasedSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks  {

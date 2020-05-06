@@ -40,6 +40,7 @@ final case class UserAnswers(
     this
       .deleteAtPath(pages.individual.living.basePath)
       .flatMap(_.deleteAtPath(pages.business.basePath))
+      .flatMap(_.deleteAtPath(pages.individual.deceased.basePath))
       .flatMap(_.remove(AddNowPage))
   }
 

@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package pages.individual.deceased
+package pages
 
-import pages.QuestionPage
 import play.api.libs.json.JsPath
 
 case object AdditionalSettlorsYesNoPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = basePath \ toString
+  override def path: JsPath = JsPath \ toString
 
   override def toString: String = "additionalSettlorsYesNo"
 }

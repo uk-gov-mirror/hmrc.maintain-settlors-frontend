@@ -25,7 +25,8 @@ import javax.inject.Inject
 import models.BpMatchStatus.FullyMatched
 import models.UserAnswers
 import models.settlors.Settlors
-import pages.individual.deceased.{AdditionalSettlorsYesNoPage, BpMatchStatusPage}
+import pages.AdditionalSettlorsYesNoPage
+import pages.individual.deceased.BpMatchStatusPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import repositories.PlaybackRepository

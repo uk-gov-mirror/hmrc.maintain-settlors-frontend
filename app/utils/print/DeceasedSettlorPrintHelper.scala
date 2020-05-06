@@ -19,7 +19,8 @@ package utils.print
 import com.google.inject.Inject
 import models.BpMatchStatus.FullyMatched
 import models.UserAnswers
-import pages.individual.deceased.{AdditionalSettlorsYesNoPage, _}
+import pages.AdditionalSettlorsYesNoPage
+import pages.individual.deceased._
 import play.api.i18n.Messages
 import utils.countryOptions.CountryOptions
 import viewmodels.AnswerSection
