@@ -17,7 +17,7 @@
 package controllers
 
 import connectors.TrustConnector
-import controllers.actions.StandardActionSets
+import controllers.actions.IdentifierAction
 import javax.inject.Inject
 import models.UserAnswers
 import play.api.i18n.I18nSupport
@@ -29,14 +29,14 @@ import scala.concurrent.ExecutionContext
 
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
-                                 standardActionSets: StandardActionSets,
+                                 identifierAction: IdentifierAction,
                                  repo : PlaybackRepository,
                                  connector: TrustConnector)
                                (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(utr: String): Action[AnyContent] =
 
-    standardActionSets.verifiedForUtr.async {
+    identifierAction.async {
       implicit request =>
         for {
           details <- connector.getTrustDetails(utr)
