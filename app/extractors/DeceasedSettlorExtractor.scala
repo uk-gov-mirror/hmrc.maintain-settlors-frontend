@@ -91,10 +91,10 @@ class DeceasedSettlorExtractor @Inject()() {
 
   private def extractAdditionalSettlorsYesNo(hasAdditionalSettlors: Boolean, answers: UserAnswers): Try[UserAnswers] = {
     (hasAdditionalSettlors, answers.get(AdditionalSettlorsYesNoPage)) match {
-      case (_, Some(_)) | (true, None) =>
-        Success(answers)
-      case _ =>
+      case (false, None) =>
         answers.set(AdditionalSettlorsYesNoPage, false)
+      case _ =>
+        Success(answers)
     }
   }
 }
