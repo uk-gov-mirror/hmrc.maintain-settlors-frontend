@@ -108,7 +108,7 @@ class CheckDetailsController @Inject()(
           connector.amendDeceasedSettlor(request.userAnswers.utr, deceasedSettlor).flatMap(_ =>
             service.getSettlors(request.userAnswers.utr).flatMap { settlors =>
               (settlors.settlor.isEmpty && settlors.settlorCompany.isEmpty, request.userAnswers.get(AdditionalSettlorsYesNoPage)) match {
-                case (true, None) | (true, Some(false)) =>
+                case (true, Some(false)) =>
                   trustStoreConnector.setTaskComplete(request.userAnswers.utr).map(_ =>
                     Redirect(appConfig.maintainATrustOverview)
                   )
