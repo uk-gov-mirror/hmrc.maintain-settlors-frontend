@@ -18,6 +18,7 @@ package navigation
 
 import controllers.individual.deceased.{routes => rts}
 import javax.inject.Inject
+import models.BpMatchStatus.FullyMatched
 import models.{Mode, TypeOfTrust, UserAnswers}
 import pages.individual.deceased._
 import pages.{Page, QuestionPage}
@@ -35,37 +36,55 @@ class DeceasedSettlorNavigator @Inject()() extends Navigator {
     routes(page)(userAnswers)
   }
 
-  private val simpleNavigation: PartialFunction[Page, Call] = {
-    case NamePage => rts.DateOfDeathYesNoController.onPageLoad()
-    case DateOfDeathPage => rts.DateOfBirthYesNoController.onPageLoad()
-    case DateOfBirthPage => rts.NationalInsuranceNumberYesNoController.onPageLoad()
-    case NationalInsuranceNumberPage => rts.AdditionalSettlorsYesNoController.onPageLoad()
-    case UkAddressPage => rts.AdditionalSettlorsYesNoController.onPageLoad()
-    case NonUkAddressPage => rts.AdditionalSettlorsYesNoController.onPageLoad()
-    case AdditionalSettlorsYesNoPage => rts.CheckDetailsController.renderFromUserAnswers()
+  private val simpleNavigation: PartialFunction[Page, UserAnswers => Call] = {
+    case NamePage => _ => rts.DateOfDeathYesNoController.onPageLoad()
+    case DateOfDeathPage => ua => matchStatusNav(ua, rts.DateOfBirthYesNoController.onPageLoad())
+    case DateOfBirthPage => _ => rts.NationalInsuranceNumberYesNoController.onPageLoad()
+    case NationalInsuranceNumberPage | UkAddressPage | NonUkAddressPage => ua => additionalSettlorsNav(ua)
+    case AdditionalSettlorsYesNoPage => _ => rts.CheckDetailsController.renderFromUserAnswers()
   }
 
   private val yesNoNavigation: PartialFunction[Page, UserAnswers => Call] = {
     case DateOfDeathYesNoPage => ua =>
-      yesNoNav(ua, DateOfDeathYesNoPage, rts.DateOfDeathController.onPageLoad(), rts.DateOfBirthYesNoController.onPageLoad())
+      yesNoNav(ua, DateOfDeathYesNoPage, rts.DateOfDeathController.onPageLoad(), matchStatusNav(ua, rts.DateOfBirthYesNoController.onPageLoad()))
     case DateOfBirthYesNoPage => ua =>
       yesNoNav(ua, DateOfBirthYesNoPage, rts.DateOfBirthController.onPageLoad(), rts.NationalInsuranceNumberYesNoController.onPageLoad())
     case NationalInsuranceNumberYesNoPage => ua =>
       yesNoNav(ua, NationalInsuranceNumberYesNoPage, rts.NationalInsuranceNumberController.onPageLoad(), rts.AddressYesNoController.onPageLoad())
     case AddressYesNoPage => ua =>
-      yesNoNav(ua, AddressYesNoPage, rts.LivedInTheUkYesNoController.onPageLoad(), rts.AdditionalSettlorsYesNoController.onPageLoad())
+      yesNoNav(ua, AddressYesNoPage, rts.LivedInTheUkYesNoController.onPageLoad(), additionalSettlorsNav(ua))
     case LivedInTheUkYesNoPage => ua =>
       yesNoNav(ua, LivedInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad())
   }
 
-  def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {
+  private def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {
     ua.get(fromPage)
       .map(if (_) yesCall else noCall)
       .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
+  private def matchStatusNav(ua: UserAnswers, nextCall: Call): Call = {
+    ua.get(BpMatchStatusPage) match {
+      case Some(FullyMatched) =>
+        additionalSettlorsNav(ua)
+      case Some(_) =>
+        nextCall
+      case _ =>
+        controllers.routes.SessionExpiredController.onPageLoad()
+    }
+  }
+
+  private def additionalSettlorsNav(ua: UserAnswers): Call = {
+    ua.get(AdditionalSettlorsYesNoPage) match {
+      case Some(_) =>
+        rts.AdditionalSettlorsYesNoController.onPageLoad()
+      case _ =>
+        rts.CheckDetailsController.renderFromUserAnswers()
+    }
+  }
+
   val routes: PartialFunction[Page, UserAnswers => Call] =
-    simpleNavigation andThen (c => (_:UserAnswers) => c) orElse
+    simpleNavigation orElse
       yesNoNavigation
 
 }

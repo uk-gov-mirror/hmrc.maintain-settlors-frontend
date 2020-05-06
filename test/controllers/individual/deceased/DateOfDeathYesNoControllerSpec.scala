@@ -110,28 +110,6 @@ class DateOfDeathYesNoControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
 
-    "redirect to check your answers page when NO is submitted and settlor has 01 match status" in {
-
-      val mockPlaybackRepository = mock[PlaybackRepository]
-
-      when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
-
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers.set(BpMatchStatusPage, FullyMatched).success.value)).build()
-
-      val request =
-        FakeRequest(POST, dateOfDeathYesNoRoute)
-          .withFormUrlEncodedBody(("value", "false"))
-
-      val result = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual controllers.individual.deceased.routes.CheckDetailsController.renderFromUserAnswers().url
-
-      application.stop()
-    }
-
     "return a Bad Request and errors when invalid data is submitted" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()

@@ -157,35 +157,6 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
 
-    "redirect to check your answers page when valid data is submitted and settlor has 01 match status" in {
-
-      val mockPlaybackRepository = mock[PlaybackRepository]
-
-      when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
-
-      when(mockTrustConnector.getTrustDetails(any())(any(), any()))
-        .thenReturn(Future.successful(TrustDetails(
-          LocalDate.now,
-          TypeOfTrust.WillTrustOrIntestacyTrust,
-          None
-        )))
-
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers.set(BpMatchStatusPage, FullyMatched).success.value))
-          .overrides(
-            bind[TrustConnector].toInstance(mockTrustConnector)
-          )
-          .build()
-
-      val result = route(application, postRequest()).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual controllers.individual.deceased.routes.CheckDetailsController.renderFromUserAnswers().url
-
-      application.stop()
-    }
-
     "return a Bad Request and errors when invalid data is submitted" in {
 
       when(mockTrustConnector.getTrustDetails(any())(any(), any()))

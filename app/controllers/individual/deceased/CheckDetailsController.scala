@@ -57,8 +57,8 @@ class CheckDetailsController @Inject()(
 
   private def render(userAnswers: UserAnswers,
                      name: String,
-                     noAdditionalSettlors: Boolean)(implicit request: Request[AnyContent]): Result = {
-    val section: AnswerSection = printHelper(userAnswers, name, noAdditionalSettlors)
+                     hasAdditionalSettlors: Boolean)(implicit request: Request[AnyContent]): Result = {
+    val section: AnswerSection = printHelper(userAnswers, name, hasAdditionalSettlors)
     Ok(view(
       section,
       name,
@@ -76,10 +76,11 @@ class CheckDetailsController @Inject()(
       service.getSettlors(request.userAnswers.utr) flatMap {
         case Settlors(individuals, businesses, Some(deceased)) =>
           for {
-            extractedF <- Future.fromTry(extractor(request.userAnswers, deceased))
+            hasAdditionalSettlors <- Future.successful(individuals.nonEmpty || businesses.nonEmpty)
+            extractedF <- Future.fromTry(extractor(request.userAnswers, deceased, hasAdditionalSettlors))
             _ <- playbackRepository.set(extractedF)
           } yield {
-            render(extractedF, deceased.name.displayName, individuals.isEmpty && businesses.isEmpty)
+            render(extractedF, deceased.name.displayName, hasAdditionalSettlors)
           }
         case Settlors(_, _, None) =>
           throw new Exception("Deceased Settlor Information not found")
@@ -93,7 +94,7 @@ class CheckDetailsController @Inject()(
         Future.successful(render(
           request.userAnswers,
           request.settlorName,
-          settlors.settlor.isEmpty && settlors.settlorCompany.isEmpty
+          settlors.settlor.nonEmpty && settlors.settlorCompany.nonEmpty
         ))
       }
   }

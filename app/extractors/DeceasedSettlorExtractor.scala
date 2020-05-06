@@ -19,20 +19,21 @@ package extractors
 import com.google.inject.Inject
 import models.settlors.DeceasedSettlor
 import models.{Address, BpMatchStatus, NationalInsuranceNumber, NonUkAddress, UkAddress, UserAnswers}
-import pages.individual.deceased._
+import pages.individual.deceased.{AdditionalSettlorsYesNoPage, _}
 
 import scala.util.{Success, Try}
 
 class DeceasedSettlorExtractor @Inject()() {
 
-  def apply(answers: UserAnswers, settlor: DeceasedSettlor): Try[UserAnswers] =
-    answers.deleteAtPath(pages.individual.deceased.basePath)
+  def apply(answers: UserAnswers, settlor: DeceasedSettlor, hasAdditionalSettlors: Boolean): Try[UserAnswers] =
+    answers
+      .set(NamePage, settlor.name)
       .flatMap(answers => extractBpMatchStatus(settlor.bpMatchStatus, answers))
-      .flatMap(_.set(NamePage, settlor.name))
       .flatMap(answers => extractDateOfBirth(settlor, answers))
       .flatMap(answers => extractDateOfDeath(settlor, answers))
       .flatMap(answers => extractAddress(settlor.address, answers))
       .flatMap(answers => extractIdentification(settlor, answers))
+      .flatMap(answers => extractAdditionalSettlorsYesNo(hasAdditionalSettlors, answers))
 
   private def extractBpMatchStatus(bpMatchStatus: Option[BpMatchStatus], answers: UserAnswers): Try[UserAnswers] = {
     bpMatchStatus match {
@@ -85,6 +86,15 @@ class DeceasedSettlorExtractor @Inject()() {
           .flatMap(_.set(NationalInsuranceNumberPage, nino))
       case _ =>
         answers.set(NationalInsuranceNumberYesNoPage, false)
+    }
+  }
+
+  private def extractAdditionalSettlorsYesNo(hasAdditionalSettlors: Boolean, answers: UserAnswers): Try[UserAnswers] = {
+    (hasAdditionalSettlors, answers.get(AdditionalSettlorsYesNoPage)) match {
+      case (_, Some(_)) | (true, None) =>
+        Success(answers)
+      case _ =>
+        answers.set(AdditionalSettlorsYesNoPage, false)
     }
   }
 }
