@@ -107,10 +107,12 @@ class CheckDetailsController @Inject()(
           connector.amendDeceasedSettlor(request.userAnswers.utr, deceasedSettlor).flatMap(_ =>
             service.getSettlors(request.userAnswers.utr).flatMap { settlors =>
               (settlors.settlor.isEmpty && settlors.settlorCompany.isEmpty, request.userAnswers.get(AdditionalSettlorsYesNoPage)) match {
-                case (false, _) | (_, Some(true)) => Future.successful(Redirect(controllers.routes.AddASettlorController.onPageLoad()))
-                case _ => trustStoreConnector.setTaskComplete(request.userAnswers.utr).map(_ =>
-                  Redirect(appConfig.maintainATrustOverview)
-                )
+                case (true, None) | (true, Some(false)) =>
+                  trustStoreConnector.setTaskComplete(request.userAnswers.utr).map(_ =>
+                    Redirect(appConfig.maintainATrustOverview)
+                  )
+                case _ =>
+                  Future.successful(Redirect(controllers.routes.AddASettlorController.onPageLoad()))
               }
             }
           )
