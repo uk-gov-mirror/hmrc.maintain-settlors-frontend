@@ -143,5 +143,23 @@ class AnswerRowConverter @Inject()() {
         )
       }
     }
+
+    def additionalSettlorsQuestion(query: Gettable[Boolean],
+                              labelKey: String,
+                              changeUrl: Option[String],
+                              noAdditionalSettlors: Boolean): Option[AnswerRow] = {
+      if (noAdditionalSettlors) {
+        Some(AnswerRow(
+          HtmlFormat.escape(messages(s"$labelKey.checkYourAnswersLabel", name)),
+          userAnswers.get(query) match {
+            case Some(x) => yesOrNo(x)
+            case None => HtmlFormat.escape("")
+          },
+          changeUrl
+        ))
+      } else {
+        None
+      }
+    }
   }
 }

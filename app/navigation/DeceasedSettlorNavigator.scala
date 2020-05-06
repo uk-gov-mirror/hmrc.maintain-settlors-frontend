@@ -39,10 +39,10 @@ class DeceasedSettlorNavigator @Inject()() extends Navigator {
     case NamePage => rts.DateOfDeathYesNoController.onPageLoad()
     case DateOfDeathPage => rts.DateOfBirthYesNoController.onPageLoad()
     case DateOfBirthPage => rts.NationalInsuranceNumberYesNoController.onPageLoad()
-    case NationalInsuranceNumberPage => rts.CheckDetailsController.renderFromUserAnswers()
-    case UkAddressPage => rts.CheckDetailsController.renderFromUserAnswers()
-    case NonUkAddressPage => rts.CheckDetailsController.renderFromUserAnswers()
-
+    case NationalInsuranceNumberPage => rts.AdditionalSettlorsYesNoController.onPageLoad()
+    case UkAddressPage => rts.AdditionalSettlorsYesNoController.onPageLoad()
+    case NonUkAddressPage => rts.AdditionalSettlorsYesNoController.onPageLoad()
+    case AdditionalSettlorsYesNoPage => rts.CheckDetailsController.renderFromUserAnswers()
   }
 
   private val yesNoNavigation: PartialFunction[Page, UserAnswers => Call] = {
@@ -53,7 +53,7 @@ class DeceasedSettlorNavigator @Inject()() extends Navigator {
     case NationalInsuranceNumberYesNoPage => ua =>
       yesNoNav(ua, NationalInsuranceNumberYesNoPage, rts.NationalInsuranceNumberController.onPageLoad(), rts.AddressYesNoController.onPageLoad())
     case AddressYesNoPage => ua =>
-      yesNoNav(ua, AddressYesNoPage, rts.LivedInTheUkYesNoController.onPageLoad(), rts.CheckDetailsController.renderFromUserAnswers())
+      yesNoNav(ua, AddressYesNoPage, rts.LivedInTheUkYesNoController.onPageLoad(), rts.AdditionalSettlorsYesNoController.onPageLoad())
     case LivedInTheUkYesNoPage => ua =>
       yesNoNav(ua, LivedInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad())
   }

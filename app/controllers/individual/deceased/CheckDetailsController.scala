@@ -24,7 +24,8 @@ import extractors.DeceasedSettlorExtractor
 import javax.inject.Inject
 import models.BpMatchStatus.FullyMatched
 import models.UserAnswers
-import pages.individual.deceased.BpMatchStatusPage
+import models.settlors.Settlors
+import pages.individual.deceased.{AdditionalSettlorsYesNoPage, BpMatchStatusPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import repositories.PlaybackRepository
@@ -54,8 +55,10 @@ class CheckDetailsController @Inject()(
                                         errorHandler: ErrorHandler
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def render(userAnswers: UserAnswers, name: String)(implicit request: Request[AnyContent]): Result = {
-    val section: AnswerSection = printHelper(userAnswers, name)
+  private def render(userAnswers: UserAnswers,
+                     name: String,
+                     noAdditionalSettlors: Boolean)(implicit request: Request[AnyContent]): Result = {
+    val section: AnswerSection = printHelper(userAnswers, name, noAdditionalSettlors)
     Ok(view(
       section,
       name,
@@ -70,21 +73,29 @@ class CheckDetailsController @Inject()(
   def extractAndRender(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
-      service.getDeceasedSettlor(request.userAnswers.utr) flatMap {
-        case Some(deceasedSettlor) =>
+      service.getSettlors(request.userAnswers.utr) flatMap {
+        case Settlors(individuals, businesses, Some(deceased)) =>
           for {
-            extractedF <- Future.fromTry(extractor(request.userAnswers, deceasedSettlor))
+            extractedF <- Future.fromTry(extractor(request.userAnswers, deceased))
             _ <- playbackRepository.set(extractedF)
           } yield {
-              render(extractedF, deceasedSettlor.name.displayName)
+            render(extractedF, deceased.name.displayName, individuals.isEmpty && businesses.isEmpty)
           }
-        case None => throw new Exception("Deceased Settlor Information not found")
+        case Settlors(_, _, None) =>
+          throw new Exception("Deceased Settlor Information not found")
+
       }
   }
 
-  def renderFromUserAnswers(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
+  def renderFromUserAnswers(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
-      render(request.userAnswers, request.settlorName)
+      service.getSettlors(request.userAnswers.utr).flatMap { settlors =>
+        Future.successful(render(
+          request.userAnswers,
+          request.settlorName,
+          settlors.settlor.isEmpty && settlors.settlorCompany.isEmpty
+        ))
+      }
   }
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
@@ -94,12 +105,11 @@ class CheckDetailsController @Inject()(
         deceasedSettlor =>
           connector.amendDeceasedSettlor(request.userAnswers.utr, deceasedSettlor).flatMap(_ =>
             service.getSettlors(request.userAnswers.utr).flatMap { settlors =>
-              if (settlors.settlor.isEmpty && settlors.settlorCompany.isEmpty) {
-                for {
-                  _ <- trustStoreConnector.setTaskComplete(request.userAnswers.utr)
-                } yield Redirect(appConfig.maintainATrustOverview)
-              } else {
-                Future.successful(Redirect(controllers.routes.AddASettlorController.onPageLoad()))
+              (settlors.settlor.isEmpty && settlors.settlorCompany.isEmpty, request.userAnswers.get(AdditionalSettlorsYesNoPage)) match {
+                case (false, _) | (_, Some(true)) => Future.successful(Redirect(controllers.routes.AddASettlorController.onPageLoad()))
+                case _ => trustStoreConnector.setTaskComplete(request.userAnswers.utr).map(_ =>
+                  Redirect(appConfig.maintainATrustOverview)
+                )
               }
             }
           )

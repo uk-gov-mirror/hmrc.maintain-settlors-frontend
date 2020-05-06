@@ -28,7 +28,9 @@ class DeceasedSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverte
                                            countryOptions: CountryOptions
                                             ) {
 
-  def apply(userAnswers: UserAnswers, settlorName: String)(implicit messages: Messages) = {
+  def apply(userAnswers: UserAnswers,
+            settlorName: String,
+            noAdditionalSettlors: Boolean)(implicit messages: Messages) = {
 
     val bound = answerRowConverter.bind(userAnswers, settlorName, countryOptions)
 
@@ -47,7 +49,8 @@ class DeceasedSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverte
             bound.yesNoQuestion(AddressYesNoPage, "deceasedSettlor.addressYesNo", None),
             bound.yesNoQuestion(LivedInTheUkYesNoPage, "deceasedSettlor.livedInTheUkYesNo", None),
             bound.addressQuestion(UkAddressPage, "deceasedSettlor.ukAddress", None),
-            bound.addressQuestion(NonUkAddressPage, "deceasedSettlor.nonUkAddress", None)
+            bound.addressQuestion(NonUkAddressPage, "deceasedSettlor.nonUkAddress", None),
+            bound.additionalSettlorsQuestion(AdditionalSettlorsYesNoPage, "deceasedSettlor.additionalSettlorsYesNo", Some(controllers.individual.deceased.routes.AdditionalSettlorsYesNoController.onPageLoad().url), noAdditionalSettlors)
           )
         case _ =>
           Seq(
@@ -61,7 +64,8 @@ class DeceasedSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverte
             bound.yesNoQuestion(AddressYesNoPage, "deceasedSettlor.addressYesNo", Some(controllers.individual.deceased.routes.AddressYesNoController.onPageLoad().url)),
             bound.yesNoQuestion(LivedInTheUkYesNoPage, "deceasedSettlor.livedInTheUkYesNo", Some(controllers.individual.deceased.routes.LivedInTheUkYesNoController.onPageLoad().url)),
             bound.addressQuestion(UkAddressPage, "deceasedSettlor.ukAddress", Some(controllers.individual.deceased.routes.UkAddressController.onPageLoad().url)),
-            bound.addressQuestion(NonUkAddressPage, "deceasedSettlor.nonUkAddress", Some(controllers.individual.deceased.routes.NonUkAddressController.onPageLoad().url))
+            bound.addressQuestion(NonUkAddressPage, "deceasedSettlor.nonUkAddress", Some(controllers.individual.deceased.routes.NonUkAddressController.onPageLoad().url)),
+            bound.additionalSettlorsQuestion(AdditionalSettlorsYesNoPage, "deceasedSettlor.additionalSettlorsYesNo", Some(controllers.individual.deceased.routes.AdditionalSettlorsYesNoController.onPageLoad().url), noAdditionalSettlors)
           )
       }).flatten
     )
