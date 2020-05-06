@@ -17,7 +17,7 @@
 package controllers
 
 import connectors.TrustConnector
-import controllers.actions.IdentifierAction
+import controllers.actions.StandardActionSets
 import javax.inject.Inject
 import models.UserAnswers
 import play.api.i18n.I18nSupport
@@ -29,14 +29,14 @@ import scala.concurrent.ExecutionContext
 
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
-                                 identifierAction: IdentifierAction,
+                                 standardActionSets: StandardActionSets,
                                  repo : PlaybackRepository,
                                  connector: TrustConnector)
                                (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(utr: String): Action[AnyContent] =
 
-    identifierAction.async {
+    standardActionSets.verifiedForUtr.async {
       implicit request =>
         for {
           details <- connector.getTrustDetails(utr)
@@ -51,9 +51,8 @@ class IndexController @Inject()(
               isDateOfDeathRecorded = isDateOfDeathRecorded.value
             ))
         } yield {
-          val combined = allSettlors.settlor ::: allSettlors.settlorCompany
 
-          if (combined.nonEmpty) {
+          if (allSettlors.hasAdditionalSettlors) {
             Redirect(controllers.routes.AddASettlorController.onPageLoad())
           } else {
             Redirect(controllers.individual.deceased.routes.CheckDetailsController.extractAndRender())
