@@ -16,6 +16,7 @@
 
 package models
 
+import play.api.libs.json.{JsString, Writes}
 import viewmodels.RadioOption
 
 sealed trait SettlorType
@@ -36,4 +37,9 @@ object SettlorType extends Enumerable.Implicits {
 
   implicit val enumerable: Enumerable[SettlorType] =
     Enumerable(values.map(v => v.toString -> v): _*)
+
+  val writesToTrusts : Writes[SettlorType] = Writes {
+    case IndividualSettlor => JsString("settlor")
+    case BusinessSettlor => JsString("settlorCompany")
+  }
 }
