@@ -143,5 +143,16 @@ class AnswerRowConverter @Inject()() {
         )
       }
     }
+
+    def additionalSettlorsQuestion(query: Gettable[Boolean],
+                                   labelKey: String,
+                                   changeUrl: Option[String],
+                                   hasAdditionalSettlors: Boolean): Option[AnswerRow] = {
+      if (hasAdditionalSettlors) {
+        None
+      } else {
+        yesNoQuestion(query, labelKey, changeUrl)
+      }
+    }
   }
 }

@@ -18,26 +18,15 @@ package extractors
 
 import java.time.LocalDate
 
-import generators.ModelGenerators
+import base.SpecBase
 import models.BpMatchStatus.FullyMatched
 import models.settlors.DeceasedSettlor
-import models.{Name, NationalInsuranceNumber, TypeOfTrust, UkAddress, UserAnswers}
-import org.scalatest.{FreeSpec, MustMatchers}
+import models.{Name, NationalInsuranceNumber, UkAddress}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.AdditionalSettlorsYesNoPage
 import pages.individual.deceased._
-import play.api.libs.json.Json
 
-class DeceasedSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyChecks with ModelGenerators with MustMatchers {
-
-  val answers: UserAnswers = UserAnswers(
-    "Id",
-    "UTRUTRUTR",
-    LocalDate.of(1987, 12, 31),
-    TypeOfTrust.WillTrustOrIntestacyTrust,
-    None,
-    isDateOfDeathRecorded = true,
-    Json.obj()
-  )
+class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChecks {
 
   val name = Name("First", None, "Last")
   val date = LocalDate.parse("1967-02-03")
@@ -59,7 +48,7 @@ class DeceasedSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyCheck
       address = None
     )
 
-    val result = extractor(answers, individual).get
+    val result = extractor(emptyUserAnswers, individual, hasAdditionalSettlors = false).get
 
     result.get(BpMatchStatusPage) mustNot be(defined)
     result.get(NamePage).get mustBe name
@@ -86,7 +75,7 @@ class DeceasedSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyCheck
       address = Some(address)
     )
 
-    val result = extractor(answers, individual).get
+    val result = extractor(emptyUserAnswers, individual, hasAdditionalSettlors = false).get
 
     result.get(BpMatchStatusPage) mustNot be(defined)
     result.get(NamePage).get mustBe name
@@ -113,7 +102,7 @@ class DeceasedSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyCheck
       address = None
     )
 
-    val result = extractor(answers, individual).get
+    val result = extractor(emptyUserAnswers, individual, hasAdditionalSettlors = false).get
 
     result.get(BpMatchStatusPage).get mustBe FullyMatched
     result.get(NamePage).get mustBe name
@@ -125,6 +114,73 @@ class DeceasedSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyCheck
     result.get(LivedInTheUkYesNoPage) mustNot be(defined)
     result.get(UkAddressPage) mustNot be(defined)
     result.get(NonUkAddressPage) mustNot be(defined)
+  }
+
+  val settlor = DeceasedSettlor(
+    bpMatchStatus = None,
+    name = name,
+    dateOfDeath = None,
+    dateOfBirth = None,
+    identification = None,
+    address = None
+  )
+
+  "there are no other settlors" in {
+
+    val result = extractor(emptyUserAnswers, settlor, hasAdditionalSettlors = false).get
+
+    result.get(AdditionalSettlorsYesNoPage).get mustBe false
+  }
+
+  "there are other settlors" in {
+
+    val result = extractor(emptyUserAnswers, settlor, hasAdditionalSettlors = true).get
+
+    result.get(AdditionalSettlorsYesNoPage) mustNot be(defined)
+  }
+
+  "there are no other settlors but the additional settlors question has been previously answered true" in {
+
+    val result = extractor(
+      emptyUserAnswers.set(AdditionalSettlorsYesNoPage, true).success.value,
+      settlor,
+      hasAdditionalSettlors = false
+    ).get
+
+    result.get(AdditionalSettlorsYesNoPage).get mustBe true
+  }
+
+  "there are no other settlors but the additional settlors question has been previously answered false" in {
+
+    val result = extractor(
+      emptyUserAnswers.set(AdditionalSettlorsYesNoPage, false).success.value,
+      settlor,
+      hasAdditionalSettlors = false
+    ).get
+
+    result.get(AdditionalSettlorsYesNoPage).get mustBe false
+  }
+
+  "there are other settlors but the additional settlors question has been previously answered true" in {
+
+    val result = extractor(
+      emptyUserAnswers.set(AdditionalSettlorsYesNoPage, true).success.value,
+      settlor,
+      hasAdditionalSettlors = true
+    ).get
+
+    result.get(AdditionalSettlorsYesNoPage).get mustBe true
+  }
+
+  "there are other settlors but the additional settlors question has been previously answered false" in {
+
+    val result = extractor(
+      emptyUserAnswers.set(AdditionalSettlorsYesNoPage, false).success.value,
+      settlor,
+      hasAdditionalSettlors = true
+    ).get
+
+    result.get(AdditionalSettlorsYesNoPage).get mustBe false
   }
 
 }

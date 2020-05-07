@@ -17,46 +17,50 @@
 package controllers
 
 import connectors.TrustConnector
-import controllers.actions.IdentifierAction
+import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import javax.inject.Inject
 import models.UserAnswers
+import pages.AdditionalSettlorsYesNoPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
                                  identifierAction: IdentifierAction,
+                                 getData: DataRetrievalAction,
                                  repo : PlaybackRepository,
                                  connector: TrustConnector)
                                (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(utr: String): Action[AnyContent] =
 
-    identifierAction.async {
+    (identifierAction andThen getData).async {
       implicit request =>
         for {
           details <- connector.getTrustDetails(utr)
           allSettlors <- connector.getSettlors(utr)
           isDateOfDeathRecorded <- connector.getIsDeceasedSettlorDateOfDeathRecorded(utr)
-          _ <- repo.set(UserAnswers(
+          ua <- Future.successful(request.userAnswers.getOrElse(
+            UserAnswers(
               internalAuthId = request.user.internalId,
               utr = utr,
               whenTrustSetup = details.startDate,
               trustType = details.typeOfTrust,
               deedOfVariation = details.deedOfVariation,
               isDateOfDeathRecorded = isDateOfDeathRecorded.value
-            ))
+            )
+          ))
+          _ <- repo.set(ua)
         } yield {
-          val combined = allSettlors.settlor ::: allSettlors.settlorCompany
-
-          if (combined.nonEmpty) {
-            Redirect(controllers.routes.AddASettlorController.onPageLoad())
-          } else {
-            Redirect(controllers.individual.deceased.routes.CheckDetailsController.extractAndRender())
+          (allSettlors.hasAdditionalSettlors, ua.get(AdditionalSettlorsYesNoPage)) match {
+            case (true, _) | (_, Some(true)) =>
+              Redirect(controllers.routes.AddASettlorController.onPageLoad())
+            case _ =>
+              Redirect(controllers.individual.deceased.routes.CheckDetailsController.extractAndRender())
           }
         }
     }

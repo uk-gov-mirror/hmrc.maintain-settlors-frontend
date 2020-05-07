@@ -28,6 +28,7 @@ import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
+import pages.AdditionalSettlorsYesNoPage
 import pages.individual.deceased._
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -70,7 +71,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
   )
 
   private def userAnswers(bpMatchStatus: BpMatchStatus = FullyMatched,
-                      isDateOfDeathRecorded: Boolean = true
+                      isDateOfDeathRecorded: Boolean = true,
+                      addAdditionalSettlors: Boolean = false
                      ): UserAnswers = {
 
     val userAnswers = UserAnswers(
@@ -91,6 +93,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       .set(DateOfBirthPage, dateOfBirth).success.value
       .set(NationalInsuranceNumberYesNoPage, true).success.value
       .set(NationalInsuranceNumberPage, nino).success.value
+      .set(AdditionalSettlorsYesNoPage, addAdditionalSettlors).success.value
   }
 
   private def deceasedSettlor(matchStatus: BpMatchStatus = FullyMatched) = DeceasedSettlor(
@@ -106,112 +109,226 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
     "return OK and the correct view for a GET" when {
 
-      "01 match status and date of death is known to ETMP" in {
+      "there are additional settlors" when {
 
-        val matchStatus = FullyMatched
+        "01 match status and date of death is known to ETMP" in {
 
-        val ua = userAnswers(matchStatus)
+          val matchStatus = FullyMatched
 
-        val mockService : TrustService = mock[TrustService]
+          val ua = userAnswers(matchStatus)
 
-        val application = applicationBuilder(userAnswers = Some(ua))
-          .overrides(
-            bind[TrustService].toInstance(mockService)
-          )
-          .build()
+          val mockService : TrustService = mock[TrustService]
 
-        when(mockService.getDeceasedSettlor(any())(any(), any()))
-          .thenReturn(Future.successful(Some(deceasedSettlor(matchStatus))))
+          val application = applicationBuilder(userAnswers = Some(ua))
+            .overrides(
+              bind[TrustService].toInstance(mockService)
+            )
+            .build()
 
-        val request = FakeRequest(GET, checkDetailsRoute)
+          when(mockService.getSettlors(any())(any(), any()))
+            .thenReturn(Future.successful(Settlors(List(individualSettlor), Nil, Some(deceasedSettlor(matchStatus)))))
 
-        val result = route(application, request).value
+          val request = FakeRequest(GET, checkDetailsRoute)
 
-        val view = application.injector.instanceOf[CheckDetailsView]
-        val printHelper = application.injector.instanceOf[DeceasedSettlorPrintHelper]
-        val answerSection = printHelper(ua, name.displayName)
+          val result = route(application, request).value
 
-        status(result) mustEqual OK
+          val view = application.injector.instanceOf[CheckDetailsView]
+          val printHelper = application.injector.instanceOf[DeceasedSettlorPrintHelper]
+          val answerSection = printHelper(ua, name.displayName, hasAdditionalSettlors = true)
 
-        contentAsString(result) mustEqual
-          view(
-            answerSection,
-            name.displayName,
-            is01MatchStatus = true,
-            isDateOfDeathRecorded = true
-          )(fakeRequest, messages).toString
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(
+              answerSection,
+              name.displayName,
+              is01MatchStatus = true,
+              isDateOfDeathRecorded = true
+            )(fakeRequest, messages).toString
+        }
+
+        "01 match status and date of death is not known to ETMP" in {
+
+          val matchStatus = FullyMatched
+
+          val ua = userAnswers(matchStatus, isDateOfDeathRecorded = false)
+
+          val mockService : TrustService = mock[TrustService]
+
+          val application = applicationBuilder(userAnswers = Some(ua))
+            .overrides(
+              bind[TrustService].toInstance(mockService)
+            )
+            .build()
+
+          when(mockService.getSettlors(any())(any(), any()))
+            .thenReturn(Future.successful(Settlors(List(individualSettlor), Nil, Some(deceasedSettlor(matchStatus)))))
+
+          val request = FakeRequest(GET, checkDetailsRoute)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[CheckDetailsView]
+          val printHelper = application.injector.instanceOf[DeceasedSettlorPrintHelper]
+          val answerSection = printHelper(ua, name.displayName, hasAdditionalSettlors = true)
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(
+              answerSection,
+              name.displayName,
+              is01MatchStatus = true,
+              isDateOfDeathRecorded = false
+            )(fakeRequest, messages).toString
+        }
+
+        "not a 01 match status" in {
+
+          val matchStatus = FailedToMatch
+
+          val ua = userAnswers(matchStatus)
+
+          val mockService : TrustService = mock[TrustService]
+
+          val application = applicationBuilder(userAnswers = Some(ua))
+            .overrides(
+              bind[TrustService].toInstance(mockService)
+            )
+            .build()
+
+          when(mockService.getSettlors(any())(any(), any()))
+            .thenReturn(Future.successful(Settlors(List(individualSettlor), Nil, Some(deceasedSettlor(matchStatus)))))
+
+          val request = FakeRequest(GET, checkDetailsRoute)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[CheckDetailsView]
+          val printHelper = application.injector.instanceOf[DeceasedSettlorPrintHelper]
+          val answerSection = printHelper(ua, name.displayName, hasAdditionalSettlors = true)
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(
+              answerSection,
+              name.displayName,
+              is01MatchStatus = false,
+              isDateOfDeathRecorded = true
+            )(fakeRequest, messages).toString
+        }
       }
 
-      "01 match status and date of death is not known to ETMP" in {
+      "there are no additional settlors" when {
 
-        val matchStatus = FullyMatched
+        "01 match status and date of death is known to ETMP" in {
 
-        val ua = userAnswers(matchStatus, isDateOfDeathRecorded = false)
+          val matchStatus = FullyMatched
 
-        val mockService : TrustService = mock[TrustService]
+          val ua = userAnswers(matchStatus)
 
-        val application = applicationBuilder(userAnswers = Some(ua))
-          .overrides(
-            bind[TrustService].toInstance(mockService)
-          )
-          .build()
+          val mockService : TrustService = mock[TrustService]
 
-        when(mockService.getDeceasedSettlor(any())(any(), any()))
-          .thenReturn(Future.successful(Some(deceasedSettlor(matchStatus))))
+          val application = applicationBuilder(userAnswers = Some(ua))
+            .overrides(
+              bind[TrustService].toInstance(mockService)
+            )
+            .build()
 
-        val request = FakeRequest(GET, checkDetailsRoute)
+          when(mockService.getSettlors(any())(any(), any()))
+            .thenReturn(Future.successful(Settlors(Nil, Nil, Some(deceasedSettlor(matchStatus)))))
 
-        val result = route(application, request).value
+          val request = FakeRequest(GET, checkDetailsRoute)
 
-        val view = application.injector.instanceOf[CheckDetailsView]
-        val printHelper = application.injector.instanceOf[DeceasedSettlorPrintHelper]
-        val answerSection = printHelper(ua, name.displayName)
+          val result = route(application, request).value
 
-        status(result) mustEqual OK
+          val view = application.injector.instanceOf[CheckDetailsView]
+          val printHelper = application.injector.instanceOf[DeceasedSettlorPrintHelper]
+          val answerSection = printHelper(ua, name.displayName, hasAdditionalSettlors = false)
 
-        contentAsString(result) mustEqual
-          view(
-            answerSection,
-            name.displayName,
-            is01MatchStatus = true,
-            isDateOfDeathRecorded = false
-          )(fakeRequest, messages).toString
-      }
+          status(result) mustEqual OK
 
-      "not a 01 match status" in {
+          contentAsString(result) mustEqual
+            view(
+              answerSection,
+              name.displayName,
+              is01MatchStatus = true,
+              isDateOfDeathRecorded = true
+            )(fakeRequest, messages).toString
+        }
 
-        val matchStatus = FailedToMatch
+        "01 match status and date of death is not known to ETMP" in {
 
-        val ua = userAnswers(matchStatus)
+          val matchStatus = FullyMatched
 
-        val mockService : TrustService = mock[TrustService]
+          val ua = userAnswers(matchStatus, isDateOfDeathRecorded = false)
 
-        val application = applicationBuilder(userAnswers = Some(ua))
-          .overrides(
-            bind[TrustService].toInstance(mockService)
-          )
-          .build()
+          val mockService : TrustService = mock[TrustService]
 
-        when(mockService.getDeceasedSettlor(any())(any(), any()))
-          .thenReturn(Future.successful(Some(deceasedSettlor(matchStatus))))
+          val application = applicationBuilder(userAnswers = Some(ua))
+            .overrides(
+              bind[TrustService].toInstance(mockService)
+            )
+            .build()
 
-        val request = FakeRequest(GET, checkDetailsRoute)
+          when(mockService.getSettlors(any())(any(), any()))
+            .thenReturn(Future.successful(Settlors(Nil, Nil, Some(deceasedSettlor(matchStatus)))))
 
-        val result = route(application, request).value
+          val request = FakeRequest(GET, checkDetailsRoute)
 
-        val view = application.injector.instanceOf[CheckDetailsView]
-        val printHelper = application.injector.instanceOf[DeceasedSettlorPrintHelper]
-        val answerSection = printHelper(ua, name.displayName)
+          val result = route(application, request).value
 
-        status(result) mustEqual OK
+          val view = application.injector.instanceOf[CheckDetailsView]
+          val printHelper = application.injector.instanceOf[DeceasedSettlorPrintHelper]
+          val answerSection = printHelper(ua, name.displayName, hasAdditionalSettlors = false)
 
-        contentAsString(result) mustEqual
-          view(
-            answerSection,
-            name.displayName,
-            is01MatchStatus = false,
-            isDateOfDeathRecorded = true
-          )(fakeRequest, messages).toString
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(
+              answerSection,
+              name.displayName,
+              is01MatchStatus = true,
+              isDateOfDeathRecorded = false
+            )(fakeRequest, messages).toString
+        }
+
+        "not a 01 match status" in {
+
+          val matchStatus = FailedToMatch
+
+          val ua = userAnswers(matchStatus)
+
+          val mockService : TrustService = mock[TrustService]
+
+          val application = applicationBuilder(userAnswers = Some(ua))
+            .overrides(
+              bind[TrustService].toInstance(mockService)
+            )
+            .build()
+
+          when(mockService.getSettlors(any())(any(), any()))
+            .thenReturn(Future.successful(Settlors(Nil, Nil, Some(deceasedSettlor(matchStatus)))))
+
+          val request = FakeRequest(GET, checkDetailsRoute)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[CheckDetailsView]
+          val printHelper = application.injector.instanceOf[DeceasedSettlorPrintHelper]
+          val answerSection = printHelper(ua, name.displayName, hasAdditionalSettlors = false)
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(
+              answerSection,
+              name.displayName,
+              is01MatchStatus = false,
+              isDateOfDeathRecorded = true
+            )(fakeRequest, messages).toString
+        }
       }
     }
 
@@ -228,6 +345,31 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       when(mockTrustConnector.amendDeceasedSettlor(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
       when(mockTrustService.getSettlors(any())(any(), any())).thenReturn(Future.successful(Settlors(List(individualSettlor), Nil, Some(deceasedSettlor()))))
+
+      val request = FakeRequest(POST, submitDetailsRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute
+
+      application.stop()
+    }
+
+    "redirect to the 'add a settlor' page when submitted if there are no other settlors but user selected yes to Are there any additional settlors for the trust?" in {
+
+      val mockTrustConnector = mock[TrustConnector]
+      val mockTrustService = mock[TrustService]
+
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers(addAdditionalSettlors = true)), affinityGroup = Agent)
+          .overrides(bind[TrustConnector].toInstance(mockTrustConnector))
+          .overrides(bind[TrustService].toInstance(mockTrustService))
+          .build()
+
+      when(mockTrustConnector.amendDeceasedSettlor(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
+      when(mockTrustService.getSettlors(any())(any(), any())).thenReturn(Future.successful(Settlors(Nil, Nil, Some(deceasedSettlor()))))
 
       val request = FakeRequest(POST, submitDetailsRoute)
 

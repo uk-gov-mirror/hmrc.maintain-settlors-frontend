@@ -24,9 +24,8 @@ import controllers.actions.StandardActionSets
 import controllers.actions.individual.deceased.NameRequiredAction
 import forms.DateOfDeathFormProvider
 import javax.inject.Inject
-import models.BpMatchStatus.FullyMatched
 import navigation.Navigator
-import pages.individual.deceased.{BpMatchStatusPage, DateOfDeathPage}
+import pages.individual.deceased.DateOfDeathPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -50,7 +49,6 @@ class DateOfDeathController @Inject()(
   def form(trustStartDate: LocalDate) =
     formProvider.withConfig(trustStartDate, "deceasedSettlor.dateOfDeath")
 
-
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
@@ -62,7 +60,6 @@ class DateOfDeathController @Inject()(
 
           Ok(view(preparedForm, request.settlorName))
       }
-
   }
 
   def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
@@ -77,12 +74,7 @@ class DateOfDeathController @Inject()(
               updatedAnswers <- Future.fromTry(request.userAnswers.set(DateOfDeathPage, value))
               _ <- sessionRepository.set(updatedAnswers)
             } yield {
-              updatedAnswers.get(BpMatchStatusPage) match {
-                case Some(FullyMatched) =>
-                  Redirect(routes.CheckDetailsController.renderFromUserAnswers())
-                case _ =>
-                  Redirect(navigator.nextPage(DateOfDeathPage, updatedAnswers))
-              }
+              Redirect(navigator.nextPage(DateOfDeathPage, updatedAnswers))
             }
         )
       }

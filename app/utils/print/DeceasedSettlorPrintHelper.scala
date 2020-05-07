@@ -19,6 +19,7 @@ package utils.print
 import com.google.inject.Inject
 import models.BpMatchStatus.FullyMatched
 import models.UserAnswers
+import pages.AdditionalSettlorsYesNoPage
 import pages.individual.deceased._
 import play.api.i18n.Messages
 import utils.countryOptions.CountryOptions
@@ -28,7 +29,9 @@ class DeceasedSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverte
                                            countryOptions: CountryOptions
                                             ) {
 
-  def apply(userAnswers: UserAnswers, settlorName: String)(implicit messages: Messages) = {
+  def apply(userAnswers: UserAnswers,
+            settlorName: String,
+            hasAdditionalSettlors: Boolean)(implicit messages: Messages) = {
 
     val bound = answerRowConverter.bind(userAnswers, settlorName, countryOptions)
 
@@ -47,7 +50,8 @@ class DeceasedSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverte
             bound.yesNoQuestion(AddressYesNoPage, "deceasedSettlor.addressYesNo", None),
             bound.yesNoQuestion(LivedInTheUkYesNoPage, "deceasedSettlor.livedInTheUkYesNo", None),
             bound.addressQuestion(UkAddressPage, "deceasedSettlor.ukAddress", None),
-            bound.addressQuestion(NonUkAddressPage, "deceasedSettlor.nonUkAddress", None)
+            bound.addressQuestion(NonUkAddressPage, "deceasedSettlor.nonUkAddress", None),
+            bound.additionalSettlorsQuestion(AdditionalSettlorsYesNoPage, "deceasedSettlor.additionalSettlorsYesNo", Some(controllers.individual.deceased.routes.AdditionalSettlorsYesNoController.onPageLoad().url), hasAdditionalSettlors)
           )
         case _ =>
           Seq(
@@ -61,7 +65,8 @@ class DeceasedSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverte
             bound.yesNoQuestion(AddressYesNoPage, "deceasedSettlor.addressYesNo", Some(controllers.individual.deceased.routes.AddressYesNoController.onPageLoad().url)),
             bound.yesNoQuestion(LivedInTheUkYesNoPage, "deceasedSettlor.livedInTheUkYesNo", Some(controllers.individual.deceased.routes.LivedInTheUkYesNoController.onPageLoad().url)),
             bound.addressQuestion(UkAddressPage, "deceasedSettlor.ukAddress", Some(controllers.individual.deceased.routes.UkAddressController.onPageLoad().url)),
-            bound.addressQuestion(NonUkAddressPage, "deceasedSettlor.nonUkAddress", Some(controllers.individual.deceased.routes.NonUkAddressController.onPageLoad().url))
+            bound.addressQuestion(NonUkAddressPage, "deceasedSettlor.nonUkAddress", Some(controllers.individual.deceased.routes.NonUkAddressController.onPageLoad().url)),
+            bound.additionalSettlorsQuestion(AdditionalSettlorsYesNoPage, "deceasedSettlor.additionalSettlorsYesNo", Some(controllers.individual.deceased.routes.AdditionalSettlorsYesNoController.onPageLoad().url), hasAdditionalSettlors)
           )
       }).flatten
     )
