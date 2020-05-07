@@ -18,20 +18,32 @@ package models
 
 import java.time.LocalDate
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Writes}
+import base.SpecBase
+import play.api.libs.json.Json
 
-case class RemoveSettlor(`type`: SettlorType, index : Int, endDate: LocalDate)
+class RemoveSettlorSpec extends SpecBase {
 
-object RemoveSettlor {
+  "RemoveSettlor" when {
 
-  implicit val writes : Writes[RemoveSettlor] =
-    (
-      (JsPath \ "type").write[SettlorType](SettlorType.writesToTrusts) and
-      (JsPath \ "index").write[Int] and
-      (JsPath \ "endDate").write[LocalDate]
-    ).apply(unlift(RemoveSettlor.unapply))
+    "writing json to trusts backend" must {
 
-  def apply(`type`: SettlorType, index: Int): RemoveSettlor =  RemoveSettlor(`type`, index, LocalDate.now)
+      "transform SettlorType" in {
+
+        val model = RemoveSettlor(SettlorType.IndividualSettlor, 0, LocalDate.parse("2010-10-10"))
+
+        Json.toJson(model)(RemoveSettlor.writes) mustBe Json.parse(
+          """
+            |{
+            | "type": "settlor",
+            | "index": 0,
+            | "endDate": "2010-10-10"
+            |}
+            |""".stripMargin)
+
+      }
+
+    }
+
+  }
 
 }
