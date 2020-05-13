@@ -237,7 +237,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
     "amending an individual settlor" must {
 
       def amendIndividualSettlorUrl(utr: String, index: Int) =
-        s"/trusts/amend-individual-settlor/$utr/$index"
+        s"/trusts/settlors/amend-individual/$utr/$index"
 
       "Return OK when the request is successful" in {
 
@@ -318,7 +318,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
     "amending a business settlor" must {
 
       def amendBusinessSettlorUrl(utr: String, index: Int) =
-        s"/trusts/amend-business-settlor/$utr/$index"
+        s"/trusts/settlors/amend-business/$utr/$index"
 
       val business = BusinessSettlor(
         name = "Name",
@@ -383,7 +383,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
     "amending a deceased settlor" must {
 
       def amendDeceasedSettlorUrl(utr: String) =
-        s"/trusts/amend-deceased-settlor/$utr"
+        s"/trusts/settlors/amend-deceased/$utr"
 
       "Return OK when the request is successful" in {
 
