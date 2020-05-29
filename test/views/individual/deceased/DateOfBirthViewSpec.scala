@@ -30,7 +30,7 @@ class DateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
   val messageKeyPrefix = "deceasedSettlor.dateOfBirth"
   val name: Name = Name("First", Some("Middle"), "Last")
 
-  override val form: Form[LocalDate] = new DateOfBirthFormProvider().withPrefix(messageKeyPrefix)
+  override val form: Form[LocalDate] = new DateOfBirthFormProvider().withConfig(LocalDate.now, messageKeyPrefix)
 
   "DateOfBirth view" must {
 

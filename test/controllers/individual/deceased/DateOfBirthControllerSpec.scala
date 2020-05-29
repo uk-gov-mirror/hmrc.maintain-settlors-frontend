@@ -26,7 +26,7 @@ import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.individual.deceased.{DateOfBirthPage, NamePage}
+import pages.individual.deceased.{DateOfBirthPage, DateOfDeathPage, NamePage}
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
 import play.api.test.FakeRequest
@@ -38,8 +38,10 @@ import scala.concurrent.Future
 
 class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
+  val dateOfDeath: LocalDate = LocalDate.parse("2003-02-03")
+
   val formProvider = new DateOfBirthFormProvider()
-  private def form = formProvider.withPrefix("deceasedSettlor.dateOfBirth")
+  private def form = formProvider.withConfig(dateOfDeath,"deceasedSettlor.dateOfBirth")
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -49,8 +51,9 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val dateOfBirthRoute = routes.DateOfBirthController.onPageLoad().url
 
-  val userAnswersWithName = emptyUserAnswers.set(NamePage, name)
-    .success.value
+  val userAnswersWithName = emptyUserAnswers
+    .set(NamePage, name).success.value
+    .set(DateOfDeathPage, dateOfDeath).success.value
 
   def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, dateOfBirthRoute)

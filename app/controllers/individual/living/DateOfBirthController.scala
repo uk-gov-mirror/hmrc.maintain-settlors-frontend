@@ -16,6 +16,8 @@
 
 package controllers.individual.living
 
+import java.time.LocalDate
+
 import config.annotations.LivingSettlor
 import controllers.actions.StandardActionSets
 import controllers.actions.individual.living.NameRequiredAction
@@ -24,6 +26,7 @@ import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
 import pages.individual.living.DateOfBirthPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -43,8 +46,7 @@ class DateOfBirthController @Inject()(
                                        view: DateOfBirthView
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("livingSettlor.dateOfBirth")
-
+  val form: Form[LocalDate] = formProvider.withConfig(LocalDate.now, "livingSettlor.dateOfBirth")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>

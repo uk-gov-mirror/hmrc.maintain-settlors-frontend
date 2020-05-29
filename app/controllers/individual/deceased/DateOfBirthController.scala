@@ -16,13 +16,16 @@
 
 package controllers.individual.deceased
 
+import java.time.LocalDate
+
 import config.annotations.DeceasedSettlor
-import controllers.actions.StandardActionSets
 import controllers.actions.individual.deceased.NameRequiredAction
+import controllers.actions.{SettlorNameRequest, StandardActionSets}
 import forms.DateOfBirthFormProvider
 import javax.inject.Inject
 import navigation.Navigator
-import pages.individual.deceased.DateOfBirthPage
+import pages.individual.deceased.{DateOfBirthPage, DateOfDeathPage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -42,15 +45,15 @@ class DateOfBirthController @Inject()(
                                        view: DateOfBirthView
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("deceasedSettlor.dateOfBirth")
-
+  private def form(maxDate: LocalDate): Form[LocalDate] =
+    formProvider.withConfig(maxDate,"deceasedSettlor.dateOfBirth")
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(DateOfBirthPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
+        case None => form(maxDate)
+        case Some(value) => form(maxDate).fill(value)
       }
 
       Ok(view(preparedForm, request.settlorName))
@@ -59,7 +62,7 @@ class DateOfBirthController @Inject()(
   def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
-      form.bindFromRequest().fold(
+      form(maxDate).bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, request.settlorName))),
         value =>
@@ -68,5 +71,14 @@ class DateOfBirthController @Inject()(
             _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(DateOfBirthPage, updatedAnswers))
       )
+  }
+
+  private def maxDate(implicit request: SettlorNameRequest[AnyContent]): LocalDate = {
+    request.userAnswers.get(DateOfDeathPage) match {
+      case Some(dateOfDeath) =>
+        dateOfDeath
+      case None =>
+        LocalDate.now
+    }
   }
 }
