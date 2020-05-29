@@ -41,7 +41,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
   val dateOfDeath: LocalDate = LocalDate.parse("2019-02-03")
 
   val formProvider = new DateOfBirthFormProvider()
-  private def form = formProvider.withConfig(dateOfDeath,"deceasedSettlor.dateOfBirth")
+  private def form = formProvider.withConfig("deceasedSettlor.dateOfBirth", dateOfDeath)
 
   def onwardRoute: Call = Call("GET", "/foo")
 

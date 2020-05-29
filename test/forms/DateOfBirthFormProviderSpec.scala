@@ -26,7 +26,7 @@ class DateOfBirthFormProviderSpec extends DateBehaviours {
   private val min = LocalDate.of(1500, 1, 1)
   private val max = LocalDate.now(ZoneOffset.UTC)
 
-  val form = new DateOfBirthFormProvider().withConfig(max, "livingSettor.dateOfBirth")
+  val form = new DateOfBirthFormProvider().withConfig("livingSettor.dateOfBirth", max)
 
   ".value" should {
 

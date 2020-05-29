@@ -46,7 +46,7 @@ class DateOfBirthController @Inject()(
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private def form(maxDate: LocalDate): Form[LocalDate] =
-    formProvider.withConfig(maxDate,"deceasedSettlor.dateOfBirth")
+    formProvider.withConfig("deceasedSettlor.dateOfBirth", maxDate)
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
