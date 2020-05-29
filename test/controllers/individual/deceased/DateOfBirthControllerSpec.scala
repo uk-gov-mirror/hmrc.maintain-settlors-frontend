@@ -16,12 +16,12 @@
 
 package controllers.individual.deceased
 
-import java.time.{LocalDate, ZoneOffset}
+import java.time.LocalDate
 
 import base.SpecBase
 import config.annotations.DeceasedSettlor
 import forms.DateOfBirthFormProvider
-import models.Name
+import models.{Name, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -38,20 +38,21 @@ import scala.concurrent.Future
 
 class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
-  val dateOfDeath: LocalDate = LocalDate.parse("2003-02-03")
+  val dateOfDeath: LocalDate = LocalDate.parse("2019-02-03")
 
   val formProvider = new DateOfBirthFormProvider()
   private def form = formProvider.withConfig(dateOfDeath,"deceasedSettlor.dateOfBirth")
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute: Call = Call("GET", "/foo")
 
-  val validAnswer = LocalDate.now(ZoneOffset.UTC)
-  val name = Name("FirstName", None, "LastName")
+  val validAnswer: LocalDate = LocalDate.parse("2000-02-03")
+  val invalidAnswer: LocalDate = LocalDate.parse("2020-02-03")
+  val name: Name = Name("FirstName", None, "LastName")
   val index: Int = 0
 
-  lazy val dateOfBirthRoute = routes.DateOfBirthController.onPageLoad().url
+  lazy val dateOfBirthRoute: String = routes.DateOfBirthController.onPageLoad().url
 
-  val userAnswersWithName = emptyUserAnswers
+  val baseAnswers: UserAnswers = emptyUserAnswers
     .set(NamePage, name).success.value
     .set(DateOfDeathPage, dateOfDeath).success.value
 
@@ -70,7 +71,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersWithName)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       val result = route(application, getRequest()).value
 
@@ -128,13 +129,43 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersWithName)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       val request =
         FakeRequest(POST, dateOfBirthRoute)
           .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
+
+      val view = application.injector.instanceOf[DateOfBirthView]
+
+      val result = route(application, request).value
+
+      status(result) mustEqual BAD_REQUEST
+
+      contentAsString(result) mustEqual
+        view(boundForm, name.displayName)(fakeRequest, messages).toString
+
+      application.stop()
+    }
+
+    "return a Bad Request and errors when date of birth exceeds date of death" in {
+
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
+
+      val request =
+        FakeRequest(POST, dateOfBirthRoute)
+          .withFormUrlEncodedBody(
+            "value.day"   -> invalidAnswer.getDayOfMonth.toString,
+            "value.month" -> invalidAnswer.getMonthValue.toString,
+            "value.year"  -> invalidAnswer.getYear.toString
+          )
+
+      val boundForm = form.bind(Map(
+        "value.day"   -> invalidAnswer.getDayOfMonth.toString,
+        "value.month" -> invalidAnswer.getMonthValue.toString,
+        "value.year"  -> invalidAnswer.getYear.toString
+      ))
 
       val view = application.injector.instanceOf[DateOfBirthView]
 
