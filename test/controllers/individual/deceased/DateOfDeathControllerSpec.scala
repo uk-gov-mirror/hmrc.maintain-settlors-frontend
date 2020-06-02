@@ -28,7 +28,7 @@ import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.individual.deceased.{BpMatchStatusPage, DateOfDeathPage, NamePage}
+import pages.individual.deceased.{BpMatchStatusPage, DateOfBirthPage, DateOfDeathPage, NamePage}
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
 import play.api.test.FakeRequest
@@ -45,16 +45,17 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
   val validAnswer = LocalDate.now(ZoneOffset.UTC)
   val name = Name("FirstName", None, "LastName")
   val index: Int = 0
+  val trustStartDate = LocalDate.parse("2019-02-03")
 
   val formProvider = new DateOfDeathFormProvider()
-  private def form = formProvider.withConfig(validAnswer, "deceasedSettlor.dateOfDeath")
+  private def form = formProvider.withConfig("deceasedSettlor.dateOfDeath", trustStartDate)
 
   val mockTrustConnector = mock[TrustConnector]
 
   lazy val dateOfDeathRoute = routes.DateOfDeathController.onPageLoad().url
 
-  val userAnswersWithName = emptyUserAnswers.set(NamePage, name)
-    .success.value
+  val userAnswersWithName = emptyUserAnswers
+    .set(NamePage, name).success.value
 
   def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, dateOfDeathRoute)
@@ -177,6 +178,56 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
           .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
+
+      val view = application.injector.instanceOf[DateOfDeathView]
+
+      val result = route(application, request).value
+
+      status(result) mustEqual BAD_REQUEST
+
+      contentAsString(result) mustEqual
+        view(boundForm, name.displayName)(fakeRequest, messages).toString
+
+      application.stop()
+    }
+
+    "return a Bad Request and errors when submitted date is before date of birth" in {
+
+      val dateOfBirth = LocalDate.parse("2016-02-03")
+
+      val submittedDate: LocalDate = LocalDate.parse("2013-02-03")
+
+      val userAnswers = userAnswersWithName
+        .set(DateOfBirthPage, dateOfBirth).success.value
+
+      val form = formProvider.withConfig("deceasedSettlor.dateOfDeath", trustStartDate, (dateOfBirth, "beforeDateOfBirth"))
+
+      when(mockTrustConnector.getTrustDetails(any())(any(), any()))
+        .thenReturn(Future.successful(TrustDetails(
+          LocalDate.now,
+          TypeOfTrust.WillTrustOrIntestacyTrust,
+          None
+        )))
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(
+          bind[TrustConnector].toInstance(mockTrustConnector)
+        )
+        .build()
+
+      val request =
+        FakeRequest(POST, dateOfDeathRoute)
+          .withFormUrlEncodedBody(
+            "value.day"   -> submittedDate.getDayOfMonth.toString,
+            "value.month" -> submittedDate.getMonthValue.toString,
+            "value.year"  -> submittedDate.getYear.toString
+          )
+
+      val boundForm = form.bind(Map(
+        "value.day"   -> submittedDate.getDayOfMonth.toString,
+        "value.month" -> submittedDate.getMonthValue.toString,
+        "value.year"  -> submittedDate.getYear.toString
+      ))
 
       val view = application.injector.instanceOf[DateOfDeathView]
 

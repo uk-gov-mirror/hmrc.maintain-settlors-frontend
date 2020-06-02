@@ -26,7 +26,7 @@ class DateOfDeathFormProviderSpec extends DateBehaviours {
   private val min = LocalDate.of(1500, 1, 1)
   private val max = LocalDate.now(ZoneOffset.UTC)
 
-  val form = new DateOfDeathFormProvider().withConfig(max,"deceasedSettlor.dateOfDeath")
+  val form = new DateOfDeathFormProvider().withConfig("deceasedSettlor.dateOfDeath", max)
 
   ".value" should {
 

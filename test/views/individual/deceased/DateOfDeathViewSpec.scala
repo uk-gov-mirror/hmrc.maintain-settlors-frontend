@@ -30,7 +30,7 @@ class DateOfDeathViewSpec extends QuestionViewBehaviours[LocalDate] {
   val messageKeyPrefix = "deceasedSettlor.dateOfDeath"
   val name: Name = Name("First", Some("Middle"), "Last")
 
-  override val form: Form[LocalDate] = new DateOfDeathFormProvider().withConfig(LocalDate.now, messageKeyPrefix)
+  override val form: Form[LocalDate] = new DateOfDeathFormProvider().withConfig(messageKeyPrefix, LocalDate.now)
 
   "DateOfDeath view" must {
 

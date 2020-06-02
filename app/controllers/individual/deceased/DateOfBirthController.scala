@@ -45,7 +45,7 @@ class DateOfBirthController @Inject()(
                                        view: DateOfBirthView
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def form(maxDate: LocalDate): Form[LocalDate] =
+  private def form(maxDate: (LocalDate, String)): Form[LocalDate] =
     formProvider.withConfig("deceasedSettlor.dateOfBirth", maxDate)
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
@@ -73,12 +73,12 @@ class DateOfBirthController @Inject()(
       )
   }
 
-  private def maxDate(implicit request: SettlorNameRequest[AnyContent]): LocalDate = {
+  private def maxDate(implicit request: SettlorNameRequest[AnyContent]): (LocalDate, String) = {
     request.userAnswers.get(DateOfDeathPage) match {
       case Some(dateOfDeath) =>
-        dateOfDeath
+        (dateOfDeath, "afterDateOfDeath")
       case None =>
-        LocalDate.now
+        (LocalDate.now, "future")
     }
   }
 }
