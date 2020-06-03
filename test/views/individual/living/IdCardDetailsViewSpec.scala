@@ -31,7 +31,7 @@ class IdCardDetailsViewSpec extends QuestionViewBehaviours[IdCard] {
   val messageKeyPrefix = "livingSettlor.idCardDetails"
   val name: Name = Name("First", Some("Middle"), "Last")
 
-  override val form: Form[IdCard] = new IdCardDetailsFormProvider().withPrefix(messageKeyPrefix)
+  override val form: Form[IdCard] = new IdCardDetailsFormProvider(frontendAppConfig).withPrefix(messageKeyPrefix)
 
   "IdCardDetails view" must {
 

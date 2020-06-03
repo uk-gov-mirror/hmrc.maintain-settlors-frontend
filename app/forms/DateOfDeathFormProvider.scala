@@ -18,15 +18,16 @@ package forms
 
 import java.time.LocalDate
 
+import config.FrontendAppConfig
 import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 
-class DateOfDeathFormProvider @Inject() extends Mappings {
+class DateOfDeathFormProvider @Inject()(appConfig: FrontendAppConfig) extends Mappings {
 
   def withConfig(prefix: String,
                  trustStartDate: LocalDate,
-                 minimumDate: (LocalDate, String) = (LocalDate.of(1500,1,1), "past")
+                 minimumDate: (LocalDate, String) = (appConfig.minDate, "past")
                 ): Form[LocalDate] =
     Form(
       "value" -> localDate(

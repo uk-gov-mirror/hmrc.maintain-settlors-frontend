@@ -18,6 +18,7 @@ package controllers.individual.deceased
 
 import java.time.LocalDate
 
+import config.FrontendAppConfig
 import config.annotations.DeceasedSettlor
 import connectors.TrustConnector
 import controllers.actions.{SettlorNameRequest, StandardActionSets}
@@ -43,7 +44,8 @@ class DateOfDeathController @Inject()(
                                        formProvider: DateOfDeathFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: DateOfDeathView,
-                                       trustsConnector : TrustConnector
+                                       trustsConnector : TrustConnector,
+                                       appConfig: FrontendAppConfig
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private def form(trustStartDate: LocalDate, minDate: (LocalDate, String)) =
@@ -85,7 +87,7 @@ class DateOfDeathController @Inject()(
       case Some(dateOfBirth) =>
         (dateOfBirth, "beforeDateOfBirth")
       case None =>
-        (LocalDate.of(1500,1,1), "past")
+        (appConfig.minDate, "past")
     }
   }
 }

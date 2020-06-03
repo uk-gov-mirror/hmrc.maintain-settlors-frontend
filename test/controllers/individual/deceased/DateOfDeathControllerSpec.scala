@@ -47,7 +47,7 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
   val index: Int = 0
   val trustStartDate = LocalDate.parse("2019-02-03")
 
-  val formProvider = new DateOfDeathFormProvider()
+  val formProvider = new DateOfDeathFormProvider(frontendAppConfig)
   private def form = formProvider.withConfig("deceasedSettlor.dateOfDeath", trustStartDate)
 
   val mockTrustConnector = mock[TrustConnector]
