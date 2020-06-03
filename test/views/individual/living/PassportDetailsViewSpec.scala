@@ -31,7 +31,7 @@ class PassportDetailsViewSpec extends QuestionViewBehaviours[Passport] {
   val messageKeyPrefix = "livingSettlor.passportDetails"
   val name: Name = Name("First", Some("Middle"), "Last")
 
-  override val form: Form[Passport] = new PassportDetailsFormProvider().withPrefix(messageKeyPrefix)
+  override val form: Form[Passport] = new PassportDetailsFormProvider(frontendAppConfig).withPrefix(messageKeyPrefix)
 
   "PassportDetails view" must {
 

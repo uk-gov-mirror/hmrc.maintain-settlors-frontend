@@ -40,8 +40,8 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
   val dateOfDeath: LocalDate = LocalDate.parse("2019-02-03")
 
-  val formProvider = new DateOfBirthFormProvider()
-  private def form = formProvider.withConfig("deceasedSettlor.dateOfBirth", dateOfDeath)
+  val formProvider = new DateOfBirthFormProvider(frontendAppConfig)
+  private def form = formProvider.withConfig("deceasedSettlor.dateOfBirth")
 
   def onwardRoute: Call = Call("GET", "/foo")
 
@@ -149,7 +149,9 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
 
-    "return a Bad Request and errors when date of birth exceeds date of death" in {
+    "return a Bad Request and errors when submitted date is after date of death" in {
+
+      val form = formProvider.withConfig("deceasedSettlor.dateOfBirth", (dateOfDeath, "afterDateOfDeath"))
 
       val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 

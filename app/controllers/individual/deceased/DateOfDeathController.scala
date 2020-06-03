@@ -18,14 +18,15 @@ package controllers.individual.deceased
 
 import java.time.LocalDate
 
+import config.FrontendAppConfig
 import config.annotations.DeceasedSettlor
 import connectors.TrustConnector
-import controllers.actions.StandardActionSets
+import controllers.actions.{SettlorNameRequest, StandardActionSets}
 import controllers.actions.individual.deceased.NameRequiredAction
 import forms.DateOfDeathFormProvider
 import javax.inject.Inject
 import navigation.Navigator
-import pages.individual.deceased.DateOfDeathPage
+import pages.individual.deceased.{DateOfBirthPage, DateOfDeathPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -43,19 +44,20 @@ class DateOfDeathController @Inject()(
                                        formProvider: DateOfDeathFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: DateOfDeathView,
-                                       trustsConnector : TrustConnector
+                                       trustsConnector : TrustConnector,
+                                       appConfig: FrontendAppConfig
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def form(trustStartDate: LocalDate) =
-    formProvider.withConfig(trustStartDate, "deceasedSettlor.dateOfDeath")
+  private def form(trustStartDate: LocalDate, minDate: (LocalDate, String)) =
+    formProvider.withConfig("deceasedSettlor.dateOfDeath", trustStartDate, minDate)
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
       trustsConnector.getTrustDetails(request.userAnswers.utr) map { details =>
           val preparedForm = request.userAnswers.get(DateOfDeathPage) match {
-            case None => form(details.startDate)
-            case Some(value) => form(details.startDate).fill(value)
+            case None => form(details.startDate, minDate)
+            case Some(value) => form(details.startDate, minDate).fill(value)
           }
 
           Ok(view(preparedForm, request.settlorName))
@@ -66,7 +68,7 @@ class DateOfDeathController @Inject()(
     implicit request =>
 
       trustsConnector.getTrustDetails(request.userAnswers.utr) flatMap { details =>
-        form(details.startDate).bindFromRequest().fold(
+        form(details.startDate, minDate).bindFromRequest().fold(
           formWithErrors =>
             Future.successful(BadRequest(view(formWithErrors, request.settlorName))),
           value =>
@@ -78,5 +80,14 @@ class DateOfDeathController @Inject()(
             }
         )
       }
+  }
+
+  private def minDate(implicit request: SettlorNameRequest[AnyContent]): (LocalDate, String) = {
+    request.userAnswers.get(DateOfBirthPage) match {
+      case Some(dateOfBirth) =>
+        (dateOfBirth, "beforeDateOfBirth")
+      case None =>
+        (appConfig.minDate, "past")
+    }
   }
 }
