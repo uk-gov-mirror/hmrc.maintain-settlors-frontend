@@ -52,7 +52,6 @@ trait Mappings extends Formatters with Constraints {
                            invalidKey: String,
                            allRequiredKey: String,
                            twoRequiredKey: String,
-                           requiredKey: String,
-                           args: Seq[String] = Seq.empty): FieldMapping[LocalDate] =
-    of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, args))
+                           requiredKey: String): FieldMapping[LocalDate] =
+    of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey))
 }
