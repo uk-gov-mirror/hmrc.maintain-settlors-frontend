@@ -19,6 +19,7 @@ package forms.behaviours
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+import models.{IdCard, Passport}
 import org.scalacheck.Gen
 import play.api.data.{Form, FormError}
 
@@ -32,9 +33,9 @@ trait DateBehaviours extends FieldBehaviours {
         date =>
 
           val data = Map(
-            s"$key.day"   -> date.getDayOfMonth.toString,
+            s"$key.day" -> date.getDayOfMonth.toString,
             s"$key.month" -> date.getMonthValue.toString,
-            s"$key.year"  -> date.getYear.toString
+            s"$key.year" -> date.getYear.toString
           )
 
           val result = form.bind(data)
@@ -54,9 +55,9 @@ trait DateBehaviours extends FieldBehaviours {
         date =>
 
           val data = Map(
-            s"$key.day"   -> date.getDayOfMonth.toString,
+            s"$key.day" -> date.getDayOfMonth.toString,
             s"$key.month" -> date.getMonthValue.toString,
-            s"$key.year"  -> date.getYear.toString
+            s"$key.year" -> date.getYear.toString
           )
 
           val result = form.bind(data)
@@ -76,9 +77,9 @@ trait DateBehaviours extends FieldBehaviours {
         date =>
 
           val data = Map(
-            s"$key.day"   -> date.getDayOfMonth.toString,
+            s"$key.day" -> date.getDayOfMonth.toString,
             s"$key.month" -> date.getMonthValue.toString,
-            s"$key.year"  -> date.getYear.toString
+            s"$key.year" -> date.getYear.toString
           )
 
           val result = form.bind(data)
@@ -88,13 +89,57 @@ trait DateBehaviours extends FieldBehaviours {
     }
   }
 
-  def mandatoryDateField(form: Form[_], key: String, requiredAllKey: String, errorArgs: Seq[String] = Seq.empty): Unit = {
+  def dateFieldForPassportForm(form: Form[Passport],
+                               key: String, validData: Gen[LocalDate],
+                               requiredBindings: Map[String, String] = Map.empty): Unit = {
+
+    "bind valid data" in {
+
+      forAll(validData -> "valid date") {
+        date =>
+
+          val data = requiredBindings ++ Map(
+            s"$key.day" -> date.getDayOfMonth.toString,
+            s"$key.month" -> date.getMonthValue.toString,
+            s"$key.year" -> date.getYear.toString
+          )
+
+          val result = form.bind(data)
+
+          result.value.value.expirationDate shouldEqual date
+      }
+    }
+  }
+  def dateFieldForIdForm(form: Form[IdCard],
+                         key: String, validData: Gen[LocalDate],
+                         requiredBindings: Map[String, String] = Map.empty): Unit = {
+
+    "bind valid data" in {
+
+      forAll(validData -> "valid date") {
+        date =>
+
+          val data = requiredBindings ++ Map(
+            s"$key.day" -> date.getDayOfMonth.toString,
+            s"$key.month" -> date.getMonthValue.toString,
+            s"$key.year" -> date.getYear.toString
+          )
+
+          val result = form.bind(data)
+
+          result.value.value.expirationDate shouldEqual date
+      }
+    }
+  }
+
+  def mandatoryDateField(form: Form[_], key: String, requiredAllKey: String): Unit = {
 
     "fail to bind an empty date" in {
 
-      val result = form.bind(Map.empty[String, String])
+      val result = form.bind(Map.empty[String, String]).apply(key)
 
-      result.errors should contain only FormError(key, requiredAllKey, errorArgs)
+      result.errors should contain only FormError(key, requiredAllKey, List("day", "month", "year"))
     }
   }
+
 }

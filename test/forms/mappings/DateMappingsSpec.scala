@@ -41,6 +41,8 @@ class DateMappingsSpec extends FreeSpec with MustMatchers with ScalaCheckPropert
     max = LocalDate.of(3000, 1, 1)
   )
 
+  val fieldKeys: List[String] = List("day", "month", "year")
+
   val invalidField: Gen[String] = Gen.alphaStr.suchThat(_.nonEmpty)
 
   val missingField: Gen[Option[String]] = Gen.option(Gen.const(""))
@@ -66,7 +68,7 @@ class DateMappingsSpec extends FreeSpec with MustMatchers with ScalaCheckPropert
 
     val result = form.bind(Map.empty[String, String])
 
-    result.errors must contain only FormError("value", "error.required.all", List.empty)
+    result.errors must contain only FormError("value", "error.required.all", fieldKeys)
   }
 
   "fail to bind a date with a missing day" in {
@@ -104,7 +106,7 @@ class DateMappingsSpec extends FreeSpec with MustMatchers with ScalaCheckPropert
         val result = form.bind(data)
 
         result.errors must contain(
-          FormError("value", "error.invalid", List.empty)
+          FormError("value", "error.invalid", fieldKeys)
         )
     }
   }
@@ -144,7 +146,7 @@ class DateMappingsSpec extends FreeSpec with MustMatchers with ScalaCheckPropert
         val result = form.bind(data)
 
         result.errors must contain(
-          FormError("value", "error.invalid", List.empty)
+          FormError("value", "error.invalid", fieldKeys)
         )
     }
   }
@@ -184,7 +186,7 @@ class DateMappingsSpec extends FreeSpec with MustMatchers with ScalaCheckPropert
         val result = form.bind(data)
 
         result.errors must contain(
-          FormError("value", "error.invalid", List.empty)
+          FormError("value", "error.invalid", fieldKeys)
         )
     }
   }
@@ -277,7 +279,7 @@ class DateMappingsSpec extends FreeSpec with MustMatchers with ScalaCheckPropert
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.invalid", List.empty)
+        result.errors must contain only FormError("value", "error.invalid", fieldKeys)
     }
   }
 
@@ -294,7 +296,7 @@ class DateMappingsSpec extends FreeSpec with MustMatchers with ScalaCheckPropert
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.invalid", List.empty)
+        result.errors must contain only FormError("value", "error.invalid", fieldKeys)
     }
   }
 
@@ -311,7 +313,7 @@ class DateMappingsSpec extends FreeSpec with MustMatchers with ScalaCheckPropert
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.invalid", List.empty)
+        result.errors must contain only FormError("value", "error.invalid", fieldKeys)
     }
   }
 
@@ -328,7 +330,7 @@ class DateMappingsSpec extends FreeSpec with MustMatchers with ScalaCheckPropert
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.invalid", List.empty)
+        result.errors must contain only FormError("value", "error.invalid", fieldKeys)
     }
   }
 
@@ -343,7 +345,7 @@ class DateMappingsSpec extends FreeSpec with MustMatchers with ScalaCheckPropert
     val result = form.bind(data)
 
     result.errors must contain(
-      FormError("value", "error.invalid", List.empty)
+      FormError("value", "error.invalid", fieldKeys)
     )
   }
 
