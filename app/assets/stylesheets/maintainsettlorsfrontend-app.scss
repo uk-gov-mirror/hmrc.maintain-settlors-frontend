@@ -160,9 +160,14 @@
 }
 
 #value__listbox, #country__listbox {
-    width: 100%;
-    @include media(tablet) {
-        width: 49.4%;
+    @media (min-width: 641px) {
+      width: calc(75% - 4px;)
+    }
+}
+
+#country {
+    @media (min-width: 641px) {
+      width:75%;
     }
 }
 
