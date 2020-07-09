@@ -27,7 +27,7 @@
     title = s"${errorPrefix(form)} ${messages("deceasedSettlor.name.title")}"
 ) {
 
-    @formHelper(action = NameController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = NameController.onSubmit(), 'autoComplete -> "on") {
 
         @components.back_link()
 
@@ -37,17 +37,20 @@
 
         @components.input_text(
             field = form("firstName"),
-            label = messages("deceasedSettlor.name.firstName")
+            label = messages("deceasedSettlor.name.firstName"),
+            autocomplete = Some("given-name")
         )
 
         @components.input_text(
             field = form("middleName"),
-            label = messages("deceasedSettlor.name.middleName")
+            label = messages("deceasedSettlor.name.middleName"),
+            autocomplete = Some("additional-name")
         )
 
         @components.input_text(
             field = form("lastName"),
-            label = messages("deceasedSettlor.name.lastName")
+            label = messages("deceasedSettlor.name.lastName"),
+            autocomplete = Some("family-name")
         )
 
         @components.submit_button()
