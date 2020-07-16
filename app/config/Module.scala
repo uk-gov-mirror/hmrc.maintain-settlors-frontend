@@ -20,7 +20,7 @@ import com.google.inject.AbstractModule
 import config.annotations.{DeceasedSettlor, LivingSettlor, _}
 import controllers.actions._
 import navigation.{DeceasedSettlorNavigator, IndividualSettlorNavigator, Navigator, _}
-import repositories.{PlaybackRepository, PlaybackRepositoryImpl}
+import repositories.{MongoDriver, PlaybackRepository, PlaybackRepositoryImpl, TrustsMongoDriver}
 import services.{AuthenticationService, AuthenticationServiceImpl}
 
 class Module extends AbstractModule {
@@ -32,6 +32,8 @@ class Module extends AbstractModule {
     bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
 
     bind(classOf[PlaybackRepository]).to(classOf[PlaybackRepositoryImpl]).asEagerSingleton()
+
+    bind(classOf[MongoDriver]).to(classOf[TrustsMongoDriver]).asEagerSingleton()
 
     // For session based storage instead of cred based, change to SessionIdentifierAction
     bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction]).asEagerSingleton()

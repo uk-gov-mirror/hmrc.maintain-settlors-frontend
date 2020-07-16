@@ -46,7 +46,7 @@ class IndexController @Inject()(
           isDateOfDeathRecorded <- connector.getIsDeceasedSettlorDateOfDeathRecorded(utr)
           ua <- Future.successful(request.userAnswers.getOrElse(
             UserAnswers(
-              internalAuthId = request.user.internalId,
+              internalId = request.user.internalId,
               utr = utr,
               whenTrustSetup = details.startDate,
               trustType = details.typeOfTrust,
