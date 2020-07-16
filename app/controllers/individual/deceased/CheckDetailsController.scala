@@ -95,7 +95,7 @@ class CheckDetailsController @Inject()(
         Future.successful(render(
           request.userAnswers,
           request.settlorName,
-          settlors.hasAdditionalSettlors
+          settlors.hasLivingSettlors
         ))
       }
   }
@@ -107,7 +107,7 @@ class CheckDetailsController @Inject()(
         deceasedSettlor =>
           connector.amendDeceasedSettlor(request.userAnswers.utr, deceasedSettlor).flatMap(_ =>
             service.getSettlors(request.userAnswers.utr).flatMap { settlors =>
-              (settlors.hasAdditionalSettlors, request.userAnswers.get(AdditionalSettlorsYesNoPage)) match {
+              (settlors.hasLivingSettlors, request.userAnswers.get(AdditionalSettlorsYesNoPage)) match {
                 case (false, Some(false)) =>
                   trustStoreConnector.setTaskComplete(request.userAnswers.utr).map(_ =>
                     Redirect(appConfig.maintainATrustOverview)

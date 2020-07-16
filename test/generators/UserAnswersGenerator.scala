@@ -47,7 +47,7 @@ trait UserAnswersGenerator extends TryValues {
           case _ => Gen.mapOf(oneOf(generators))
         }
       } yield UserAnswers(
-        internalAuthId = id,
+        internalId = id,
         utr = utr,
         whenTrustSetup = LocalDate.now(),
         trustType = TypeOfTrust.WillTrustOrIntestacyTrust,

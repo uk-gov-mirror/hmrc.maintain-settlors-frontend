@@ -17,51 +17,64 @@
 package controllers
 
 import connectors.TrustConnector
-import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import controllers.actions.{DataRetrievalAction, IdentifierAction, StandardActionSets}
 import javax.inject.Inject
-import models.UserAnswers
+import models.{TrustDetails, UserAnswers, UtrSession}
 import pages.AdditionalSettlorsYesNoPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.PlaybackRepository
+import repositories.{ActiveSessionRepository, PlaybackRepository}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
-                                 identifierAction: IdentifierAction,
-                                 getData: DataRetrievalAction,
-                                 repo : PlaybackRepository,
+                                 actions: StandardActionSets,
+                                 cacheRepository : PlaybackRepository,
+                                 activeSessionRepository: ActiveSessionRepository,
                                  connector: TrustConnector)
                                (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(utr: String): Action[AnyContent] =
-
-    (identifierAction andThen getData).async {
+  def onPageLoad(utr: String): Action[AnyContent] = actions.authWithSession.async {
       implicit request =>
+
+        val session = UtrSession(request.user.internalId, utr)
+
+        def newUserAnswers(details: TrustDetails,
+                           internalId: String,
+                           utr: String,
+                           isDateOfDeathRecorded: Boolean) = UserAnswers(
+            internalId = request.user.internalId,
+            utr = utr,
+            whenTrustSetup = details.startDate,
+            trustType = details.typeOfTrust,
+            deedOfVariation = details.deedOfVariation,
+            isDateOfDeathRecorded = isDateOfDeathRecorded
+          )
+
+
         for {
           details <- connector.getTrustDetails(utr)
           allSettlors <- connector.getSettlors(utr)
           isDateOfDeathRecorded <- connector.getIsDeceasedSettlorDateOfDeathRecorded(utr)
-          ua <- Future.successful(request.userAnswers.getOrElse(
-            UserAnswers(
-              internalAuthId = request.user.internalId,
-              utr = utr,
-              whenTrustSetup = details.startDate,
-              trustType = details.typeOfTrust,
-              deedOfVariation = details.deedOfVariation,
-              isDateOfDeathRecorded = isDateOfDeathRecorded.value
-            )
-          ))
-          _ <- repo.set(ua)
-        } yield {
-          (allSettlors.hasAdditionalSettlors, ua.get(AdditionalSettlorsYesNoPage)) match {
-            case (true, _) | (_, Some(true)) =>
-              Redirect(controllers.routes.AddASettlorController.onPageLoad())
-            case _ =>
-              Redirect(controllers.individual.deceased.routes.CheckDetailsController.extractAndRender())
+          ua <- Future.successful {
+            request.userAnswers.getOrElse {
+              newUserAnswers(details, request.user.internalId, utr, isDateOfDeathRecorded.value)
+            }
           }
+          _ <- activeSessionRepository.set(session)
+          _ <- cacheRepository.set(ua)
+        } yield {
+
+          val showAddToPage = allSettlors.hasLivingSettlors || ua.get(AdditionalSettlorsYesNoPage).contains(true)
+
+          if (showAddToPage) {
+            Redirect(controllers.routes.AddASettlorController.onPageLoad())
+          } else {
+            Redirect(controllers.individual.deceased.routes.CheckDetailsController.extractAndRender())
+          }
+
         }
     }
 }
