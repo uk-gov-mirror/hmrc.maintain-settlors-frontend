@@ -28,7 +28,7 @@ case class Settlors(settlor: List[IndividualSettlor],
 
   val size: Int = (settlor ++ settlorCompany ++ deceased).size
 
-  val hasAdditionalSettlors: Boolean = settlor.nonEmpty || settlorCompany.nonEmpty
+  val hasLivingSettlors: Boolean = settlor.nonEmpty || settlorCompany.nonEmpty
 
   def addToHeading()(implicit mp: MessagesProvider): String = {
 
