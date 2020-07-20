@@ -27,7 +27,7 @@ object AppDependencies {
     "org.mockito"             %  "mockito-all"            % "1.10.19",
     "org.scalacheck"          %% "scalacheck"             % "1.14.3",
     "com.github.tomakehurst"  %  "wiremock-standalone"    % "2.25.1"
-  ).map(_ % Test)
+  )
 
   def apply(): Seq[ModuleID] = compile ++ test
 
