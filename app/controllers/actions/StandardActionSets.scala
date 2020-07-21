@@ -17,14 +17,17 @@
 package controllers.actions
 
 import javax.inject.Inject
-import models.requests.{DataRequest, OptionalDataRequest}
+import models.requests.{DataRequest, IdentifierRequest, OptionalDataRequest}
 import play.api.mvc.{ActionBuilder, AnyContent}
 
 class StandardActionSets @Inject()(identify: IdentifierAction,
-                                   getData: DataRetrievalAction,
+                                   val saveSession: SaveActiveSessionProvider,
+                                   val getData: DataRetrievalAction,
                                    requireData: DataRequiredAction,
                                    playbackIdentifier: PlaybackIdentifierAction
                                   ){
+
+  def auth : ActionBuilder[IdentifierRequest, AnyContent] = identify
 
   def authWithSession : ActionBuilder[OptionalDataRequest, AnyContent]  = identify andThen getData
 

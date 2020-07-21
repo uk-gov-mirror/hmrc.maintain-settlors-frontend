@@ -17,13 +17,13 @@
 package controllers
 
 import connectors.TrustConnector
-import controllers.actions.{DataRetrievalAction, IdentifierAction, StandardActionSets}
+import controllers.actions.StandardActionSets
 import javax.inject.Inject
-import models.{TrustDetails, UserAnswers, UtrSession}
+import models.{TrustDetails, UserAnswers}
 import pages.AdditionalSettlorsYesNoPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.{ActiveSessionRepository, PlaybackRepository}
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,14 +32,11 @@ class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
                                  actions: StandardActionSets,
                                  cacheRepository : PlaybackRepository,
-                                 activeSessionRepository: ActiveSessionRepository,
                                  connector: TrustConnector)
                                (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(utr: String): Action[AnyContent] = actions.authWithSession.async {
+  def onPageLoad(utr: String): Action[AnyContent] = (actions.auth andThen actions.saveSession(utr) andThen actions.getData).async {
       implicit request =>
-
-        val session = UtrSession(request.user.internalId, utr)
 
         def newUserAnswers(details: TrustDetails,
                            internalId: String,
@@ -53,7 +50,6 @@ class IndexController @Inject()(
             isDateOfDeathRecorded = isDateOfDeathRecorded
           )
 
-
         for {
           details <- connector.getTrustDetails(utr)
           allSettlors <- connector.getSettlors(utr)
@@ -63,7 +59,6 @@ class IndexController @Inject()(
               newUserAnswers(details, request.user.internalId, utr, isDateOfDeathRecorded.value)
             }
           }
-          _ <- activeSessionRepository.set(session)
           _ <- cacheRepository.set(ua)
         } yield {
 
