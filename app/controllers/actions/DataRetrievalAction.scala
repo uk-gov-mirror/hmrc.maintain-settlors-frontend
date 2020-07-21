@@ -19,7 +19,6 @@ package controllers.actions
 import com.google.inject.Inject
 import models.UserAnswers
 import models.requests.{IdentifierRequest, OptionalDataRequest}
-import play.api.Logger
 import play.api.mvc.ActionTransformer
 import repositories.{ActiveSessionRepository, PlaybackRepository}
 
@@ -42,18 +41,13 @@ class DataRetrievalActionImpl @Inject()(
 
     activeSessionRepository.get(request.user.internalId) flatMap {
       case Some(session) =>
-        Logger.info(s"\n[Adam] - Session found, $session\n")
-
         playbackRepository.get(request.user.internalId, session.utr) map {
           case None =>
-            Logger.info(s"\n[Adam] - No user answers found\n")
             createdOptionalDataRequest(request, None)
           case Some(userAnswers) =>
-            Logger.info(s"\n[Adam] - User answers found $userAnswers\n")
             createdOptionalDataRequest(request, Some(userAnswers))
         }
       case None =>
-        Logger.info(s"\n[Adam] - No session found\n")
         Future.successful(createdOptionalDataRequest(request, None))
     }
   }
