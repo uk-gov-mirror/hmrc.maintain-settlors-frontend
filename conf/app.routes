@@ -24,4 +24,8 @@ GET        /logout                                                          cont
 
 GET        /unauthorised                                                    controllers.UnauthorisedController.onPageLoad
 
+GET        /keep-alive                                  controllers.SessionTimeoutController.keepAlive
+
+GET        /timeout                                     controllers.SessionTimeoutController.timeout
+
 GET        /:utr                                                            controllers.IndexController.onPageLoad(utr: String)
