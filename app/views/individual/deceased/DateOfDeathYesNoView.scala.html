@@ -24,7 +24,7 @@
 @(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("deceasedSettlor.dateOfDeathYesNo.title", name)}"
+    title = s"${errorPrefix(form)}${messages("deceasedSettlor.dateOfDeathYesNo.title", name)}"
     ) {
 
     @formHelper(action = DateOfDeathYesNoController.onSubmit(), 'autoComplete -> "off") {
