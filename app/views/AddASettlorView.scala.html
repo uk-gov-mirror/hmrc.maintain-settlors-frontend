@@ -31,7 +31,7 @@
     heading: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} $heading"
+    title = s"${errorPrefix(form)}$heading"
     ) {
 
     @formHelper(action = AddASettlorController.submit(), 'autoComplete -> "off") {
