@@ -144,7 +144,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
               name.displayName,
               is01MatchStatus = true,
               isDateOfDeathRecorded = true
-            )(fakeRequest, messages).toString
+            )(request, messages).toString
         }
 
         "01 match status and date of death is not known to ETMP" in {
@@ -180,7 +180,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
               name.displayName,
               is01MatchStatus = true,
               isDateOfDeathRecorded = false
-            )(fakeRequest, messages).toString
+            )(request, messages).toString
         }
 
         "not a 01 match status" in {
@@ -216,7 +216,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
               name.displayName,
               is01MatchStatus = false,
               isDateOfDeathRecorded = true
-            )(fakeRequest, messages).toString
+            )(request, messages).toString
         }
       }
 
@@ -255,7 +255,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
               name.displayName,
               is01MatchStatus = true,
               isDateOfDeathRecorded = true
-            )(fakeRequest, messages).toString
+            )(request, messages).toString
         }
 
         "01 match status and date of death is not known to ETMP" in {
@@ -291,7 +291,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
               name.displayName,
               is01MatchStatus = true,
               isDateOfDeathRecorded = false
-            )(fakeRequest, messages).toString
+            )(request, messages).toString
         }
 
         "not a 01 match status" in {
@@ -327,7 +327,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
               name.displayName,
               is01MatchStatus = false,
               isDateOfDeathRecorded = true
-            )(fakeRequest, messages).toString
+            )(request, messages).toString
         }
       }
     }
