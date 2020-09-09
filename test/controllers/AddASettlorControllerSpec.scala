@@ -167,7 +167,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
             Nil,
             settlorRows,
             "The trust has 3 settlors"
-          )(fakeRequest, messages).toString
+          )(request, messages).toString
 
         application.stop()
       }
@@ -244,7 +244,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
             Nil,
             settlorRows,
             "The trust has 3 settlors"
-          )(fakeRequest, messages).toString
+          )(request, messages).toString
 
         application.stop()
       }
@@ -280,7 +280,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
             settlorRows.inProgress,
             settlorRows.complete,
             25
-          )(fakeRequest, messages).toString
+          )(request, messages).toString
         content must include("You cannot enter another settlor as you have entered a maximum of 25.")
         content must include("If you have further settlors to add, write to HMRC with their details.")
 
@@ -320,7 +320,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
             settlorRows.inProgress,
             settlorRows.complete,
             26
-          )(fakeRequest, messages).toString
+          )(request, messages).toString
         content must include("You cannot enter another settlor as you have entered a maximum of 26.")
         content must include("If you have further settlors to add, write to HMRC with their details.")
 
@@ -387,7 +387,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
             Nil,
             settlorRows,
             "The trust has 2 settlors"
-          )(fakeRequest, messages).toString
+          )(request, messages).toString
 
         content must include("You cannot remove First Last as they have already been declared")
         content must include("You cannot remove Humanitarian Company Ltd as they have already been declared")

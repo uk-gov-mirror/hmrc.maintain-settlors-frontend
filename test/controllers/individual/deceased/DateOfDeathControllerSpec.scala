@@ -92,7 +92,7 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name.displayName)(fakeRequest, messages).toString
+        view(form, name.displayName)(getRequest, messages).toString
 
       application.stop()
     }
@@ -186,7 +186,7 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name.displayName)(fakeRequest, messages).toString
+        view(boundForm, name.displayName)(request, messages).toString
 
       application.stop()
     }
@@ -236,7 +236,7 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name.displayName)(fakeRequest, messages).toString
+        view(boundForm, name.displayName)(request, messages).toString
 
       application.stop()
     }

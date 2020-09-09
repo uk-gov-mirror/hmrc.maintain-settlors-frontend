@@ -84,7 +84,7 @@ class RemoveIndividualSettlorControllerSpec extends SpecBase with ScalaCheckProp
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual view(form, index, name.displayName)(fakeRequest, messages).toString
+      contentAsString(result) mustEqual view(form, index, name.displayName)(request, messages).toString
 
       application.stop()
     }
@@ -186,7 +186,7 @@ class RemoveIndividualSettlorControllerSpec extends SpecBase with ScalaCheckProp
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index, name.displayName)(fakeRequest, messages).toString
+        view(boundForm, index, name.displayName)(request, messages).toString
 
       application.stop()
     }

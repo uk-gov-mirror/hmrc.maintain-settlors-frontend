@@ -68,7 +68,7 @@ class AddNowControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(individualSettlorAnswer))(fakeRequest, messages).toString
+        view(form.fill(individualSettlorAnswer))(request, messages).toString
 
       application.stop()
     }
@@ -122,7 +122,7 @@ class AddNowControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm)(fakeRequest, messages).toString
+        view(boundForm)(request, messages).toString
 
        application.stop()
     }
