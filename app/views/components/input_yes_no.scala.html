@@ -23,7 +23,11 @@
 
 
 <div class="form-group @if(field.hasErrors){form-group-error}">
-    <fieldset class="inline" id="@{field.id}" @if(field.hasErrors || hint.nonEmpty){aria-describedby="@if(field.hasErrors){error-message-@{field.id}-input}@if(field.hasErrors && hint.nonEmpty){ }@if(hint.nonEmpty){hint-@{field.id}}"}>
+    <fieldset class="inline" id="@{field.id}"
+        @if(field.hasErrors || hint.nonEmpty){
+            aria-describedby="@if(hint.nonEmpty){hint-@{field.id}}@if(hint.nonEmpty && field.hasErrors){ }@if(field.hasErrors){error-message-@{field.id}-input}"
+        }
+    >
 
         <legend id="@{field.id}-legend">
             @if(headingIsLegend){<h1 id="@{field.id}-id" class="legend-as-heading heading-large">}
@@ -35,7 +39,7 @@
             <div class="form-hint" id="hint-@{field.id}">@hint</div>
         }
         @field.errors.map { error =>
-            <span class="error-message" id="error-message-@field.id-input">
+            <span class="error-message" id="error-message-@{field.id}-input">
                 <span class="visually-hidden">@messages("site.error") </span>@messages(error.message, error.args: _*)
             </span>
         }
