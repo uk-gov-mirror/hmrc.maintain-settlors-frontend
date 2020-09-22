@@ -389,9 +389,6 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
             "The trust has 2 settlors"
           )(request, messages).toString
 
-        content must include("You cannot remove First Last as they have already been declared")
-        content must include("You cannot remove Humanitarian Company Ltd as they have already been declared")
-
         application.stop()
       }
     }
