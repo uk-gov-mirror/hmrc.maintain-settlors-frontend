@@ -16,10 +16,8 @@
 
 package navigation
 
-import java.time.LocalDate
-
 import base.SpecBase
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.individual.living._
 

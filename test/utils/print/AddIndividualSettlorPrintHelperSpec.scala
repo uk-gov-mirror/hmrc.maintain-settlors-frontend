@@ -19,7 +19,7 @@ package utils.print
 import java.time.LocalDate
 
 import base.SpecBase
-import models.{CheckMode, IdCard, Name, NonUkAddress, NormalMode, Passport, UkAddress}
+import models.{IdCard, Name, NonUkAddress, NormalMode, Passport, UkAddress}
 import pages.individual.living._
 import play.twirl.api.Html
 import viewmodels.{AnswerRow, AnswerSection}

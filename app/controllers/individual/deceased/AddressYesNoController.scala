@@ -21,7 +21,6 @@ import controllers.actions.StandardActionSets
 import controllers.actions.individual.deceased.NameRequiredAction
 import forms.YesNoFormProvider
 import javax.inject.Inject
-import models.Mode
 import navigation.Navigator
 import pages.individual.deceased.AddressYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}

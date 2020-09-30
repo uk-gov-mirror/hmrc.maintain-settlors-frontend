@@ -21,7 +21,7 @@ import java.time.LocalDate
 import base.SpecBase
 import config.annotations.BusinessSettlor
 import forms.UtrFormProvider
-import models.{NormalMode, TypeOfTrust, UkAddress, UserAnswers}
+import models.{NormalMode, TypeOfTrust, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers._
 import org.mockito.Mockito._

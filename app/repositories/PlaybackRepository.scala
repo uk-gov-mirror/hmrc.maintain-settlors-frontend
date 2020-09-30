@@ -18,28 +18,24 @@ package repositories
 
 import java.time.LocalDateTime
 
-import akka.stream.Materializer
 import javax.inject.{Inject, Singleton}
 import models.{MongoDateTimeFormats, UserAnswers}
 import org.slf4j.LoggerFactory
 import play.api.Configuration
 import play.api.libs.json._
-import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.api.WriteConcern
 import reactivemongo.api.indexes.{Index, IndexType}
 import reactivemongo.bson.BSONDocument
 import reactivemongo.play.json.ImplicitBSONHandlers.JsObjectDocumentWriter
 import reactivemongo.play.json.collection.JSONCollection
-import utils.DateFormatter
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PlaybackRepositoryImpl @Inject()(
                                         mongo: MongoDriver,
-                                        config: Configuration,
-                                        dateFormatter: DateFormatter
-                                      )(implicit ec: ExecutionContext, m: Materializer) extends PlaybackRepository {
+                                        config: Configuration
+                                      )(implicit ec: ExecutionContext) extends PlaybackRepository {
 
   private val logger = LoggerFactory.getLogger("application." + this.getClass.getCanonicalName)
 

@@ -22,13 +22,12 @@ import base.SpecBase
 import config.annotations.DeceasedSettlor
 import connectors.TrustConnector
 import forms.DateOfDeathFormProvider
-import models.BpMatchStatus.FullyMatched
 import models.{Name, TrustDetails, TypeOfTrust}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.individual.deceased.{BpMatchStatusPage, DateOfBirthPage, DateOfDeathPage, NamePage}
+import pages.individual.deceased.{DateOfBirthPage, DateOfDeathPage, NamePage}
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
 import play.api.test.FakeRequest
