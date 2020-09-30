@@ -29,7 +29,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HttpResponse
 import views.html.business.remove.RemoveBusinessSettlorView
 
 import scala.concurrent.Future
@@ -67,8 +67,6 @@ class RemoveBusinessSettlorControllerSpec extends SpecBase with ScalaCheckProper
 
       val index = 1
 
-      implicit val hc : HeaderCarrier = HeaderCarrier()
-
       when(mockConnector.getSettlors(any())(any(), any()))
         .thenReturn(Future.successful(Settlors(Nil, settlors, None)))
 
@@ -92,8 +90,6 @@ class RemoveBusinessSettlorControllerSpec extends SpecBase with ScalaCheckProper
     "redirect to the add to page when settlor is not provisional" in {
 
       val index = 0
-
-      implicit val hc : HeaderCarrier = HeaderCarrier()
 
       when(mockConnector.getSettlors(any())(any(), any()))
         .thenReturn(Future.successful(Settlors(Nil, settlors, None)))

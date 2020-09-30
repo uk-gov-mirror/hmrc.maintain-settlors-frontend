@@ -25,7 +25,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Result
 import uk.gov.hmrc.auth.core.Enrolments
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class SaveSessionActionSpec extends SpecBase with MockitoSugar with ScalaFutures {

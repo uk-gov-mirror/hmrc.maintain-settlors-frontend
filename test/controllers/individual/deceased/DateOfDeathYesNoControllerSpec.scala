@@ -19,13 +19,12 @@ package controllers.individual.deceased
 import base.SpecBase
 import config.annotations.DeceasedSettlor
 import forms.YesNoFormProvider
-import models.BpMatchStatus.FullyMatched
 import models.Name
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.individual.deceased.{BpMatchStatusPage, DateOfDeathYesNoPage, NamePage}
+import pages.individual.deceased.{DateOfDeathYesNoPage, NamePage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

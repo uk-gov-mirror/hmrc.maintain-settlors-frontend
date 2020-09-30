@@ -18,7 +18,7 @@ package views.individual.deceased
 
 import controllers.individual.deceased.routes
 import forms.NonUkAddressFormProvider
-import models.{Name, NonUkAddress, NormalMode}
+import models.{Name, NonUkAddress}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import utils.InputOption
