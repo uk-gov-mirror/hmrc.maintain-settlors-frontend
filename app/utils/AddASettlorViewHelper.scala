@@ -28,7 +28,7 @@ class AddASettlorViewHelper(settlors: Settlors)(implicit messages: Messages) {
       typeLabel = messages("entities.settlor.deceased"),
       changeLabel = messages("site.change.details"),
       changeUrl = Some(controllers.individual.deceased.routes.CheckDetailsController.extractAndRender().url),
-      removeLabel =  messages("site.delete"),
+      removeLabel =  Some(messages("site.delete")),
       removeUrl = None
     )
   }
@@ -39,7 +39,7 @@ class AddASettlorViewHelper(settlors: Settlors)(implicit messages: Messages) {
       typeLabel = messages("entities.settlor.individual"),
       changeLabel = messages("site.change.details"),
       changeUrl = Some(controllers.individual.living.amend.routes.CheckDetailsController.extractAndRender(index).url),
-      removeLabel =  messages("site.delete"),
+      removeLabel =  Some(messages("site.delete")),
       removeUrl =
         if (settlor.provisional) {
           Some(controllers.individual.living.remove.routes.RemoveIndividualSettlorController.onPageLoad(index).url)
@@ -55,7 +55,7 @@ class AddASettlorViewHelper(settlors: Settlors)(implicit messages: Messages) {
       typeLabel = messages("entities.settlor.business"),
       changeLabel = messages("site.change.details"),
       changeUrl = Some(controllers.business.amend.routes.CheckDetailsController.extractAndRender(index).url),
-      removeLabel =  messages("site.delete"),
+      removeLabel =  Some(messages("site.delete")),
       removeUrl =
         if (settlor.provisional) {
           Some(controllers.business.remove.routes.RemoveBusinessSettlorController.onPageLoad(index).url)
