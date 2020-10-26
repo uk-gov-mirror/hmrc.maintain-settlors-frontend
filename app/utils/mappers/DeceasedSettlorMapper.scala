@@ -20,14 +20,14 @@ import java.time.LocalDate
 
 import models.settlors.DeceasedSettlor
 import models.{Address, BpMatchStatus, IndividualIdentification, Name, NationalInsuranceNumber, NonUkAddress, UkAddress, UserAnswers}
-import org.slf4j.LoggerFactory
 import pages.individual.deceased._
+import play.api.Logger
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsError, JsSuccess, Reads}
 
 class DeceasedSettlorMapper {
 
-  private val logger = LoggerFactory.getLogger("application." + this.getClass.getCanonicalName)
+  private val logger: Logger = Logger(getClass)
 
   def apply(answers: UserAnswers): Option[DeceasedSettlor] = {
     val readFromUserAnswers: Reads[DeceasedSettlor] =
@@ -44,7 +44,7 @@ class DeceasedSettlorMapper {
       case JsSuccess(value, _) =>
         Some(value)
       case JsError(errors) =>
-        logger.error(s"Failed to rehydrate DeceasedSettlor from UserAnswers due to $errors")
+        logger.error(s"[UTR: ${answers.utr}] Failed to rehydrate DeceasedSettlor from UserAnswers due to $errors")
         None
     }
   }
