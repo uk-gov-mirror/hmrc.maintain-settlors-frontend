@@ -35,12 +35,12 @@
     }
     @if(data.removeUrl.isDefined){
         <dd class="hmrc-add-to-a-list__identifier hmrc-add-to-a-list__remove">
-            <a href={removeUrl}>
-                <span aria-hidden="true">{data.removeLabel}</span>
-                <span class="visually-hidden">{messages("site.hidden-delete", data.name)}</span>
+            <a href="@data.removeUrl">
+                <span aria-hidden="true">@data.removeLabel</span>
+                <span class="visually-hidden">@messages("site.hidden-delete", data.name)</span>
             </a>
         </dd>
-    } else{
+    } else {
         <dd class="hmrc-add-to-a-list__identifier hmrc-add-to-a-list__remove">
             <span>@messages("site.cannotRemove")</span>
         </dd>
