@@ -33,20 +33,16 @@
             </a>
         </dd>
     }
-    <dd class="hmrc-add-to-a-list__identifier hmrc-add-to-a-list__remove">
-        @{
-            data.removeUrl match {
-                case Some(removeUrl) =>
-                    <a href={removeUrl}>
-                        <span aria-hidden="true">{data.removeLabel}</span>
-                        <span class="visually-hidden">@messages("site.hidden-delete", data.name)}</span>
-                    </a>
-                case None =>
-                    <dd class="hmrc-add-to-a-list__identifier hmrc-add-to-a-list__remove">
-                        <span>@messages("site.cannotRemove")</span>
-                    </dd>
-            }
-        }
-    </dd>
-
+    @if(data.removeUrl.isDefined){
+        <dd class="hmrc-add-to-a-list__identifier hmrc-add-to-a-list__remove">
+            <a href={removeUrl}>
+                <span aria-hidden="true">{data.removeLabel}</span>
+                <span class="visually-hidden">{messages("site.hidden-delete", data.name)}</span>
+            </a>
+        </dd>
+    } else{
+        <dd class="hmrc-add-to-a-list__identifier hmrc-add-to-a-list__remove">
+            <span>messages("site.cannotRemove")</span>
+        </dd>
+    }
 </div>
