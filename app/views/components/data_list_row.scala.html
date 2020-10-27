@@ -42,6 +42,9 @@
                         <span class="visually-hidden">{messages("site.hidden-delete", data.name)}</span>
                     </a>
                 case None =>
+                    <dd class="hmrc-add-to-a-list__identifier hmrc-add-to-a-list__remove">
+                        <span>@messages("site.cannotRemove")</span>
+                    </dd>
             }
         }
     </dd>
