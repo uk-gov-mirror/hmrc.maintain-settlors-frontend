@@ -79,9 +79,9 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
   lazy val featureNotAvailable : String = controllers.routes.FeatureNotAvailableController.onPageLoad().url
 
   val settlorRows = List(
-    AddRow("Some One", typeLabel = "Will settlor", "Change details", Some(controllers.individual.deceased.routes.CheckDetailsController.extractAndRender().url), "Remove", None),
-    AddRow("First Last", typeLabel = "Individual settlor", "Change details", Some(controllers.individual.living.amend.routes.CheckDetailsController.extractAndRender(0).url), "Remove", Some(controllers.individual.living.remove.routes.RemoveIndividualSettlorController.onPageLoad(0).url)),
-    AddRow("Humanitarian Company Ltd", typeLabel = "Business settlor", "Change details", Some(controllers.business.amend.routes.CheckDetailsController.extractAndRender(0).url), "Remove", Some(controllers.business.remove.routes.RemoveBusinessSettlorController.onPageLoad(0).url))
+    AddRow("Some One", typeLabel = "Will settlor", "Change details", Some(controllers.individual.deceased.routes.CheckDetailsController.extractAndRender().url), Some("Remove"), None),
+    AddRow("First Last", typeLabel = "Individual settlor", "Change details", Some(controllers.individual.living.amend.routes.CheckDetailsController.extractAndRender(0).url), Some("Remove"), Some(controllers.individual.living.remove.routes.RemoveIndividualSettlorController.onPageLoad(0).url)),
+    AddRow("Humanitarian Company Ltd", typeLabel = "Business settlor", "Change details", Some(controllers.business.amend.routes.CheckDetailsController.extractAndRender(0).url), Some("Remove"), Some(controllers.business.remove.routes.RemoveBusinessSettlorController.onPageLoad(0).url))
   )
 
   class FakeService(data: Settlors) extends TrustService {
@@ -358,8 +358,8 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
       val settlors = Settlors(List(individualSettlor(false)), List(businessSettlor(false)), None)
 
       val settlorRows = List(
-        AddRow("First Last", typeLabel = "Individual settlor", "Change details", Some(controllers.individual.living.amend.routes.CheckDetailsController.extractAndRender(0).url), "Remove", None),
-        AddRow("Humanitarian Company Ltd", typeLabel = "Business settlor", "Change details", Some(controllers.business.amend.routes.CheckDetailsController.extractAndRender(0).url), "Remove", None)
+        AddRow("First Last", typeLabel = "Individual settlor", "Change details", Some(controllers.individual.living.amend.routes.CheckDetailsController.extractAndRender(0).url), Some("Remove"), None),
+        AddRow("Humanitarian Company Ltd", typeLabel = "Business settlor", "Change details", Some(controllers.business.amend.routes.CheckDetailsController.extractAndRender(0).url), Some("Remove"), None)
       )
 
       "return OK and the correct view for a GET with no remove links" in {
