@@ -21,10 +21,12 @@ import controllers.actions.StandardActionSets
 import javax.inject.Inject
 import models.{TrustDetails, UserAnswers}
 import pages.AdditionalSettlorsYesNoPage
+import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.Session
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -35,8 +37,11 @@ class IndexController @Inject()(
                                  connector: TrustConnector)
                                (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
+  private val logger: Logger = Logger(getClass)
+
   def onPageLoad(utr: String): Action[AnyContent] = (actions.auth andThen actions.saveSession(utr) andThen actions.getData).async {
       implicit request =>
+        logger.info(s"[Session ID: ${Session.id(hc)}][UTR: $utr] user has started to maintain settlors")
 
         def newUserAnswers(details: TrustDetails,
                            internalId: String,
