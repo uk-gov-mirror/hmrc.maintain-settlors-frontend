@@ -308,7 +308,6 @@ businessSettlor.utr.checkYourAnswersLabel = What is {0} Unique Taxpayer Referenc
 businessSettlor.utr.title = What is the settlor’s Unique Taxpayer Reference (UTR)?
 businessSettlor.utr.heading = What is {0}’s Unique Taxpayer Reference (UTR)?
 businessSettlor.utr.hint = This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Self Assessment. It may be called ‘reference’, ‘UTR’ or ‘official use’.
-businessSettlor.utr.hint.reader = This is 10 numbers, for example 1 2 3 4 5 6 7 8 9 0. It will be on tax returns and other letters about Self Assessment. It may be called ‘reference’, ‘UTR’ or ‘official use’.
 businessSettlor.utr.p1 = You can
 businessSettlor.utr.link = find a lost UTR number (opens in a new window or tab)
 businessSettlor.utr.error.required = Enter the settlor’s Unique Taxpayer Reference
