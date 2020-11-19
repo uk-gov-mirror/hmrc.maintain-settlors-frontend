@@ -25,10 +25,9 @@ import play.api.libs.json.Reads
 import play.twirl.api.HtmlFormat
 import queries.Gettable
 import utils.countryOptions.CountryOptions
-import utils.print.CheckAnswersFormatters._
 import viewmodels.AnswerRow
 
-class AnswerRowConverter @Inject()() {
+class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatters) {
 
   def bind(userAnswers: UserAnswers, name: String, countryOptions: CountryOptions)
           (implicit messages: Messages): Bound = new Bound(userAnswers, name, countryOptions)
@@ -77,7 +76,7 @@ class AnswerRowConverter @Inject()() {
       userAnswers.get(query) map {x =>
         AnswerRow(
           HtmlFormat.escape(messages(s"$labelKey.checkYourAnswersLabel", name)),
-          yesOrNo(x),
+          checkAnswersFormatters.yesOrNo(x),
           changeUrl
         )
       }
@@ -89,7 +88,7 @@ class AnswerRowConverter @Inject()() {
       userAnswers.get(query) map {x =>
         AnswerRow(
           HtmlFormat.escape(messages(s"$labelKey.checkYourAnswersLabel", name)),
-          HtmlFormat.escape(x.format(dateFormatter)),
+          HtmlFormat.escape(checkAnswersFormatters.formatDate(x)),
           changeUrl
         )
       }
@@ -101,7 +100,7 @@ class AnswerRowConverter @Inject()() {
       userAnswers.get(query) map {x =>
         AnswerRow(
           HtmlFormat.escape(messages(s"$labelKey.checkYourAnswersLabel", name)),
-          formatNino(x),
+          checkAnswersFormatters.formatNino(x),
           changeUrl
         )
       }
@@ -114,7 +113,7 @@ class AnswerRowConverter @Inject()() {
       userAnswers.get(query) map { x =>
         AnswerRow(
           HtmlFormat.escape(messages(s"$labelKey.checkYourAnswersLabel", name)),
-          formatAddress(x, countryOptions),
+          checkAnswersFormatters.formatAddress(x, countryOptions),
           changeUrl
         )
       }
@@ -126,7 +125,7 @@ class AnswerRowConverter @Inject()() {
       userAnswers.get(query) map {x =>
         AnswerRow(
           HtmlFormat.escape(messages(s"$labelKey.checkYourAnswersLabel", name)),
-          formatPassportDetails(x, countryOptions),
+          checkAnswersFormatters.formatPassportDetails(x, countryOptions),
           changeUrl
         )
       }
@@ -138,7 +137,7 @@ class AnswerRowConverter @Inject()() {
       userAnswers.get(query) map {x =>
         AnswerRow(
           HtmlFormat.escape(messages(s"$labelKey.checkYourAnswersLabel", name)),
-          formatIdCardDetails(x, countryOptions),
+          checkAnswersFormatters.formatIdCardDetails(x, countryOptions),
           changeUrl
         )
       }

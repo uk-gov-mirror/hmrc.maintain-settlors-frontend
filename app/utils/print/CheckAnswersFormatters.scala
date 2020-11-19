@@ -16,17 +16,22 @@
 
 package utils.print
 
-import java.time.format.DateTimeFormatter
-
+import javax.inject.Inject
+import java.time.{LocalDate => JavaDate}
 import models.{Address, IdCard, NonUkAddress, Passport, UkAddress}
+import org.joda.time.{LocalDate => JodaDate}
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.domain.Nino
 import utils.countryOptions.CountryOptions
+import uk.gov.hmrc.play.language.LanguageUtils
 
-object CheckAnswersFormatters {
+class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils) {
 
-  val dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
+  def formatDate(date: JavaDate)(implicit messages: Messages): String = {
+    val convertedDate: JodaDate = new JodaDate(date.getYear, date.getMonthValue, date.getDayOfMonth)
+    languageUtils.Dates.formatDate(convertedDate)
+  }
 
   def yesOrNo(answer: Boolean)(implicit messages: Messages): Html = {
     if (answer) {
@@ -73,23 +78,23 @@ object CheckAnswersFormatters {
   private def country(code: String, countryOptions: CountryOptions): String =
     countryOptions.options.find(_.value.equals(code)).map(_.label).getOrElse("")
 
-  def formatPassportDetails(passport: Passport, countryOptions: CountryOptions): Html = {
+  def formatPassportDetails(passport: Passport, countryOptions: CountryOptions)(implicit messages: Messages): Html = {
     val lines =
       Seq(
         Some(country(passport.countryOfIssue, countryOptions)),
         Some(HtmlFormat.escape(passport.number)),
-        Some(HtmlFormat.escape(passport.expirationDate.format(dateFormatter)))
+        Some(HtmlFormat.escape(formatDate(passport.expirationDate)))
       ).flatten
 
     Html(lines.mkString("<br />"))
   }
 
-  def formatIdCardDetails(idCard: IdCard, countryOptions: CountryOptions): Html = {
+  def formatIdCardDetails(idCard: IdCard, countryOptions: CountryOptions)(implicit messages: Messages): Html = {
     val lines =
       Seq(
         Some(country(idCard.countryOfIssue, countryOptions)),
         Some(HtmlFormat.escape(idCard.number)),
-        Some(HtmlFormat.escape(idCard.expirationDate.format(dateFormatter)))
+        Some(HtmlFormat.escape(formatDate(idCard.expirationDate)))
       ).flatten
 
     Html(lines.mkString("<br />"))
