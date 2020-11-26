@@ -19,7 +19,8 @@ package utils.print
 import java.time.LocalDate
 
 import com.google.inject.Inject
-import models.{Address, CompanyType, IdCard, Name, Passport, UserAnswers}
+import models.{Address, CombinedPassportOrIdCard, CompanyType, IdCard, Name, Passport, UserAnswers}
+import pages.QuestionPage
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
 import play.twirl.api.HtmlFormat
@@ -138,6 +139,18 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
         AnswerRow(
           HtmlFormat.escape(messages(s"$labelKey.checkYourAnswersLabel", name)),
           checkAnswersFormatters.formatIdCardDetails(x, countryOptions),
+          changeUrl
+        )
+      }
+    }
+
+    def passportOrIdCardDetailsQuestion(query: QuestionPage[CombinedPassportOrIdCard],
+                                        labelKey: String,
+                                        changeUrl: Option[String]): Option[AnswerRow] = {
+      userAnswers.get(query) map {x =>
+        AnswerRow(
+          HtmlFormat.escape(messages(s"$labelKey.checkYourAnswersLabel", name)),
+          checkAnswersFormatters.formatPassportOrIdCardDetails(x, countryOptions),
           changeUrl
         )
       }

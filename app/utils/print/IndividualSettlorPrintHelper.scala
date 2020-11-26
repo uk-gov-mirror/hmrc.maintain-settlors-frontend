@@ -58,8 +58,8 @@ class IndividualSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConver
       bound.yesNoQuestion(LiveInTheUkYesNoPage, "livingSettlor.liveInTheUkYesNo", Some(controllers.individual.living.routes.LiveInTheUkYesNoController.onPageLoad(CheckMode).url)),
       bound.addressQuestion(UkAddressPage, "livingSettlor.ukAddress", Some(controllers.individual.living.routes.UkAddressController.onPageLoad(CheckMode).url)),
       bound.addressQuestion(NonUkAddressPage, "livingSettlor.nonUkAddress", Some(controllers.individual.living.routes.NonUkAddressController.onPageLoad(CheckMode).url)),
-      bound.yesNoQuestion(PassportDetailsYesNoPage, "livingSettlor.passportOrIdCardDetailsYesNo", Some(controllers.individual.living.routes.PassportDetailsYesNoController.onPageLoad(CheckMode).url)),
-      bound.passportDetailsQuestion(PassportDetailsPage, "livingSettlor.passportOrIdCardDetails", Some(controllers.individual.living.routes.PassportDetailsController.onPageLoad(CheckMode).url))
+      bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, "livingSettlor.passportOrIdCardDetailsYesNo", Some(controllers.individual.living.amend.routes.PassportOrIdCardDetailsYesNoController.onPageLoad(CheckMode).url)),
+      bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, "livingSettlor.passportOrIdCardDetails", Some(controllers.individual.living.amend.routes.PassportOrIdCardDetailsController.onPageLoad(CheckMode).url))
     ).flatten
 
     AnswerSection(
