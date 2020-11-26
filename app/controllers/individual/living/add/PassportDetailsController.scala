@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package controllers.individual.living
+package controllers.individual.living.add
 
 import config.annotations.LivingSettlor
 import controllers.actions._
 import controllers.actions.individual.living.NameRequiredAction
 import forms.PassportDetailsFormProvider
 import javax.inject.Inject
-import models.Mode
+import models.{Mode, Passport}
 import navigation.Navigator
 import pages.individual.living.PassportDetailsPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.countryOptions.CountryOptions
-import views.html.individual.living.PassportDetailsView
+import views.html.individual.living.add.PassportDetailsView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -43,9 +44,9 @@ class PassportDetailsController @Inject()(
                                            val controllerComponents: MessagesControllerComponents,
                                            view: PassportDetailsView,
                                            val countryOptions: CountryOptions
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("livingSettlor")
+  private val form: Form[Passport] = formProvider.withPrefix("livingSettlor")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>

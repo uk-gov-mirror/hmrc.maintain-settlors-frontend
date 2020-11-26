@@ -17,6 +17,7 @@
 package navigation
 
 import controllers.individual.living.amend.{routes => amendRts}
+import controllers.individual.living.add.{routes => addRts}
 import controllers.individual.living.{routes => rts}
 import javax.inject.Inject
 import models.{CheckMode, Mode, NormalMode, TypeOfTrust, UserAnswers}
@@ -38,9 +39,9 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
   private def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case NamePage => _ => rts.DateOfBirthYesNoController.onPageLoad(mode)
     case DateOfBirthPage => _ => rts.NationalInsuranceNumberYesNoController.onPageLoad(mode)
-    case PassportDetailsPage | IdCardDetailsPage => _ => rts.StartDateController.onPageLoad()
+    case PassportDetailsPage | IdCardDetailsPage => _ => addRts.StartDateController.onPageLoad()
     case PassportOrIdCardDetailsPage => ua => checkDetailsRoute(ua)
-    case StartDatePage => _ => rts.CheckDetailsController.onPageLoad()
+    case StartDatePage => _ => addRts.CheckDetailsController.onPageLoad()
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
@@ -51,9 +52,9 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
     case LiveInTheUkYesNoPage => ua =>
       yesNoNav(ua, LiveInTheUkYesNoPage, rts.UkAddressController.onPageLoad(mode), rts.NonUkAddressController.onPageLoad(mode))
     case PassportDetailsYesNoPage => ua =>
-      yesNoNav(ua, PassportDetailsYesNoPage, rts.PassportDetailsController.onPageLoad(mode), rts.IdCardDetailsYesNoController.onPageLoad(mode))
+      yesNoNav(ua, PassportDetailsYesNoPage, addRts.PassportDetailsController.onPageLoad(mode), addRts.IdCardDetailsYesNoController.onPageLoad(mode))
     case IdCardDetailsYesNoPage => ua =>
-      yesNoNav(ua, IdCardDetailsYesNoPage, rts.IdCardDetailsController.onPageLoad(mode), rts.StartDateController.onPageLoad())
+      yesNoNav(ua, IdCardDetailsYesNoPage, addRts.IdCardDetailsController.onPageLoad(mode), addRts.StartDateController.onPageLoad())
     case PassportOrIdCardDetailsYesNoPage => ua =>
       yesNoNav(ua, PassportOrIdCardDetailsYesNoPage, amendRts.PassportOrIdCardDetailsController.onPageLoad(mode), checkDetailsRoute(ua))
   }
@@ -62,11 +63,11 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
     mode match {
       case NormalMode => {
         case NationalInsuranceNumberPage => _ =>
-          rts.StartDateController.onPageLoad()
+          addRts.StartDateController.onPageLoad()
         case AddressYesNoPage => ua =>
-          yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(mode), rts.StartDateController.onPageLoad())
+          yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(mode), addRts.StartDateController.onPageLoad())
         case UkAddressPage | NonUkAddressPage => _ =>
-          rts.PassportDetailsYesNoController.onPageLoad(mode)
+          addRts.PassportDetailsYesNoController.onPageLoad(mode)
       }
       case CheckMode => {
         case NationalInsuranceNumberPage => ua =>

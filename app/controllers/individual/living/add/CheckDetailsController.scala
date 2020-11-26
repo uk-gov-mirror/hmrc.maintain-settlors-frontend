@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.individual.living
+package controllers.individual.living.add
 
 import config.FrontendAppConfig
 import connectors.TrustConnector
@@ -28,7 +28,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.mappers.IndividualSettlorMapper
 import utils.print.IndividualSettlorPrintHelper
 import viewmodels.AnswerSection
-import views.html.individual.living.CheckDetailsView
+import views.html.individual.living.add.CheckDetailsView
 
 import scala.concurrent.{ExecutionContext, Future}
 

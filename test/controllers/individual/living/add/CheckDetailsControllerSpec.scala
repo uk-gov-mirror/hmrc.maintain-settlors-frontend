@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.individual.living
+package controllers.individual.living.add
 
 import java.time.LocalDate
 
@@ -32,7 +32,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.http.HttpResponse
 import utils.print.IndividualSettlorPrintHelper
-import views.html.individual.living.CheckDetailsView
+import views.html.individual.living.add.CheckDetailsView
 
 import scala.concurrent.Future
 

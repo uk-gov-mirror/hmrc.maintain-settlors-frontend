@@ -14,27 +14,30 @@
  * limitations under the License.
  *@
 
-@import viewmodels.AnswerSection
-@import controllers.individual.living.routes._
+@import controllers.individual.living.add.routes._
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF
 )
 
-@(answerSection: AnswerSection)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], name: String, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("livingSettlor.checkDetails.title")
-    ) {
+    title = s"${errorPrefix(form)}${messages("livingSettlor.passportDetailsYesNo.title")}"
+) {
 
-    @formHelper(action = CheckDetailsController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = PassportDetailsYesNoController.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.back_link()
 
-        @components.heading("livingSettlor.checkDetails.heading")
+        @components.error_summary(form.errors)
 
-        @components.answer_section(answerSection)
+        @components.input_yes_no(
+            field = form("value"),
+            legend = messages("livingSettlor.passportDetailsYesNo.heading", name),
+            headingIsLegend = true
+        )
 
         @components.submit_button()
     }

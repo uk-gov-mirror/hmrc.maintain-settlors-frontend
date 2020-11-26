@@ -14,44 +14,36 @@
  * limitations under the License.
  */
 
-package views.individual.living
+package views.individual.living.add
 
-import java.time.LocalDate
-
-import forms.DateAddedToTrustFormProvider
-import models.Name
+import controllers.individual.living.add.routes
+import forms.YesNoFormProvider
+import models.{Name, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.QuestionViewBehaviours
-import views.html.individual.living.StartDateView
+import views.behaviours.YesNoViewBehaviours
+import views.html.individual.living.add.IdCardDetailsYesNoView
 
-class StartDateViewSpec extends QuestionViewBehaviours[LocalDate] {
+class IdCardDetailsYesNoViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "livingSettlor.startDate"
-  val date: LocalDate = LocalDate.parse("2019-02-03")
-  val form: Form[LocalDate] = new DateAddedToTrustFormProvider().withPrefixAndTrustStartDate(messageKeyPrefix, date)
-  val view: StartDateView = viewFor[StartDateView](Some(emptyUserAnswers))
+  val messageKeyPrefix = "livingSettlor.idCardDetailsYesNo"
   val name: Name = Name("First", Some("Middle"), "Last")
 
-  "StartDate view" must {
+  val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
+
+  "IdCardDetailsYesNo view" must {
+
+    val view = viewFor[IdCardDetailsYesNoView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, name.displayName)(fakeRequest, messages)
+      view.apply(form, name.displayName, NormalMode)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like pageWithHint(form, applyView, messageKeyPrefix + ".hint")
-
-    behave like pageWithDateFields(
-      form,
-      applyView,
-      messageKeyPrefix,
-      "value"
-    )
+    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName), routes.IdCardDetailsYesNoController.onSubmit(NormalMode).url)
 
     behave like pageWithASubmitButton(applyView(form))
   }
-
 }

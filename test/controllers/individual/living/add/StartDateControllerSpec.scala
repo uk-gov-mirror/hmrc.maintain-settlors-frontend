@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.individual.living
+package controllers.individual.living.add
 
 import java.time.{LocalDate, ZoneOffset}
 
@@ -33,7 +33,7 @@ import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import views.html.individual.living.StartDateView
+import views.html.individual.living.add.StartDateView
 
 import scala.concurrent.Future
 

@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-package views.individual.living
+package views.individual.living.add
 
-import controllers.individual.living.routes
-import forms.IdCardDetailsFormProvider
-import models.{IdCard, Name, NormalMode}
+import controllers.individual.living.add.routes
+import forms.PassportDetailsFormProvider
+import models.{Name, NormalMode, Passport}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import utils.InputOption
 import utils.countryOptions.CountryOptions
 import views.behaviours.QuestionViewBehaviours
-import views.html.individual.living.IdCardDetailsView
+import views.html.individual.living.add.PassportDetailsView
 
-class IdCardDetailsViewSpec extends QuestionViewBehaviours[IdCard] {
+class PassportDetailsViewSpec extends QuestionViewBehaviours[Passport] {
 
-  val messageKeyPrefix = "livingSettlor.idCardDetails"
+  val messageKeyPrefix = "livingSettlor.passportDetails"
   val name: Name = Name("First", Some("Middle"), "Last")
 
-  override val form: Form[IdCard] = new IdCardDetailsFormProvider(frontendAppConfig).withPrefix(messageKeyPrefix)
+  override val form: Form[Passport] = new PassportDetailsFormProvider(frontendAppConfig).withPrefix(messageKeyPrefix)
 
-  "IdCardDetails view" must {
+  "PassportDetails view" must {
 
-    val view = viewFor[IdCardDetailsView](Some(emptyUserAnswers))
+    val view = viewFor[PassportDetailsView](Some(emptyUserAnswers))
 
     val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptions].options
 
@@ -52,7 +52,7 @@ class IdCardDetailsViewSpec extends QuestionViewBehaviours[IdCard] {
         form,
         applyView,
         messageKeyPrefix,
-        routes.IdCardDetailsController.onSubmit(NormalMode).url,
+        routes.PassportDetailsController.onSubmit(NormalMode).url,
         Seq(("country", None), ("number", None)),
         "expiryDate",
         name.displayName

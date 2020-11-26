@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.individual.living
+package controllers.individual.living.add
 
 import config.annotations.LivingSettlor
 import controllers.actions._
@@ -23,32 +23,33 @@ import forms.YesNoFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.individual.living.IdCardDetailsYesNoPage
+import pages.individual.living.PassportDetailsYesNoPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.individual.living.IdCardDetailsYesNoView
+import views.html.individual.living.add.PassportDetailsYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IdCardDetailsYesNoController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         sessionRepository: PlaybackRepository,
-                                         @LivingSettlor navigator: Navigator,
-                                         standardActionSets: StandardActionSets,
-                                         nameAction: NameRequiredAction,
-                                         formProvider: YesNoFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: IdCardDetailsYesNoView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class PassportDetailsYesNoController @Inject()(
+                                                override val messagesApi: MessagesApi,
+                                                sessionRepository: PlaybackRepository,
+                                                @LivingSettlor navigator: Navigator,
+                                                standardActionSets: StandardActionSets,
+                                                nameAction: NameRequiredAction,
+                                                formProvider: YesNoFormProvider,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                view: PassportDetailsYesNoView
+                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("livingSettlor.idCardDetailsYesNo")
+  private val form: Form[Boolean] = formProvider.withPrefix("livingSettlor.passportDetailsYesNo")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(IdCardDetailsYesNoPage) match {
+      val preparedForm = request.userAnswers.get(PassportDetailsYesNoPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -65,9 +66,9 @@ class IdCardDetailsYesNoController @Inject()(
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(IdCardDetailsYesNoPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportDetailsYesNoPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(IdCardDetailsYesNoPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(PassportDetailsYesNoPage, mode, updatedAnswers))
       )
   }
 }

@@ -14,30 +14,30 @@
  * limitations under the License.
  *@
 
-@import controllers.individual.living.routes._
+@import controllers.individual.living.add.routes._
 @import utils.InputOption
 
 @this(
-        main_template: MainTemplate,
-        formHelper: FormWithCSRF
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF
 )
 
 @(form: Form[_], countryOptions: Seq[InputOption], name: String, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("livingSettlor.idCardDetails.title")}"
+    title = s"${errorPrefix(form)}${messages("livingSettlor.passportDetails.title")}"
 ) {
 
-    @formHelper(action = IdCardDetailsController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = PassportDetailsController.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.back_link()
 
         @components.error_summary(form.errors)
 
-        @components.heading("livingSettlor.idCardDetails.heading", Some(name))
+        @components.heading("livingSettlor.passportDetails.heading", Some(name))
 
         @components.select(field = form("country"),
-            label = messages("livingSettlor.idCardDetails.country"),
+            label = messages("livingSettlor.passportDetails.country"),
             labelClasses = Set("form-control-1-2 bold"),
             options = countryOptions,
             placeholder = Some("address.country.select"),
@@ -47,15 +47,15 @@
 
         @components.input_text(
             field = form("number"),
-            label = messages("livingSettlor.idCardDetails.number"),
-            hint = Some(messages("livingSettlor.idCardDetails.number.hint"))
+            label = messages("livingSettlor.passportDetails.number"),
+            hint = Some(messages("livingSettlor.passportDetails.number.hint"))
         )
 
         @components.input_date(
             field = form("expiryDate"),
-            legend = messages("livingSettlor.idCardDetails.expiryDate"),
+            legend = messages("livingSettlor.passportDetails.expiryDate"),
             legendClass = "bold",
-            hint = Some(messages("livingSettlor.idCardDetails.expiryDate.hint")),
+            hint = Some(messages("livingSettlor.passportDetails.expiryDate.hint")),
             headingIsLegend = false
         )
 
