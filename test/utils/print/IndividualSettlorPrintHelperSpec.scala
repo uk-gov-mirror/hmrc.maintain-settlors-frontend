@@ -73,10 +73,10 @@ class IndividualSettlorPrintHelperSpec extends SpecBase {
             AnswerRow(label = Html(messages("livingSettlor.liveInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = Some(rts.LiveInTheUkYesNoController.onPageLoad(mode).url)),
             AnswerRow(label = Html(messages("livingSettlor.ukAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = Some(rts.UkAddressController.onPageLoad(mode).url)),
             AnswerRow(label = Html(messages("livingSettlor.nonUkAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = Some(rts.NonUkAddressController.onPageLoad(mode).url)),
-            AnswerRow(label = Html(messages("livingSettlor.passportDetailsYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = Some(addRts.PassportDetailsYesNoController.onPageLoad(mode).url)),
-            AnswerRow(label = Html(messages("livingSettlor.passportDetails.checkYourAnswersLabel", name.displayName)), answer = Html("United Kingdom<br />1<br />10 October 2030"), changeUrl = Some(addRts.PassportDetailsController.onPageLoad(mode).url)),
-            AnswerRow(label = Html(messages("livingSettlor.idCardDetailsYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = Some(addRts.IdCardDetailsYesNoController.onPageLoad(mode).url)),
-            AnswerRow(label = Html(messages("livingSettlor.idCardDetails.checkYourAnswersLabel", name.displayName)), answer = Html("United Kingdom<br />1<br />10 October 2030"), changeUrl = Some(addRts.IdCardDetailsController.onPageLoad(mode).url)),
+            AnswerRow(label = Html(messages("livingSettlor.passportDetailsYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = Some(addRts.PassportDetailsYesNoController.onPageLoad().url)),
+            AnswerRow(label = Html(messages("livingSettlor.passportDetails.checkYourAnswersLabel", name.displayName)), answer = Html("United Kingdom<br />1<br />10 October 2030"), changeUrl = Some(addRts.PassportDetailsController.onPageLoad().url)),
+            AnswerRow(label = Html(messages("livingSettlor.idCardDetailsYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = Some(addRts.IdCardDetailsYesNoController.onPageLoad().url)),
+            AnswerRow(label = Html(messages("livingSettlor.idCardDetails.checkYourAnswersLabel", name.displayName)), answer = Html("United Kingdom<br />1<br />10 October 2030"), changeUrl = Some(addRts.IdCardDetailsController.onPageLoad().url)),
             AnswerRow(label = Html(messages("livingSettlor.startDate.checkYourAnswersLabel", name.displayName)), answer = Html("1 January 2020"), changeUrl = Some(addRts.StartDateController.onPageLoad().url))
           )
         )
@@ -105,8 +105,8 @@ class IndividualSettlorPrintHelperSpec extends SpecBase {
             AnswerRow(label = Html(messages("livingSettlor.liveInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = Some(rts.LiveInTheUkYesNoController.onPageLoad(mode).url)),
             AnswerRow(label = Html(messages("livingSettlor.ukAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = Some(rts.UkAddressController.onPageLoad(mode).url)),
             AnswerRow(label = Html(messages("livingSettlor.nonUkAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = Some(rts.NonUkAddressController.onPageLoad(mode).url)),
-            AnswerRow(label = Html(messages("livingSettlor.passportOrIdCardDetailsYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = Some(amendRts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode).url)),
-            AnswerRow(label = Html(messages("livingSettlor.passportOrIdCardDetails.checkYourAnswersLabel", name.displayName)), answer = Html("United Kingdom<br />1<br />10 October 2030"), changeUrl = Some(amendRts.PassportOrIdCardDetailsController.onPageLoad(mode).url))
+            AnswerRow(label = Html(messages("livingSettlor.passportOrIdCardDetailsYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = Some(amendRts.PassportOrIdCardDetailsYesNoController.onPageLoad().url)),
+            AnswerRow(label = Html(messages("livingSettlor.passportOrIdCardDetails.checkYourAnswersLabel", name.displayName)), answer = Html("United Kingdom<br />1<br />10 October 2030"), changeUrl = Some(amendRts.PassportOrIdCardDetailsController.onPageLoad().url))
           )
         )
       }

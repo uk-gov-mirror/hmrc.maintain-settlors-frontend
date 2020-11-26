@@ -21,7 +21,7 @@ import controllers.actions._
 import controllers.actions.individual.living.NameRequiredAction
 import forms.IdCardDetailsFormProvider
 import javax.inject.Inject
-import models.{IdCard, Mode}
+import models.{IdCard, NormalMode}
 import navigation.Navigator
 import pages.individual.living.IdCardDetailsPage
 import play.api.data.Form
@@ -35,20 +35,20 @@ import views.html.individual.living.add.IdCardDetailsView
 import scala.concurrent.{ExecutionContext, Future}
 
 class IdCardDetailsController @Inject()(
-                                           override val messagesApi: MessagesApi,
-                                           sessionRepository: PlaybackRepository,
-                                           @LivingSettlor navigator: Navigator,
-                                           standardActionSets: StandardActionSets,
-                                           nameAction: NameRequiredAction,
-                                           formProvider: IdCardDetailsFormProvider,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           view: IdCardDetailsView,
-                                           val countryOptions: CountryOptions
-                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                         override val messagesApi: MessagesApi,
+                                         sessionRepository: PlaybackRepository,
+                                         @LivingSettlor navigator: Navigator,
+                                         standardActionSets: StandardActionSets,
+                                         nameAction: NameRequiredAction,
+                                         formProvider: IdCardDetailsFormProvider,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         view: IdCardDetailsView,
+                                         val countryOptions: CountryOptions
+                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form: Form[IdCard] = formProvider.withPrefix("livingSettlor")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(IdCardDetailsPage) match {
@@ -56,21 +56,21 @@ class IdCardDetailsController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, countryOptions.options, request.settlorName, mode))
+      Ok(view(preparedForm, countryOptions.options, request.settlorName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, request.settlorName, mode))),
+          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, request.settlorName))),
 
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(IdCardDetailsPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(IdCardDetailsPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(IdCardDetailsPage, NormalMode, updatedAnswers))
       )
   }
 }

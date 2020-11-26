@@ -21,7 +21,7 @@ import controllers.actions._
 import controllers.actions.individual.living.NameRequiredAction
 import forms.PassportDetailsFormProvider
 import javax.inject.Inject
-import models.{Mode, Passport}
+import models.{NormalMode, Passport}
 import navigation.Navigator
 import pages.individual.living.PassportDetailsPage
 import play.api.data.Form
@@ -48,7 +48,7 @@ class PassportDetailsController @Inject()(
 
   private val form: Form[Passport] = formProvider.withPrefix("livingSettlor")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(PassportDetailsPage) match {
@@ -56,21 +56,21 @@ class PassportDetailsController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, countryOptions.options, request.settlorName, mode))
+      Ok(view(preparedForm, countryOptions.options, request.settlorName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, request.settlorName, mode))),
+          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, request.settlorName))),
 
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportDetailsPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PassportDetailsPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(PassportDetailsPage, NormalMode, updatedAnswers))
       )
   }
 }

@@ -21,7 +21,7 @@ import java.time.LocalDate
 import base.SpecBase
 import config.annotations.LivingSettlor
 import forms.CombinedPassportOrIdCardDetailsFormProvider
-import models.{CombinedPassportOrIdCard, Mode, Name, NormalMode, TypeOfTrust, UserAnswers}
+import models.{CombinedPassportOrIdCard, Name, TypeOfTrust, UserAnswers}
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -53,10 +53,8 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
     None,
     isDateOfDeathRecorded = false
   ).set(NamePage, name).success.value
-
-  private val mode: Mode = NormalMode
   
-  private lazy val passportOrIdCardDetailsRoute: String = routes.PassportOrIdCardDetailsController.onPageLoad(mode).url
+  private lazy val passportOrIdCardDetailsRoute: String = routes.PassportOrIdCardDetailsController.onPageLoad().url
 
   private val validData: CombinedPassportOrIdCard = CombinedPassportOrIdCard("country", "number", LocalDate.parse("2020-02-03"))
 
@@ -75,7 +73,7 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name.displayName, countryOptions.options, mode)(request, messages).toString
+        view(form, name.displayName, countryOptions.options)(request, messages).toString
 
       application.stop()
     }
@@ -95,7 +93,7 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validData), name.displayName, countryOptions.options, mode)(request, messages).toString
+        view(form.fill(validData), name.displayName, countryOptions.options)(request, messages).toString
 
       application.stop()
     }
@@ -146,7 +144,7 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name.displayName, countryOptions.options, mode)(request, messages).toString
+        view(boundForm, name.displayName, countryOptions.options)(request, messages).toString
 
       application.stop()
     }

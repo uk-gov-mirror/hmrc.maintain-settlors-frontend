@@ -52,11 +52,11 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
     case LiveInTheUkYesNoPage => ua =>
       yesNoNav(ua, LiveInTheUkYesNoPage, rts.UkAddressController.onPageLoad(mode), rts.NonUkAddressController.onPageLoad(mode))
     case PassportDetailsYesNoPage => ua =>
-      yesNoNav(ua, PassportDetailsYesNoPage, addRts.PassportDetailsController.onPageLoad(mode), addRts.IdCardDetailsYesNoController.onPageLoad(mode))
+      yesNoNav(ua, PassportDetailsYesNoPage, addRts.PassportDetailsController.onPageLoad(), addRts.IdCardDetailsYesNoController.onPageLoad())
     case IdCardDetailsYesNoPage => ua =>
-      yesNoNav(ua, IdCardDetailsYesNoPage, addRts.IdCardDetailsController.onPageLoad(mode), addRts.StartDateController.onPageLoad())
+      yesNoNav(ua, IdCardDetailsYesNoPage, addRts.IdCardDetailsController.onPageLoad(), addRts.StartDateController.onPageLoad())
     case PassportOrIdCardDetailsYesNoPage => ua =>
-      yesNoNav(ua, PassportOrIdCardDetailsYesNoPage, amendRts.PassportOrIdCardDetailsController.onPageLoad(mode), checkDetailsRoute(ua))
+      yesNoNav(ua, PassportOrIdCardDetailsYesNoPage, amendRts.PassportOrIdCardDetailsController.onPageLoad(), checkDetailsRoute(ua))
   }
 
   private def navigationWithCheck(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
@@ -67,7 +67,7 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
         case AddressYesNoPage => ua =>
           yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(mode), addRts.StartDateController.onPageLoad())
         case UkAddressPage | NonUkAddressPage => _ =>
-          addRts.PassportDetailsYesNoController.onPageLoad(mode)
+          addRts.PassportDetailsYesNoController.onPageLoad()
       }
       case CheckMode => {
         case NationalInsuranceNumberPage => ua =>
@@ -75,7 +75,7 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
         case AddressYesNoPage => ua =>
           yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(mode), checkDetailsRoute(ua))
         case UkAddressPage | NonUkAddressPage => _ =>
-          amendRts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode)
+          amendRts.PassportOrIdCardDetailsYesNoController.onPageLoad()
       }
     }
   }

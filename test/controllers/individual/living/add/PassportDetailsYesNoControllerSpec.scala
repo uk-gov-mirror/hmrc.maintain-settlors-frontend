@@ -21,7 +21,7 @@ import java.time.LocalDate
 import base.SpecBase
 import config.annotations.LivingSettlor
 import forms.YesNoFormProvider
-import models.{Name, NormalMode, TypeOfTrust, UserAnswers}
+import models.{Name, TypeOfTrust, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -47,7 +47,7 @@ class PassportDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
   override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), TypeOfTrust.WillTrustOrIntestacyTrust, None, isDateOfDeathRecorded = true)
     .set(NamePage, name).success.value
 
-  val passportDetailsYesNoRoute: String = routes.PassportDetailsYesNoController.onPageLoad(NormalMode).url
+  val passportDetailsYesNoRoute: String = routes.PassportDetailsYesNoController.onPageLoad().url
 
   val getRequest = FakeRequest(GET, passportDetailsYesNoRoute)
 
@@ -64,7 +64,7 @@ class PassportDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name.displayName, NormalMode)(getRequest, messages).toString
+        view(form, name.displayName)(getRequest, messages).toString
 
       application.stop()
     }
@@ -84,7 +84,7 @@ class PassportDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), name.displayName, NormalMode)(getRequest, messages).toString
+        view(form.fill(true), name.displayName)(getRequest, messages).toString
 
       application.stop()
     }
@@ -132,7 +132,7 @@ class PassportDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name.displayName, NormalMode)(request, messages).toString
+        view(boundForm, name.displayName)(request, messages).toString
 
       application.stop()
     }

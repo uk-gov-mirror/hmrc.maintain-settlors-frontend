@@ -44,10 +44,10 @@ class IndividualSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConver
       bound.yesNoQuestion(LiveInTheUkYesNoPage, "livingSettlor.liveInTheUkYesNo", Some(rts.LiveInTheUkYesNoController.onPageLoad(NormalMode).url)),
       bound.addressQuestion(UkAddressPage, "livingSettlor.ukAddress", Some(rts.UkAddressController.onPageLoad(NormalMode).url)),
       bound.addressQuestion(NonUkAddressPage, "livingSettlor.nonUkAddress", Some(rts.NonUkAddressController.onPageLoad(NormalMode).url)),
-      bound.yesNoQuestion(PassportDetailsYesNoPage, "livingSettlor.passportDetailsYesNo", Some(addRts.PassportDetailsYesNoController.onPageLoad(NormalMode).url)),
-      bound.passportDetailsQuestion(PassportDetailsPage, "livingSettlor.passportDetails", Some(addRts.PassportDetailsController.onPageLoad(NormalMode).url)),
-      bound.yesNoQuestion(IdCardDetailsYesNoPage, "livingSettlor.idCardDetailsYesNo", Some(addRts.IdCardDetailsYesNoController.onPageLoad(NormalMode).url)),
-      bound.idCardDetailsQuestion(IdCardDetailsPage, "livingSettlor.idCardDetails", Some(addRts.IdCardDetailsController.onPageLoad(NormalMode).url)),
+      bound.yesNoQuestion(PassportDetailsYesNoPage, "livingSettlor.passportDetailsYesNo", Some(addRts.PassportDetailsYesNoController.onPageLoad().url)),
+      bound.passportDetailsQuestion(PassportDetailsPage, "livingSettlor.passportDetails", Some(addRts.PassportDetailsController.onPageLoad().url)),
+      bound.yesNoQuestion(IdCardDetailsYesNoPage, "livingSettlor.idCardDetailsYesNo", Some(addRts.IdCardDetailsYesNoController.onPageLoad().url)),
+      bound.idCardDetailsQuestion(IdCardDetailsPage, "livingSettlor.idCardDetails", Some(addRts.IdCardDetailsController.onPageLoad().url)),
       bound.dateQuestion(StartDatePage, "livingSettlor.startDate", Some(addRts.StartDateController.onPageLoad().url))
     ).flatten
 
@@ -61,8 +61,8 @@ class IndividualSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConver
       bound.yesNoQuestion(LiveInTheUkYesNoPage, "livingSettlor.liveInTheUkYesNo", Some(rts.LiveInTheUkYesNoController.onPageLoad(CheckMode).url)),
       bound.addressQuestion(UkAddressPage, "livingSettlor.ukAddress", Some(rts.UkAddressController.onPageLoad(CheckMode).url)),
       bound.addressQuestion(NonUkAddressPage, "livingSettlor.nonUkAddress", Some(rts.NonUkAddressController.onPageLoad(CheckMode).url)),
-      bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, "livingSettlor.passportOrIdCardDetailsYesNo", Some(amendRts.PassportOrIdCardDetailsYesNoController.onPageLoad(CheckMode).url)),
-      bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, "livingSettlor.passportOrIdCardDetails", Some(amendRts.PassportOrIdCardDetailsController.onPageLoad(CheckMode).url))
+      bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, "livingSettlor.passportOrIdCardDetailsYesNo", Some(amendRts.PassportOrIdCardDetailsYesNoController.onPageLoad().url)),
+      bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, "livingSettlor.passportOrIdCardDetails", Some(amendRts.PassportOrIdCardDetailsController.onPageLoad().url))
     ).flatten
 
     AnswerSection(

@@ -107,7 +107,7 @@ class IndividualSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
       "UK address page -> Do you know passport details page" in {
         navigator.nextPage(UkAddressPage, mode, emptyUserAnswers)
-          .mustBe(addRts.PassportDetailsYesNoController.onPageLoad(mode))
+          .mustBe(addRts.PassportDetailsYesNoController.onPageLoad())
       }
 
       "Is address in UK page -> No -> Non-UK address page" in {
@@ -120,7 +120,7 @@ class IndividualSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
       "Non-UK address page -> Do you know passport details page" in {
         navigator.nextPage(NonUkAddressPage, mode, emptyUserAnswers)
-          .mustBe(addRts.PassportDetailsYesNoController.onPageLoad(mode))
+          .mustBe(addRts.PassportDetailsYesNoController.onPageLoad())
       }
 
       "Do you know passport details page -> Yes -> Passport details page" in {
@@ -128,7 +128,7 @@ class IndividualSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
           .set(PassportDetailsYesNoPage, true).success.value
 
         navigator.nextPage(PassportDetailsYesNoPage, mode, answers)
-          .mustBe(addRts.PassportDetailsController.onPageLoad(mode))
+          .mustBe(addRts.PassportDetailsController.onPageLoad())
       }
 
       "Passport details page -> Start Date page" in {
@@ -141,7 +141,7 @@ class IndividualSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
           .set(PassportDetailsYesNoPage, false).success.value
 
         navigator.nextPage(PassportDetailsYesNoPage, mode, answers)
-          .mustBe(addRts.IdCardDetailsYesNoController.onPageLoad(mode))
+          .mustBe(addRts.IdCardDetailsYesNoController.onPageLoad())
       }
 
       "Do you know ID card details page -> Yes -> ID card details page" in {
@@ -149,7 +149,7 @@ class IndividualSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
           .set(IdCardDetailsYesNoPage, true).success.value
 
         navigator.nextPage(IdCardDetailsYesNoPage, mode, answers)
-          .mustBe(addRts.IdCardDetailsController.onPageLoad(mode))
+          .mustBe(addRts.IdCardDetailsController.onPageLoad())
       }
 
       "ID card details page -> Start Date page" in {
@@ -250,7 +250,7 @@ class IndividualSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
       "UK address page -> Do you know passport or ID card details page" in {
         navigator.nextPage(UkAddressPage, mode, baseAnswers)
-          .mustBe(amendRts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
+          .mustBe(amendRts.PassportOrIdCardDetailsYesNoController.onPageLoad())
       }
 
       "Is address in UK page -> No -> Non-UK address page" in {
@@ -263,7 +263,7 @@ class IndividualSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
       "Non-UK address page -> Do you know passport or ID card details page" in {
         navigator.nextPage(NonUkAddressPage, mode, baseAnswers)
-          .mustBe(amendRts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
+          .mustBe(amendRts.PassportOrIdCardDetailsYesNoController.onPageLoad())
       }
 
       "Do you know passport or ID card details page -> Yes -> Passport or ID card details page" in {
@@ -271,7 +271,7 @@ class IndividualSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
           .set(PassportOrIdCardDetailsYesNoPage, true).success.value
 
         navigator.nextPage(PassportOrIdCardDetailsYesNoPage, mode, answers)
-          .mustBe(amendRts.PassportOrIdCardDetailsController.onPageLoad(mode))
+          .mustBe(amendRts.PassportOrIdCardDetailsController.onPageLoad())
       }
 
       "Passport or ID card details page -> Check details" in {

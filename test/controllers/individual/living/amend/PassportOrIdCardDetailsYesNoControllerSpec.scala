@@ -21,7 +21,7 @@ import java.time.LocalDate
 import base.SpecBase
 import config.annotations.LivingSettlor
 import forms.YesNoFormProvider
-import models.{Mode, Name, NormalMode, TypeOfTrust, UserAnswers}
+import models.{Name, TypeOfTrust, UserAnswers}
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -50,10 +50,8 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
     None,
     isDateOfDeathRecorded = false
   ).set(NamePage, name).success.value
-
-  private val mode: Mode = NormalMode
   
-  private lazy val passportOrIdCardDetailsYesNoRoute: String = routes.PassportOrIdCardDetailsYesNoController.onPageLoad(mode).url
+  private lazy val passportOrIdCardDetailsYesNoRoute: String = routes.PassportOrIdCardDetailsYesNoController.onPageLoad().url
 
   "PassportOrIdCardDetailsYesNo Controller" must {
 
@@ -70,7 +68,7 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name.displayName, mode)(request, messages).toString
+        view(form, name.displayName)(request, messages).toString
 
       application.stop()
     }
@@ -90,7 +88,7 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), name.displayName, mode)(request, messages).toString
+        view(form.fill(true), name.displayName)(request, messages).toString
 
       application.stop()
     }
@@ -135,7 +133,7 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name.displayName, mode)(request, messages).toString
+        view(boundForm, name.displayName)(request, messages).toString
 
       application.stop()
     }

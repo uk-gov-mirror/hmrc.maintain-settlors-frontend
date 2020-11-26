@@ -17,7 +17,7 @@
 package views.individual.living.amend
 import controllers.individual.living.amend.routes
 import forms.YesNoFormProvider
-import models.{Mode, Name, NormalMode}
+import models.Name
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -28,8 +28,6 @@ class PassportOrIdCardDetailsYesNoViewSpec extends YesNoViewBehaviours {
   private val messageKeyPrefix = "livingSettlor.passportOrIdCardDetailsYesNo"
   private val name: Name = Name("First", Some("Middle"), "Last")
 
-  private val mode: Mode = NormalMode
-
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
   "PassportOrIdCardDetailsYesNo View" must {
@@ -37,13 +35,13 @@ class PassportOrIdCardDetailsYesNoViewSpec extends YesNoViewBehaviours {
     val view = viewFor[PassportOrIdCardDetailsYesNoView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, name.displayName, mode)(fakeRequest, messages)
+      view.apply(form, name.displayName)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName), routes.PassportOrIdCardDetailsYesNoController.onSubmit(mode).url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName), routes.PassportOrIdCardDetailsYesNoController.onSubmit().url)
 
     behave like pageWithASubmitButton(applyView(form))
   }
