@@ -20,8 +20,8 @@ import controllers.business.{routes => rts}
 import javax.inject.Inject
 import models.TypeOfTrust.EmployeeRelated
 import models.{CheckMode, Mode, NormalMode, TypeOfTrust, UserAnswers}
+import pages.Page
 import pages.business._
-import pages.{Page, QuestionPage}
 import play.api.mvc.Call
 
 class BusinessSettlorNavigator @Inject()() extends Navigator {
@@ -77,12 +77,6 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
           yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(mode), checkDetailsRoute(ua))
       }
     }
-  }
-
-  private def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {
-    ua.get(fromPage)
-      .map(if (_) yesCall else noCall)
-      .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
   private def checkDetailsRoute(answers: UserAnswers): Call = {
