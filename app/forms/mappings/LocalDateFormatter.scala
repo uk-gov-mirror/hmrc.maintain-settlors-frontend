@@ -27,7 +27,8 @@ private[mappings] class LocalDateFormatter(
                                             invalidKey: String,
                                             allRequiredKey: String,
                                             twoRequiredKey: String,
-                                            requiredKey: String
+                                            requiredKey: String,
+                                            args: Seq[String] = Seq.empty
                                           ) extends Formatter[LocalDate] with Formatters {
 
   private val fieldKeys: List[String] = List("day", "month", "year")
@@ -37,7 +38,7 @@ private[mappings] class LocalDateFormatter(
       case Success(date) =>
         Right(date)
       case Failure(_) =>
-        Left(Seq(FormError(key, invalidKey, fieldKeys)))
+        Left(Seq(FormError(key, invalidKey, args)))
     }
 
   private def formatDate(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
@@ -45,7 +46,8 @@ private[mappings] class LocalDateFormatter(
     val int = intFormatter(
       requiredKey = invalidKey,
       wholeNumberKey = invalidKey,
-      nonNumericKey = invalidKey
+      nonNumericKey = invalidKey,
+      args
     )
 
     for {
@@ -71,14 +73,14 @@ private[mappings] class LocalDateFormatter(
     fields.count(_._2.isDefined) match {
       case 3 =>
         formatDate(key, data).left.map {
-          _.map(_.copy(key = key, args = fieldKeys))
+          _.map(_.copy(key = key, args = args))
         }
       case 2 =>
-        Left(List(FormError(key, requiredKey, missingFields)))
+        Left(List(FormError(key, requiredKey, missingFields ++ args)))
       case 1 =>
-        Left(List(FormError(key, twoRequiredKey, missingFields)))
+        Left(List(FormError(key, twoRequiredKey, missingFields ++ args)))
       case _ =>
-        Left(List(FormError(key, allRequiredKey, missingFields)))
+        Left(List(FormError(key, allRequiredKey, args)))
     }
   }
 
