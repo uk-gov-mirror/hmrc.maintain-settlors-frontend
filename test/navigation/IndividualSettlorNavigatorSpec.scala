@@ -17,7 +17,7 @@
 package navigation
 
 import base.SpecBase
-import models.NormalMode
+import models._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.individual.living._
 
@@ -26,136 +26,263 @@ class IndividualSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
   val navigator = new IndividualSettlorNavigator
 
   "Individual settlor navigator" when {
+    
+    "adding" must {
+      
+      val mode: Mode = NormalMode
 
       "Name page -> Do you know date of birth page" in {
-        navigator.nextPage(NamePage, emptyUserAnswers)
-          .mustBe(controllers.individual.living.routes.DateOfBirthYesNoController.onPageLoad(NormalMode))
+        navigator.nextPage(NamePage, mode, emptyUserAnswers)
+          .mustBe(controllers.individual.living.routes.DateOfBirthYesNoController.onPageLoad(mode))
       }
 
-    "Do you know date of birth page -> Yes -> Date of birth page" in {
-      val answers = emptyUserAnswers
-        .set(DateOfBirthYesNoPage, true).success.value
+      "Do you know date of birth page -> Yes -> Date of birth page" in {
+        val answers = emptyUserAnswers
+          .set(DateOfBirthYesNoPage, true).success.value
 
-      navigator.nextPage(DateOfBirthYesNoPage, answers)
-        .mustBe(controllers.individual.living.routes.DateOfBirthController.onPageLoad(NormalMode))
+        navigator.nextPage(DateOfBirthYesNoPage, mode, answers)
+          .mustBe(controllers.individual.living.routes.DateOfBirthController.onPageLoad(mode))
+      }
+
+      "Date of birth page -> Do you know NINO page" in {
+        navigator.nextPage(DateOfBirthPage, mode, emptyUserAnswers)
+          .mustBe(controllers.individual.living.routes.NationalInsuranceNumberYesNoController.onPageLoad(mode))
+      }
+
+      "Do you know date of birth page -> No -> Do you know NINO page" in {
+        val answers = emptyUserAnswers
+          .set(DateOfBirthYesNoPage, false).success.value
+
+        navigator.nextPage(DateOfBirthYesNoPage, mode, answers)
+          .mustBe(controllers.individual.living.routes.NationalInsuranceNumberYesNoController.onPageLoad(mode))
+      }
+
+      "Do you know NINO page -> Yes -> NINO page" in {
+        val answers = emptyUserAnswers
+          .set(NationalInsuranceNumberYesNoPage, true).success.value
+
+        navigator.nextPage(NationalInsuranceNumberYesNoPage, mode, answers)
+          .mustBe(controllers.individual.living.routes.NationalInsuranceNumberController.onPageLoad(mode))
+      }
+
+      "NINO page -> Start Date page" in {
+        navigator.nextPage(NationalInsuranceNumberPage, mode, emptyUserAnswers)
+          .mustBe(controllers.individual.living.routes.StartDateController.onPageLoad())
+      }
+
+      "Do you know NINO page -> No -> Do you know address page" in {
+        val answers = emptyUserAnswers
+          .set(NationalInsuranceNumberYesNoPage, false).success.value
+
+        navigator.nextPage(NationalInsuranceNumberYesNoPage, mode, answers)
+          .mustBe(controllers.individual.living.routes.AddressYesNoController.onPageLoad(mode))
+      }
+
+      "Do you know address page -> Yes -> Is address in UK page" in {
+        val answers = emptyUserAnswers
+          .set(AddressYesNoPage, true).success.value
+
+        navigator.nextPage(AddressYesNoPage, mode, answers)
+          .mustBe(controllers.individual.living.routes.LiveInTheUkYesNoController.onPageLoad(mode))
+      }
+
+      "Do you know address page -> No -> Start Date page" in {
+        val answers = emptyUserAnswers
+          .set(AddressYesNoPage, false).success.value
+
+        navigator.nextPage(AddressYesNoPage, mode, answers)
+          .mustBe(controllers.individual.living.routes.StartDateController.onPageLoad())
+      }
+
+      "Is address in UK page -> Yes -> UK address page" in {
+        val answers = emptyUserAnswers
+          .set(LiveInTheUkYesNoPage, true).success.value
+
+        navigator.nextPage(LiveInTheUkYesNoPage, mode, answers)
+          .mustBe(controllers.individual.living.routes.UkAddressController.onPageLoad(mode))
+      }
+
+      "UK address page -> Do you know passport details page" in {
+        navigator.nextPage(UkAddressPage, mode, emptyUserAnswers)
+          .mustBe(controllers.individual.living.routes.PassportDetailsYesNoController.onPageLoad(mode))
+      }
+
+      "Is address in UK page -> No -> Non-UK address page" in {
+        val answers = emptyUserAnswers
+          .set(LiveInTheUkYesNoPage, false).success.value
+
+        navigator.nextPage(LiveInTheUkYesNoPage, mode, answers)
+          .mustBe(controllers.individual.living.routes.NonUkAddressController.onPageLoad(mode))
+      }
+
+      "Non-UK address page -> Do you know passport details page" in {
+        navigator.nextPage(NonUkAddressPage, mode, emptyUserAnswers)
+          .mustBe(controllers.individual.living.routes.PassportDetailsYesNoController.onPageLoad(mode))
+      }
+
+      "Do you know passport details page -> Yes -> Passport details page" in {
+        val answers = emptyUserAnswers
+          .set(PassportDetailsYesNoPage, true).success.value
+
+        navigator.nextPage(PassportDetailsYesNoPage, mode, answers)
+          .mustBe(controllers.individual.living.routes.PassportDetailsController.onPageLoad(mode))
+      }
+
+      "Passport details page -> Start Date page" in {
+        navigator.nextPage(PassportDetailsPage, mode, emptyUserAnswers)
+          .mustBe(controllers.individual.living.routes.StartDateController.onPageLoad())
+      }
+
+      "Do you know passport details page -> No -> Do you know ID card details page" in {
+        val answers = emptyUserAnswers
+          .set(PassportDetailsYesNoPage, false).success.value
+
+        navigator.nextPage(PassportDetailsYesNoPage, mode, answers)
+          .mustBe(controllers.individual.living.routes.IdCardDetailsYesNoController.onPageLoad(mode))
+      }
+
+      "Do you know ID card details page -> Yes -> ID card details page" in {
+        val answers = emptyUserAnswers
+          .set(IdCardDetailsYesNoPage, true).success.value
+
+        navigator.nextPage(IdCardDetailsYesNoPage, mode, answers)
+          .mustBe(controllers.individual.living.routes.IdCardDetailsController.onPageLoad(mode))
+      }
+
+      "ID card details page -> Start Date page" in {
+        navigator.nextPage(IdCardDetailsPage, mode, emptyUserAnswers)
+          .mustBe(controllers.individual.living.routes.StartDateController.onPageLoad())
+      }
+
+      "Do you know ID card details page -> No -> Start Date page" in {
+        val answers = emptyUserAnswers
+          .set(IdCardDetailsYesNoPage, false).success.value
+
+        navigator.nextPage(IdCardDetailsYesNoPage, mode, answers)
+          .mustBe(controllers.individual.living.routes.StartDateController.onPageLoad())
+      }
+
+      "Start Date page -> Check details" in {
+        navigator.nextPage(StartDatePage, mode, emptyUserAnswers)
+          .mustBe(controllers.individual.living.routes.CheckDetailsController.onPageLoad())
+      }
     }
+    
+    "amending" must {
 
-    "Date of birth page -> Do you know NINO page" in {
-      navigator.nextPage(DateOfBirthPage, emptyUserAnswers)
-        .mustBe(controllers.individual.living.routes.NationalInsuranceNumberYesNoController.onPageLoad(NormalMode))
-    }
+      val mode: Mode = CheckMode
+      val index: Int = 0
+      val baseAnswers: UserAnswers = emptyUserAnswers.set(IndexPage, index).success.value
 
-    "Do you know date of birth page -> No -> Do you know NINO page" in {
-      val answers = emptyUserAnswers
-        .set(DateOfBirthYesNoPage, false).success.value
+      "Name page -> Do you know date of birth page" in {
+        navigator.nextPage(NamePage, mode, baseAnswers)
+          .mustBe(controllers.individual.living.routes.DateOfBirthYesNoController.onPageLoad(mode))
+      }
 
-      navigator.nextPage(DateOfBirthYesNoPage, answers)
-        .mustBe(controllers.individual.living.routes.NationalInsuranceNumberYesNoController.onPageLoad(NormalMode))
-    }
+      "Do you know date of birth page -> Yes -> Date of birth page" in {
+        val answers = baseAnswers
+          .set(DateOfBirthYesNoPage, true).success.value
 
-    "Do you know NINO page -> Yes -> NINO page" in {
-      val answers = emptyUserAnswers
-        .set(NationalInsuranceNumberYesNoPage, true).success.value
+        navigator.nextPage(DateOfBirthYesNoPage, mode, answers)
+          .mustBe(controllers.individual.living.routes.DateOfBirthController.onPageLoad(mode))
+      }
 
-      navigator.nextPage(NationalInsuranceNumberYesNoPage, answers)
-        .mustBe(controllers.individual.living.routes.NationalInsuranceNumberController.onPageLoad(NormalMode))
-    }
+      "Date of birth page -> Do you know NINO page" in {
+        navigator.nextPage(DateOfBirthPage, mode, baseAnswers)
+          .mustBe(controllers.individual.living.routes.NationalInsuranceNumberYesNoController.onPageLoad(mode))
+      }
 
-    "NINO page -> Start Date page" in {
-      navigator.nextPage(NationalInsuranceNumberPage, emptyUserAnswers)
-        .mustBe(controllers.individual.living.routes.StartDateController.onPageLoad())
-    }
+      "Do you know date of birth page -> No -> Do you know NINO page" in {
+        val answers = baseAnswers
+          .set(DateOfBirthYesNoPage, false).success.value
 
-    "Do you know NINO page -> No -> Do you know address page" in {
-      val answers = emptyUserAnswers
-        .set(NationalInsuranceNumberYesNoPage, false).success.value
+        navigator.nextPage(DateOfBirthYesNoPage, mode, answers)
+          .mustBe(controllers.individual.living.routes.NationalInsuranceNumberYesNoController.onPageLoad(mode))
+      }
 
-      navigator.nextPage(NationalInsuranceNumberYesNoPage, answers)
-        .mustBe(controllers.individual.living.routes.AddressYesNoController.onPageLoad(NormalMode))
-    }
+      "Do you know NINO page -> Yes -> NINO page" in {
+        val answers = baseAnswers
+          .set(NationalInsuranceNumberYesNoPage, true).success.value
 
-    "Do you know address page -> Yes -> Is address in UK page" in {
-      val answers = emptyUserAnswers
-        .set(AddressYesNoPage, true).success.value
+        navigator.nextPage(NationalInsuranceNumberYesNoPage, mode, answers)
+          .mustBe(controllers.individual.living.routes.NationalInsuranceNumberController.onPageLoad(mode))
+      }
 
-      navigator.nextPage(AddressYesNoPage, answers)
-        .mustBe(controllers.individual.living.routes.LiveInTheUkYesNoController.onPageLoad(NormalMode))
-    }
+      "NINO page -> Check details" in {
+        navigator.nextPage(NationalInsuranceNumberPage, mode, baseAnswers)
+          .mustBe(controllers.individual.living.amend.routes.CheckDetailsController.renderFromUserAnswers(index))
+      }
 
-    "Do you know address page -> No -> Start Date page" in {
-      val answers = emptyUserAnswers
-        .set(AddressYesNoPage, false).success.value
+      "Do you know NINO page -> No -> Do you know address page" in {
+        val answers = baseAnswers
+          .set(NationalInsuranceNumberYesNoPage, false).success.value
 
-      navigator.nextPage(AddressYesNoPage, answers)
-        .mustBe(controllers.individual.living.routes.StartDateController.onPageLoad())
-    }
+        navigator.nextPage(NationalInsuranceNumberYesNoPage, mode, answers)
+          .mustBe(controllers.individual.living.routes.AddressYesNoController.onPageLoad(mode))
+      }
 
-    "Is address in UK page -> Yes -> UK address page" in {
-      val answers = emptyUserAnswers
-        .set(LiveInTheUkYesNoPage, true).success.value
+      "Do you know address page -> Yes -> Is address in UK page" in {
+        val answers = baseAnswers
+          .set(AddressYesNoPage, true).success.value
 
-      navigator.nextPage(LiveInTheUkYesNoPage, answers)
-        .mustBe(controllers.individual.living.routes.UkAddressController.onPageLoad(NormalMode))
-    }
+        navigator.nextPage(AddressYesNoPage, mode, answers)
+          .mustBe(controllers.individual.living.routes.LiveInTheUkYesNoController.onPageLoad(mode))
+      }
 
-    "UK address page -> Do you know passport details page" in {
-      navigator.nextPage(UkAddressPage, emptyUserAnswers)
-        .mustBe(controllers.individual.living.routes.PassportDetailsYesNoController.onPageLoad(NormalMode))
-    }
+      "Do you know address page -> No -> Check details page" in {
+        val answers = baseAnswers
+          .set(AddressYesNoPage, false).success.value
 
-    "Is address in UK page -> No -> Non-UK address page" in {
-      val answers = emptyUserAnswers
-        .set(LiveInTheUkYesNoPage, false).success.value
+        navigator.nextPage(AddressYesNoPage, mode, answers)
+          .mustBe(controllers.individual.living.amend.routes.CheckDetailsController.renderFromUserAnswers(index))
+      }
 
-      navigator.nextPage(LiveInTheUkYesNoPage, answers)
-        .mustBe(controllers.individual.living.routes.NonUkAddressController.onPageLoad(NormalMode))
-    }
+      "Is address in UK page -> Yes -> UK address page" in {
+        val answers = baseAnswers
+          .set(LiveInTheUkYesNoPage, true).success.value
 
-    "Non-UK address page -> Do you know passport details page" in {
-      navigator.nextPage(NonUkAddressPage, emptyUserAnswers)
-        .mustBe(controllers.individual.living.routes.PassportDetailsYesNoController.onPageLoad(NormalMode))
-    }
+        navigator.nextPage(LiveInTheUkYesNoPage, mode, answers)
+          .mustBe(controllers.individual.living.routes.UkAddressController.onPageLoad(mode))
+      }
 
-    "Do you know passport details page -> Yes -> Passport details page" in {
-      val answers = emptyUserAnswers
-        .set(PassportDetailsYesNoPage, true).success.value
+      "UK address page -> Do you know passport or ID card details page" in {
+        navigator.nextPage(UkAddressPage, mode, baseAnswers)
+          .mustBe(controllers.individual.living.amend.routes.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
+      }
 
-      navigator.nextPage(PassportDetailsYesNoPage, answers)
-        .mustBe(controllers.individual.living.routes.PassportDetailsController.onPageLoad(NormalMode))
-    }
+      "Is address in UK page -> No -> Non-UK address page" in {
+        val answers = baseAnswers
+          .set(LiveInTheUkYesNoPage, false).success.value
 
-    "Passport details page -> Start Date page" in {
-      navigator.nextPage(PassportDetailsPage, emptyUserAnswers)
-        .mustBe(controllers.individual.living.routes.StartDateController.onPageLoad())
-    }
+        navigator.nextPage(LiveInTheUkYesNoPage, mode, answers)
+          .mustBe(controllers.individual.living.routes.NonUkAddressController.onPageLoad(mode))
+      }
 
-    "Do you know passport details page -> No -> Do you know ID card details page" in {
-      val answers = emptyUserAnswers
-        .set(PassportDetailsYesNoPage, false).success.value
+      "Non-UK address page -> Do you know passport or ID card details page" in {
+        navigator.nextPage(NonUkAddressPage, mode, baseAnswers)
+          .mustBe(controllers.individual.living.amend.routes.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
+      }
 
-      navigator.nextPage(PassportDetailsYesNoPage, answers)
-        .mustBe(controllers.individual.living.routes.IdCardDetailsYesNoController.onPageLoad(NormalMode))
-    }
+      "Do you know passport or ID card details page -> Yes -> Passport or ID card details page" in {
+        val answers = baseAnswers
+          .set(PassportOrIdCardDetailsYesNoPage, true).success.value
 
-    "Do you know ID card details page -> Yes -> ID card details page" in {
-      val answers = emptyUserAnswers
-        .set(IdCardDetailsYesNoPage, true).success.value
+        navigator.nextPage(PassportOrIdCardDetailsYesNoPage, mode, answers)
+          .mustBe(controllers.individual.living.amend.routes.PassportOrIdCardDetailsController.onPageLoad(mode))
+      }
 
-      navigator.nextPage(IdCardDetailsYesNoPage, answers)
-        .mustBe(controllers.individual.living.routes.IdCardDetailsController.onPageLoad(NormalMode))
-    }
+      "Passport or ID card details page -> Check details" in {
+        navigator.nextPage(PassportOrIdCardDetailsPage, mode, baseAnswers)
+          .mustBe(controllers.individual.living.amend.routes.CheckDetailsController.renderFromUserAnswers(index))
+      }
 
-    "ID card details page -> Start Date page" in {
-      navigator.nextPage(IdCardDetailsPage, emptyUserAnswers)
-        .mustBe(controllers.individual.living.routes.StartDateController.onPageLoad())
-    }
+      "Do you know passport or ID card details page -> No -> Check details" in {
+        val answers = baseAnswers
+          .set(PassportOrIdCardDetailsYesNoPage, false).success.value
 
-    "Do you know ID card details page -> No -> Start Date page" in {
-      val answers = emptyUserAnswers
-        .set(IdCardDetailsYesNoPage, false).success.value
-
-      navigator.nextPage(IdCardDetailsYesNoPage, answers)
-        .mustBe(controllers.individual.living.routes.StartDateController.onPageLoad())
+        navigator.nextPage(PassportOrIdCardDetailsYesNoPage, mode, answers)
+          .mustBe(controllers.individual.living.amend.routes.CheckDetailsController.renderFromUserAnswers(index))
+      }
     }
   }
 }
