@@ -21,7 +21,7 @@ import javax.inject.Inject
 import models.BpMatchStatus.FullyMatched
 import models.{Mode, TypeOfTrust, UserAnswers}
 import pages.individual.deceased._
-import pages.{AdditionalSettlorsYesNoPage, Page, QuestionPage}
+import pages.{AdditionalSettlorsYesNoPage, Page}
 import play.api.mvc.Call
 
 class DeceasedSettlorNavigator @Inject()() extends Navigator {
@@ -55,12 +55,6 @@ class DeceasedSettlorNavigator @Inject()() extends Navigator {
       yesNoNav(ua, AddressYesNoPage, rts.LivedInTheUkYesNoController.onPageLoad(), additionalSettlorsNav(ua))
     case LivedInTheUkYesNoPage => ua =>
       yesNoNav(ua, LivedInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad())
-  }
-
-  private def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {
-    ua.get(fromPage)
-      .map(if (_) yesCall else noCall)
-      .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
   private def matchStatusNav(ua: UserAnswers, nextCall: Call): Call = {

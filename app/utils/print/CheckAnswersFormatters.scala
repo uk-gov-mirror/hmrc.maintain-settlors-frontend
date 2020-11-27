@@ -18,7 +18,8 @@ package utils.print
 
 import javax.inject.Inject
 import java.time.{LocalDate => JavaDate}
-import models.{Address, IdCard, NonUkAddress, Passport, UkAddress}
+
+import models.{Address, CombinedPassportOrIdCard, IdCard, NonUkAddress, Passport, UkAddress}
 import org.joda.time.{LocalDate => JodaDate}
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
@@ -95,6 +96,17 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils) {
         Some(country(idCard.countryOfIssue, countryOptions)),
         Some(HtmlFormat.escape(idCard.number)),
         Some(HtmlFormat.escape(formatDate(idCard.expirationDate)))
+      ).flatten
+
+    Html(lines.mkString("<br />"))
+  }
+
+  def formatPassportOrIdCardDetails(passportOrIdCard: CombinedPassportOrIdCard, countryOptions: CountryOptions)(implicit messages: Messages): Html = {
+    val lines =
+      Seq(
+        Some(country(passportOrIdCard.countryOfIssue, countryOptions)),
+        Some(HtmlFormat.escape(passportOrIdCard.number)),
+        Some(HtmlFormat.escape(formatDate(passportOrIdCard.expirationDate)))
       ).flatten
 
     Html(lines.mkString("<br />"))

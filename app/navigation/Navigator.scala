@@ -17,7 +17,7 @@
 package navigation
 
 import models.{Mode, TypeOfTrust, UserAnswers}
-import pages.Page
+import pages.{Page, QuestionPage}
 import play.api.mvc.Call
 
 trait Navigator {
@@ -27,5 +27,11 @@ trait Navigator {
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, trustType: TypeOfTrust): Call
+
+  def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {
+    ua.get(fromPage)
+      .map(if (_) yesCall else noCall)
+      .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
+  }
 
 }

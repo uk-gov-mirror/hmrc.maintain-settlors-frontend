@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 
-package controllers.individual.living.amend
+package controllers.individual.living.add
 
-import config.{ErrorHandler, FrontendAppConfig}
+import config.FrontendAppConfig
 import connectors.TrustConnector
 import controllers.actions._
 import controllers.actions.individual.living.NameRequiredAction
-import extractors.IndividualSettlorExtractor
+import handlers.ErrorHandler
 import javax.inject.Inject
-import models.UserAnswers
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
-import repositories.PlaybackRepository
-import services.TrustService
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.mappers.IndividualSettlorMapper
 import utils.print.IndividualSettlorPrintHelper
 import viewmodels.AnswerSection
-import views.html.individual.living.amend.CheckDetailsView
+import views.html.individual.living.add.CheckDetailsView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -40,52 +37,31 @@ class CheckDetailsController @Inject()(
                                         standardActionSets: StandardActionSets,
                                         val controllerComponents: MessagesControllerComponents,
                                         view: CheckDetailsView,
-                                        service: TrustService,
                                         connector: TrustConnector,
                                         val appConfig: FrontendAppConfig,
-                                        playbackRepository: PlaybackRepository,
                                         printHelper: IndividualSettlorPrintHelper,
                                         mapper: IndividualSettlorMapper,
                                         nameAction: NameRequiredAction,
-                                        extractor: IndividualSettlorExtractor,
                                         errorHandler: ErrorHandler
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def render(userAnswers: UserAnswers,
-                     index: Int,
-                     name: String)
-                    (implicit request: Request[AnyContent]): Result = {
-    val section: AnswerSection = printHelper(userAnswers, provisional = false, name)
-    Ok(view(section, index))
-  }
-
-  def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
-      service.getIndividualSettlor(request.userAnswers.utr, index) flatMap {
-        trust =>
-          for {
-            extractedF <- Future.fromTry(extractor(request.userAnswers, trust, index))
-            _ <- playbackRepository.set(extractedF)
-          } yield {
-              render(extractedF, index, trust.name.displayName)
-          }
-      }
+      val section: AnswerSection = printHelper(request.userAnswers, provisional = true, request.settlorName)
+      Ok(view(section))
   }
 
-  def renderFromUserAnswers(index: Int) : Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
-    implicit request =>
-      render(request.userAnswers, index, request.settlorName)
-  }
-
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
-      mapper(request.userAnswers).map {
-        individual =>
-          connector.amendIndividualSettlor(request.userAnswers.utr, index, individual).map(_ =>
+      mapper(request.userAnswers) match {
+        case None =>
+          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+        case Some(settlor) =>
+          connector.addIndividualSettlor(request.userAnswers.utr, settlor).map(_ =>
             Redirect(controllers.routes.AddASettlorController.onPageLoad())
           )
-      }.getOrElse(Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate)))
+      }
   }
 }

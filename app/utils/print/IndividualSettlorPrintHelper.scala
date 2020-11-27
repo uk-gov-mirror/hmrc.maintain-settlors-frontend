@@ -17,6 +17,9 @@
 package utils.print
 
 import com.google.inject.Inject
+import controllers.individual.living.add.{routes => addRts}
+import controllers.individual.living.amend.{routes => amendRts}
+import controllers.individual.living.{routes => rts}
 import models.{CheckMode, NormalMode, UserAnswers}
 import pages.individual.living._
 import play.api.i18n.Messages
@@ -27,41 +30,39 @@ class IndividualSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConver
                                              countryOptions: CountryOptions
                                             ) {
 
-  def apply(userAnswers: UserAnswers, provisional: Boolean, settlorName: String)(implicit messages: Messages) = {
+  def apply(userAnswers: UserAnswers, provisional: Boolean, settlorName: String)(implicit messages: Messages): AnswerSection = {
 
     val bound = answerRowConverter.bind(userAnswers, settlorName, countryOptions)
 
-    val add: Seq[AnswerRow] = Seq(
-        bound.nameQuestion(NamePage, "livingSettlor.name", Some(controllers.individual.living.routes.NameController.onPageLoad(NormalMode).url)),
-        bound.yesNoQuestion(DateOfBirthYesNoPage, "livingSettlor.dateOfBirthYesNo", Some(controllers.individual.living.routes.DateOfBirthYesNoController.onPageLoad(NormalMode).url)),
-        bound.dateQuestion(DateOfBirthPage, "livingSettlor.dateOfBirth", Some(controllers.individual.living.routes.DateOfBirthController.onPageLoad(NormalMode).url)),
-        bound.yesNoQuestion(NationalInsuranceNumberYesNoPage, "livingSettlor.nationalInsuranceNumberYesNo", Some(controllers.individual.living.routes.NationalInsuranceNumberYesNoController.onPageLoad(NormalMode).url)),
-        bound.ninoQuestion(NationalInsuranceNumberPage, "livingSettlor.nationalInsuranceNumber", Some(controllers.individual.living.routes.NationalInsuranceNumberController.onPageLoad(NormalMode).url)),
-        bound.yesNoQuestion(AddressYesNoPage, "livingSettlor.addressYesNo", Some(controllers.individual.living.routes.AddressYesNoController.onPageLoad(NormalMode).url)),
-        bound.yesNoQuestion(LiveInTheUkYesNoPage, "livingSettlor.liveInTheUkYesNo", Some(controllers.individual.living.routes.LiveInTheUkYesNoController.onPageLoad(NormalMode).url)),
-        bound.addressQuestion(UkAddressPage, "livingSettlor.ukAddress", Some(controllers.individual.living.routes.UkAddressController.onPageLoad(NormalMode).url)),
-        bound.addressQuestion(NonUkAddressPage, "livingSettlor.nonUkAddress", Some(controllers.individual.living.routes.NonUkAddressController.onPageLoad(NormalMode).url)),
-        bound.yesNoQuestion(PassportDetailsYesNoPage, "livingSettlor.passportDetailsYesNo", Some(controllers.individual.living.routes.PassportDetailsYesNoController.onPageLoad(NormalMode).url)),
-        bound.passportDetailsQuestion(PassportDetailsPage, "livingSettlor.passportDetails", Some(controllers.individual.living.routes.PassportDetailsController.onPageLoad(NormalMode).url)),
-        bound.yesNoQuestion(IdCardDetailsYesNoPage, "livingSettlor.idCardDetailsYesNo", Some(controllers.individual.living.routes.IdCardDetailsYesNoController.onPageLoad(NormalMode).url)),
-        bound.idCardDetailsQuestion(IdCardDetailsPage, "livingSettlor.idCardDetails", Some(controllers.individual.living.routes.IdCardDetailsController.onPageLoad(NormalMode).url)),
-        bound.dateQuestion(StartDatePage, "livingSettlor.startDate", Some(controllers.individual.living.routes.StartDateController.onPageLoad().url))
-      ).flatten
+    lazy val add: Seq[AnswerRow] = Seq(
+      bound.nameQuestion(NamePage, "livingSettlor.name", Some(rts.NameController.onPageLoad(NormalMode).url)),
+      bound.yesNoQuestion(DateOfBirthYesNoPage, "livingSettlor.dateOfBirthYesNo", Some(rts.DateOfBirthYesNoController.onPageLoad(NormalMode).url)),
+      bound.dateQuestion(DateOfBirthPage, "livingSettlor.dateOfBirth", Some(rts.DateOfBirthController.onPageLoad(NormalMode).url)),
+      bound.yesNoQuestion(NationalInsuranceNumberYesNoPage, "livingSettlor.nationalInsuranceNumberYesNo", Some(rts.NationalInsuranceNumberYesNoController.onPageLoad(NormalMode).url)),
+      bound.ninoQuestion(NationalInsuranceNumberPage, "livingSettlor.nationalInsuranceNumber", Some(rts.NationalInsuranceNumberController.onPageLoad(NormalMode).url)),
+      bound.yesNoQuestion(AddressYesNoPage, "livingSettlor.addressYesNo", Some(rts.AddressYesNoController.onPageLoad(NormalMode).url)),
+      bound.yesNoQuestion(LiveInTheUkYesNoPage, "livingSettlor.liveInTheUkYesNo", Some(rts.LiveInTheUkYesNoController.onPageLoad(NormalMode).url)),
+      bound.addressQuestion(UkAddressPage, "livingSettlor.ukAddress", Some(rts.UkAddressController.onPageLoad(NormalMode).url)),
+      bound.addressQuestion(NonUkAddressPage, "livingSettlor.nonUkAddress", Some(rts.NonUkAddressController.onPageLoad(NormalMode).url)),
+      bound.yesNoQuestion(PassportDetailsYesNoPage, "livingSettlor.passportDetailsYesNo", Some(addRts.PassportDetailsYesNoController.onPageLoad().url)),
+      bound.passportDetailsQuestion(PassportDetailsPage, "livingSettlor.passportDetails", Some(addRts.PassportDetailsController.onPageLoad().url)),
+      bound.yesNoQuestion(IdCardDetailsYesNoPage, "livingSettlor.idCardDetailsYesNo", Some(addRts.IdCardDetailsYesNoController.onPageLoad().url)),
+      bound.idCardDetailsQuestion(IdCardDetailsPage, "livingSettlor.idCardDetails", Some(addRts.IdCardDetailsController.onPageLoad().url)),
+      bound.dateQuestion(StartDatePage, "livingSettlor.startDate", Some(addRts.StartDateController.onPageLoad().url))
+    ).flatten
 
-    val amend: Seq[AnswerRow] = Seq(
-      bound.nameQuestion(NamePage, "livingSettlor.name", Some(controllers.individual.living.routes.NameController.onPageLoad(CheckMode).url)),
-      bound.yesNoQuestion(DateOfBirthYesNoPage, "livingSettlor.dateOfBirthYesNo", Some(controllers.individual.living.routes.DateOfBirthYesNoController.onPageLoad(CheckMode).url)),
-      bound.dateQuestion(DateOfBirthPage, "livingSettlor.dateOfBirth", Some(controllers.individual.living.routes.DateOfBirthController.onPageLoad(CheckMode).url)),
-      bound.yesNoQuestion(NationalInsuranceNumberYesNoPage, "livingSettlor.nationalInsuranceNumberYesNo", Some(controllers.individual.living.routes.NationalInsuranceNumberYesNoController.onPageLoad(CheckMode).url)),
-      bound.ninoQuestion(NationalInsuranceNumberPage, "livingSettlor.nationalInsuranceNumber", Some(controllers.individual.living.routes.NationalInsuranceNumberController.onPageLoad(CheckMode).url)),
-      bound.yesNoQuestion(AddressYesNoPage, "livingSettlor.addressYesNo", Some(controllers.individual.living.routes.AddressYesNoController.onPageLoad(CheckMode).url)),
-      bound.yesNoQuestion(LiveInTheUkYesNoPage, "livingSettlor.liveInTheUkYesNo", Some(controllers.individual.living.routes.LiveInTheUkYesNoController.onPageLoad(CheckMode).url)),
-      bound.addressQuestion(UkAddressPage, "livingSettlor.ukAddress", Some(controllers.individual.living.routes.UkAddressController.onPageLoad(CheckMode).url)),
-      bound.addressQuestion(NonUkAddressPage, "livingSettlor.nonUkAddress", Some(controllers.individual.living.routes.NonUkAddressController.onPageLoad(CheckMode).url)),
-      bound.yesNoQuestion(PassportDetailsYesNoPage, "livingSettlor.passportDetailsYesNo", Some(controllers.individual.living.routes.PassportDetailsYesNoController.onPageLoad(CheckMode).url)),
-      bound.passportDetailsQuestion(PassportDetailsPage, "livingSettlor.passportDetails", Some(controllers.individual.living.routes.PassportDetailsController.onPageLoad(CheckMode).url)),
-      bound.yesNoQuestion(IdCardDetailsYesNoPage, "livingSettlor.idCardDetailsYesNo", Some(controllers.individual.living.routes.IdCardDetailsYesNoController.onPageLoad(CheckMode).url)),
-      bound.idCardDetailsQuestion(IdCardDetailsPage, "livingSettlor.idCardDetails", Some(controllers.individual.living.routes.IdCardDetailsController.onPageLoad(CheckMode).url))
+    lazy val amend: Seq[AnswerRow] = Seq(
+      bound.nameQuestion(NamePage, "livingSettlor.name", Some(rts.NameController.onPageLoad(CheckMode).url)),
+      bound.yesNoQuestion(DateOfBirthYesNoPage, "livingSettlor.dateOfBirthYesNo", Some(rts.DateOfBirthYesNoController.onPageLoad(CheckMode).url)),
+      bound.dateQuestion(DateOfBirthPage, "livingSettlor.dateOfBirth", Some(rts.DateOfBirthController.onPageLoad(CheckMode).url)),
+      bound.yesNoQuestion(NationalInsuranceNumberYesNoPage, "livingSettlor.nationalInsuranceNumberYesNo", Some(rts.NationalInsuranceNumberYesNoController.onPageLoad(CheckMode).url)),
+      bound.ninoQuestion(NationalInsuranceNumberPage, "livingSettlor.nationalInsuranceNumber", Some(rts.NationalInsuranceNumberController.onPageLoad(CheckMode).url)),
+      bound.yesNoQuestion(AddressYesNoPage, "livingSettlor.addressYesNo", Some(rts.AddressYesNoController.onPageLoad(CheckMode).url)),
+      bound.yesNoQuestion(LiveInTheUkYesNoPage, "livingSettlor.liveInTheUkYesNo", Some(rts.LiveInTheUkYesNoController.onPageLoad(CheckMode).url)),
+      bound.addressQuestion(UkAddressPage, "livingSettlor.ukAddress", Some(rts.UkAddressController.onPageLoad(CheckMode).url)),
+      bound.addressQuestion(NonUkAddressPage, "livingSettlor.nonUkAddress", Some(rts.NonUkAddressController.onPageLoad(CheckMode).url)),
+      bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, "livingSettlor.passportOrIdCardDetailsYesNo", Some(amendRts.PassportOrIdCardDetailsYesNoController.onPageLoad().url)),
+      bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, "livingSettlor.passportOrIdCardDetails", Some(amendRts.PassportOrIdCardDetailsController.onPageLoad().url))
     ).flatten
 
     AnswerSection(
