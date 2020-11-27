@@ -39,6 +39,8 @@ case object NationalInsuranceNumberYesNoPage extends QuestionPage[Boolean] {
           .flatMap(_.remove(PassportDetailsPage))
           .flatMap(_.remove(IdCardDetailsYesNoPage))
           .flatMap(_.remove(IdCardDetailsPage))
+          .flatMap(_.remove(PassportOrIdCardDetailsYesNoPage))
+          .flatMap(_.remove(PassportOrIdCardDetailsPage))
       case Some(false) =>
         userAnswers.remove(NationalInsuranceNumberPage)
       case _ =>
