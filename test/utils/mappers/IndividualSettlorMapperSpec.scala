@@ -19,10 +19,10 @@ package utils.mappers
 import java.time.LocalDate
 
 import base.SpecBase
-import models.{IdCard, Name, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress}
+import models.{CombinedPassportOrIdCard, IdCard, Name, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress}
 import pages.individual.living._
 
-class AddIndividualSettlorMapperSpec extends SpecBase {
+class IndividualSettlorMapperSpec extends SpecBase {
 
   private val name = Name("First", None, "Last")
   private val dateOfBirth = LocalDate.parse("2010-02-03")
@@ -30,16 +30,17 @@ class AddIndividualSettlorMapperSpec extends SpecBase {
   private val ukAddress = UkAddress("line1", "line2", Some("line3"), Some("line4"), "POSTCODE")
   private val nonUkAddress = NonUkAddress("line1", "line2", Some("line3"), "country")
 
+  private val mapper = injector.instanceOf[IndividualSettlorMapper]
+
   "IndividualSettlorMapper" must {
 
-    "generate class of individual model with nino and income discretion" in {
-
-      val mapper = injector.instanceOf[IndividualSettlorMapper]
+    "generate individual model with nino" in {
 
       val nino = "AA123456A"
 
       val userAnswers = emptyUserAnswers
         .set(NamePage, name).success.value
+        .set(DateOfBirthYesNoPage, true).success.value
         .set(DateOfBirthPage, dateOfBirth).success.value
         .set(NationalInsuranceNumberYesNoPage, true).success.value
         .set(NationalInsuranceNumberPage, nino).success.value
@@ -53,12 +54,12 @@ class AddIndividualSettlorMapperSpec extends SpecBase {
       result.address mustBe None
       result.entityStart mustBe startDate
     }
-    "generate class of individual model with UK address and no income discretion" in {
 
-      val mapper = injector.instanceOf[IndividualSettlorMapper]
+    "generate individual model with UK address" in {
 
       val userAnswers = emptyUserAnswers
         .set(NamePage, name).success.value
+        .set(DateOfBirthYesNoPage, true).success.value
         .set(DateOfBirthPage, dateOfBirth).success.value
         .set(NationalInsuranceNumberYesNoPage, false).success.value
         .set(PassportDetailsYesNoPage, false).success.value
@@ -76,12 +77,12 @@ class AddIndividualSettlorMapperSpec extends SpecBase {
       result.address mustBe Some(ukAddress)
       result.entityStart mustBe startDate
     }
-    "generate class of individual model with non-UK address" in {
 
-      val mapper = injector.instanceOf[IndividualSettlorMapper]
+    "generate individual model with non-UK address" in {
 
       val userAnswers = emptyUserAnswers
         .set(NamePage, name).success.value
+        .set(DateOfBirthYesNoPage, true).success.value
         .set(DateOfBirthPage, dateOfBirth).success.value
         .set(NationalInsuranceNumberYesNoPage, false).success.value
         .set(PassportDetailsYesNoPage, false).success.value
@@ -100,14 +101,13 @@ class AddIndividualSettlorMapperSpec extends SpecBase {
       result.entityStart mustBe startDate
     }
 
-    "generate class of individual model with passport" in {
-
-      val mapper = injector.instanceOf[IndividualSettlorMapper]
+    "generate individual model with passport" in {
 
       val passport = Passport("SP", "123456789", LocalDate.of(2024, 8, 16))
 
       val userAnswers = emptyUserAnswers
         .set(NamePage, name).success.value
+        .set(DateOfBirthYesNoPage, true).success.value
         .set(DateOfBirthPage, dateOfBirth).success.value
         .set(NationalInsuranceNumberYesNoPage, false).success.value
         .set(AddressYesNoPage, true).success.value
@@ -126,14 +126,13 @@ class AddIndividualSettlorMapperSpec extends SpecBase {
       result.entityStart mustBe startDate
     }
 
-    "generate class of individual model with id card" in {
-
-      val mapper = injector.instanceOf[IndividualSettlorMapper]
+    "generate individual model with id card" in {
 
       val idcard = IdCard("SP", "123456789", LocalDate.of(2024, 8, 16))
 
       val userAnswers = emptyUserAnswers
         .set(NamePage, name).success.value
+        .set(DateOfBirthYesNoPage, true).success.value
         .set(DateOfBirthPage, dateOfBirth).success.value
         .set(NationalInsuranceNumberYesNoPage, false).success.value
         .set(AddressYesNoPage, true).success.value
@@ -154,12 +153,11 @@ class AddIndividualSettlorMapperSpec extends SpecBase {
     }
   }
 
-  "generate class of individual model with neither nino nor address" in {
-
-    val mapper = injector.instanceOf[IndividualSettlorMapper]
+  "generate individual model with neither nino nor address" in {
 
     val userAnswers = emptyUserAnswers
       .set(NamePage, name).success.value
+      .set(DateOfBirthYesNoPage, true).success.value
       .set(DateOfBirthPage, dateOfBirth).success.value
       .set(NationalInsuranceNumberYesNoPage, false).success.value
       .set(AddressYesNoPage, false).success.value
@@ -174,23 +172,27 @@ class AddIndividualSettlorMapperSpec extends SpecBase {
     result.entityStart mustBe startDate
   }
 
-  "generate class of individual model with role in company" in {
+  "generate individual model with passport or ID card" in {
 
-    val mapper = injector.instanceOf[IndividualSettlorMapper]
+    val passportOrIdCard = CombinedPassportOrIdCard("SP", "123456789", LocalDate.of(2024, 8, 16))
 
     val userAnswers = emptyUserAnswers
       .set(NamePage, name).success.value
-      .set(DateOfBirthPage, dateOfBirth).success.value
+      .set(DateOfBirthYesNoPage, false).success.value
       .set(NationalInsuranceNumberYesNoPage, false).success.value
-      .set(AddressYesNoPage, false).success.value
+      .set(AddressYesNoPage, true).success.value
+      .set(LiveInTheUkYesNoPage, true).success.value
+      .set(UkAddressPage, ukAddress).success.value
+      .set(PassportOrIdCardDetailsYesNoPage, true).success.value
+      .set(PassportOrIdCardDetailsPage, passportOrIdCard).success.value
       .set(StartDatePage, startDate).success.value
 
     val result = mapper(userAnswers).get
 
     result.name mustBe name
-    result.dateOfBirth mustBe Some(dateOfBirth)
-    result.identification mustBe None
-    result.address mustBe None
+    result.dateOfBirth mustBe None
+    result.identification mustBe Some(passportOrIdCard)
+    result.address mustBe Some(ukAddress)
     result.entityStart mustBe startDate
   }
 }

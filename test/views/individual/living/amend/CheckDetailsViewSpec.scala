@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-package views.individual.living.add
+package views.individual.living.amend
 
 import play.twirl.api.HtmlFormat
 import viewmodels.AnswerSection
 import views.behaviours.ViewBehaviours
-import views.html.individual.living.add.CheckDetailsView
+import views.html.individual.living.amend.CheckDetailsView
 
 class CheckDetailsViewSpec extends ViewBehaviours {
 
-  val messageKeyPrefix = "livingSettlor.checkDetails"
+  private val messageKeyPrefix = "livingSettlor.checkDetails"
+
+  private val index: Int = 0
 
   "CheckDetails view" must {
 
     val view = viewFor[CheckDetailsView](Some(emptyUserAnswers))
 
     def applyView(): HtmlFormat.Appendable =
-      view.apply(AnswerSection(None, Seq()))(fakeRequest, messages)
+      view.apply(AnswerSection(None, Seq()), index)(fakeRequest, messages)
 
     behave like normalPage(applyView(), messageKeyPrefix)
 

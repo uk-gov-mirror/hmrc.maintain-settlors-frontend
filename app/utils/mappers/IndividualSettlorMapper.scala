@@ -19,7 +19,7 @@ package utils.mappers
 import java.time.LocalDate
 
 import models.settlors.IndividualSettlor
-import models.{Address, IdCard, IndividualIdentification, Name, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers}
+import models.{Address, CombinedPassportOrIdCard, IdCard, IndividualIdentification, Name, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers}
 import pages.individual.living._
 import play.api.Logger
 import play.api.libs.json.{JsError, JsSuccess, Reads}
@@ -62,9 +62,11 @@ class IndividualSettlorMapper {
       hasAddress <- AddressYesNoPage.path.readWithDefault(false)
       hasPassport <- PassportDetailsYesNoPage.path.readWithDefault(false)
       hasIdCard <- IdCardDetailsYesNoPage.path.readWithDefault(false)
-    } yield (hasNino, hasAddress, hasPassport, hasIdCard)).flatMap[Option[IndividualIdentification]] {
-        case (false, true, true, false) => PassportDetailsPage.path.read[Passport].map(Some(_))
-        case (false, true, false, true) => IdCardDetailsPage.path.read[IdCard].map(Some(_))
+      hasPassportOrIdCard <- PassportOrIdCardDetailsYesNoPage.path.readWithDefault(false)
+    } yield (hasNino, hasAddress, hasPassport, hasIdCard, hasPassportOrIdCard)).flatMap[Option[IndividualIdentification]] {
+        case (false, true, true, false, _) => PassportDetailsPage.path.read[Passport].map(Some(_))
+        case (false, true, false, true, _) => IdCardDetailsPage.path.read[IdCard].map(Some(_))
+        case (false, true, false, false, true) => PassportOrIdCardDetailsPage.path.read[CombinedPassportOrIdCard].map(Some(_))
         case _ => Reads(_ => JsSuccess(None))
       }
   }
