@@ -27,6 +27,7 @@ import pages.individual.living._
 
 class NationalInsuranceNumberYesNoPageSpec extends PageBehaviours with ScalaCheckPropertyChecks with Generators {
 
+  private val nino: String = "nino"
   private val ukAddress: UkAddress = UkAddress("line1", "line2", None, None, "postcode")
   private val nonUkAddress: NonUkAddress = NonUkAddress("line1", "line2", None, "country")
   private val date: LocalDate = LocalDate.parse("1996-02-03")
@@ -78,7 +79,7 @@ class NationalInsuranceNumberYesNoPageSpec extends PageBehaviours with ScalaChec
       forAll(arbitrary[UserAnswers]) {
         arbitraryAnswers =>
           val userAnswers: UserAnswers = arbitraryAnswers
-            .set(NationalInsuranceNumberPage, "nino").success.value
+            .set(NationalInsuranceNumberPage, nino).success.value
 
           val result: UserAnswers = userAnswers.set(NationalInsuranceNumberYesNoPage, false).success.value
 
