@@ -17,16 +17,19 @@
 package config
 
 import java.time.LocalDate
-
 import java.net.{URI, URLEncoder}
+
 import com.google.inject.{Inject, Singleton}
 import controllers.routes
 import play.api.Configuration
-import play.api.i18n.Lang
+import play.api.i18n.{Lang, Messages}
 import play.api.mvc.{Call, Request}
 
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration) {
+
+  private final val ENGLISH = "en"
+  private final val WELSH = "cy"
 
   private val contactHost = configuration.get[String]("contact-frontend.host")
   private val contactFormServiceIdentifier = "trusts"
@@ -62,8 +65,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
     configuration.get[Boolean]("microservice.services.features.welsh-translation")
 
   def languageMap: Map[String, Lang] = Map(
-    "english" -> Lang("en"),
-    "cymraeg" -> Lang("cy")
+    "english" -> Lang(ENGLISH),
+    "cymraeg" -> Lang(WELSH)
   )
 
   def routeToSwitchLanguage: String => Call =
@@ -85,4 +88,13 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   private val maxMonth: Int = configuration.get[Int]("dates.maximum.month")
   private val maxYear: Int = configuration.get[Int]("dates.maximum.year")
   lazy val maxDate: LocalDate = LocalDate.of(maxYear, maxMonth, maxDay)
+
+  def helplineUrl(implicit messages: Messages): String = {
+    val path = messages.lang.code match {
+      case WELSH => "urls.welshHelpline"
+      case _ => "urls.trustsHelpline"
+    }
+
+    configuration.get[String](path)
+  }
 }
