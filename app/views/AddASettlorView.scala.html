@@ -18,10 +18,12 @@
 @import models.AddASettlor
 @import viewmodels.addAnother.AddRow
 @import viewmodels.RadioOption
+@import config.FrontendAppConfig
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    config: FrontendAppConfig
 )
 
 @(form: Form[_],
@@ -48,7 +50,7 @@
 
         @components.data_list(completeSettlors, "complete")
 
-        @components.details("addASettlor.details")
+        @components.details("addASettlor.details", config)
 
         @components.input_radio(
             field = form("value"),
