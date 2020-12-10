@@ -111,7 +111,7 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
     "remove settlor" in {
 
       when(mockConnector.removeSettlor(any(),any())(any(), any()))
-        .thenReturn(Future.successful(HttpResponse(OK, None)))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val service = new TrustServiceImpl(mockConnector)
 

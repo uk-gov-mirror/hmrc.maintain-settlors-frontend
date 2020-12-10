@@ -147,7 +147,7 @@ class RemoveIndividualSettlorControllerSpec extends SpecBase with ScalaCheckProp
           .thenReturn(Future.successful(Settlors(settlors, Nil, None)))
 
         when(mockConnector.removeSettlor(any(), any())(any(), any()))
-          .thenReturn(Future.successful(HttpResponse(200)))
+          .thenReturn(Future.successful(HttpResponse(200, "")))
 
         val request =
           FakeRequest(POST, routes.RemoveIndividualSettlorController.onSubmit(index).url)

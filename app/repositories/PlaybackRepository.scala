@@ -82,7 +82,19 @@ class PlaybackRepositoryImpl @Inject()(
 
     for {
       col <- collection
-      r <- col.findAndUpdate(selector, modifier, fetchNewObject = true, upsert = false)
+       r <- col.findAndUpdate(
+        selector = selector,
+        update = modifier,
+        fetchNewObject = true,
+        upsert = false,
+        sort = None,
+        fields = None,
+        bypassDocumentValidation = false,
+        writeConcern = WriteConcern.Default,
+        maxTime = None,
+        collation = None,
+        arrayFilters = Nil
+      )
     } yield r.result[UserAnswers]
   }
 

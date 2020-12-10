@@ -96,7 +96,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
       Future.successful(businessSettlor(true))
 
     override def removeSettlor(utr: String, settlor: RemoveSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-      Future.successful(HttpResponse(OK))
+      Future.successful(HttpResponse(OK, ""))
 
     override def getDeceasedSettlor(utr: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Option[DeceasedSettlor]] =
       Future.successful(Some(deceasedSettlor))
@@ -185,7 +185,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
           FakeRequest(POST, submitRoute)
             .withFormUrlEncodedBody(("value", AddASettlor.NoComplete.toString))
 
-        when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse.apply(200)))
+        when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse.apply(200, "")))
 
         val result = route(application, request).value
 
@@ -339,7 +339,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
         val request = FakeRequest(POST, submitCompleteRoute)
 
-        when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse.apply(200)))
+        when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse.apply(200, "")))
 
         val result = route(application, request).value
 
