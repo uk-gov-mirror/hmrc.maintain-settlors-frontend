@@ -23,6 +23,7 @@ import javax.inject.{Inject, Singleton}
 import models.{MongoDateTimeFormats, UtrSession}
 import play.api.libs.json._
 import play.api.{Configuration, Logger}
+import reactivemongo.api.WriteConcern
 import reactivemongo.api.indexes.{Index, IndexType}
 import reactivemongo.bson.BSONDocument
 import reactivemongo.play.json.ImplicitBSONHandlers.JsObjectDocumentWriter
@@ -79,7 +80,19 @@ class ActiveSessionRepositoryImpl @Inject()(
 
     for {
       col <- collection
-      r <- col.findAndUpdate(selector, modifier, fetchNewObject = true, upsert = false)
+      r <- col.findAndUpdate(
+        selector = selector,
+        update = modifier,
+        fetchNewObject = true,
+        upsert = false,
+        sort = None,
+        fields = None,
+        bypassDocumentValidation = false,
+        writeConcern = WriteConcern.Default,
+        maxTime = None,
+        collation = None,
+        arrayFilters = Nil
+      )
     } yield r.result[UtrSession]
   }
 

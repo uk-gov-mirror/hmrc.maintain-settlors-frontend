@@ -147,7 +147,7 @@ class RemoveBusinessSettlorControllerSpec extends SpecBase with ScalaCheckProper
           .thenReturn(Future.successful(Settlors(Nil, settlors, None)))
 
         when(mockConnector.removeSettlor(any(), any())(any(), any()))
-          .thenReturn(Future.successful(HttpResponse(200)))
+          .thenReturn(Future.successful(HttpResponse(200, "")))
 
         val request =
           FakeRequest(POST, routes.RemoveBusinessSettlorController.onSubmit(index).url)

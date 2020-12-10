@@ -110,7 +110,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       val mockTrustConnector: TrustConnector = mock[TrustConnector]
 
       when(mockTrustConnector.amendIndividualSettlor(any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful(HttpResponse(OK)))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[TrustConnector].toInstance(mockTrustConnector))
