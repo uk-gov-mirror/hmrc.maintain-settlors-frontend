@@ -56,7 +56,7 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
   private def amendIndividualSettlorUrl(utr: String, index: Int) = s"${config.trustsUrl}/trusts/amend-individual-settlor/$utr/$index"
 
   def amendIndividualSettlor(utr: String, index: Int, individual: IndividualSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    http.POST[JsValue, HttpResponse](amendIndividualSettlorUrl(utr, index), Json.toJson(individual))(implicitly[Writes[JsValue]], readRaw, hc, ec)
+    http.POST[JsValue, HttpResponse](amendIndividualSettlorUrl(utr, index), Json.toJson(individual))
   }
 
   private def addBusinessSettlorUrl(utr: String) = s"${config.trustsUrl}/trusts/add-business-settlor/$utr"
@@ -68,13 +68,13 @@ class TrustConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
   private def amendBusinessSettlorUrl(utr: String, index: Int) = s"${config.trustsUrl}/trusts/amend-business-settlor/$utr/$index"
 
   def amendBusinessSettlor(utr: String, index: Int, business: BusinessSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    http.POST[JsValue, HttpResponse](amendBusinessSettlorUrl(utr, index), Json.toJson(business))(implicitly[Writes[JsValue]], readRaw, hc, ec)
+    http.POST[JsValue, HttpResponse](amendBusinessSettlorUrl(utr, index), Json.toJson(business))
   }
 
   private def amendDeceasedSettlorUrl(utr: String) = s"${config.trustsUrl}/trusts/amend-deceased-settlor/$utr"
 
   def amendDeceasedSettlor(utr: String, deceasedSettlor: DeceasedSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    http.POST[JsValue, HttpResponse](amendDeceasedSettlorUrl(utr), Json.toJson(deceasedSettlor))(implicitly[Writes[JsValue]], readRaw, hc, ec)
+    http.POST[JsValue, HttpResponse](amendDeceasedSettlorUrl(utr), Json.toJson(deceasedSettlor))
   }
 
   private def removeSettlorUrl(utr: String) = s"${config.trustsUrl}/trusts/$utr/settlors/remove"
