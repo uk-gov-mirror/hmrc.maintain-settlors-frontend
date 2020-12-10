@@ -31,7 +31,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import repositories.PlaybackRepository
 import services.TrustService
-import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.mappers.DeceasedSettlorMapper
 import utils.print.DeceasedSettlorPrintHelper
 import viewmodels.AnswerSection
