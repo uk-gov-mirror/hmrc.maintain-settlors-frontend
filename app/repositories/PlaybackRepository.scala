@@ -82,7 +82,7 @@ class PlaybackRepositoryImpl @Inject()(
 
     for {
       col <- collection
-      r <- col.findAndUpdate(
+       r <- col.findAndUpdate(
         selector = selector,
         update = modifier,
         fetchNewObject = true,
