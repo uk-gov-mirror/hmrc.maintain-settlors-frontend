@@ -24,11 +24,10 @@ import models.{MongoDateTimeFormats, UtrSession}
 import play.api.libs.json._
 import play.api.{Configuration, Logger}
 import reactivemongo.api.WriteConcern
+import reactivemongo.api.bson.BSONDocument
 import reactivemongo.api.indexes.{Index, IndexType}
-import reactivemongo.bson.BSONDocument
-import reactivemongo.play.json.ImplicitBSONHandlers.JsObjectDocumentWriter
+import reactivemongo.play.json.compat.jsObjectWrites
 import reactivemongo.play.json.collection.JSONCollection
-
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -52,12 +51,49 @@ class ActiveSessionRepositoryImpl @Inject()(
   private val lastUpdatedIndex = Index(
     key = Seq("updatedAt" -> IndexType.Ascending),
     name = Some("session-updated-at-index"),
+    unique = false,
+    background = false,
+    sparse = false,
+    expireAfterSeconds = None,
+    storageEngine = None,
+    weights = None,
+    defaultLanguage = None,
+    languageOverride = None,
+    textIndexVersion = None,
+    sphereIndexVersion = None,
+    bits = None,
+    min = None,
+    max = None,
+    bucketSize = None,
+    collation = None,
+    wildcardProjection = None,
+    version = None,
+    partialFilter = None,
     options = BSONDocument("expireAfterSeconds" -> cacheTtl)
   )
 
   private val utrIndex = Index(
     key = Seq("utr" -> IndexType.Ascending),
-    name = Some("utr-index")
+    name = Some("utr-index"),
+    unique = false,
+    background = false,
+    sparse = false,
+    expireAfterSeconds = None,
+    storageEngine = None,
+    weights = None,
+    defaultLanguage = None,
+    languageOverride = None,
+    textIndexVersion = None,
+    sphereIndexVersion = None,
+    bits = None,
+    min = None,
+    max = None,
+    bucketSize = None,
+    collation = None,
+    wildcardProjection = None,
+    version = None,
+    partialFilter = None,
+    options = BSONDocument.empty
   )
 
   private lazy val ensureIndexes = for {
