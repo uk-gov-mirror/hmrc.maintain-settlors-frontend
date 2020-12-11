@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import javax.inject.Inject
 import models.settlors.{BusinessSettlor, DeceasedSettlor, IndividualSettlor, Settlors}
 import models.{RemoveSettlor, TrustDetails}
-import play.api.libs.json.{JsBoolean, JsValue, Json, Writes}
+import play.api.libs.json.{JsBoolean, JsValue, Json}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HttpReads.Implicits.{readFromJson, readRaw}
