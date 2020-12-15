@@ -24,11 +24,9 @@ import models.{MongoDateTimeFormats, UtrSession}
 import play.api.libs.json._
 import play.api.{Configuration, Logger}
 import reactivemongo.api.WriteConcern
-import reactivemongo.api.indexes.{Index, IndexType}
-import reactivemongo.bson.BSONDocument
-import reactivemongo.play.json.ImplicitBSONHandlers.JsObjectDocumentWriter
+import reactivemongo.api.indexes.IndexType
+import reactivemongo.play.json.compat.jsObjectWrites
 import reactivemongo.play.json.collection.JSONCollection
-
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -49,15 +47,15 @@ class ActiveSessionRepositoryImpl @Inject()(
       res <- mongo.api.database.map(_.collection[JSONCollection](collectionName))
     } yield res
 
-  private val lastUpdatedIndex = Index(
+  private val lastUpdatedIndex = MongoIndex(
     key = Seq("updatedAt" -> IndexType.Ascending),
-    name = Some("session-updated-at-index"),
-    options = BSONDocument("expireAfterSeconds" -> cacheTtl)
+    name = "session-updated-at-index",
+    expireAfterSeconds = Some(cacheTtl)
   )
 
-  private val utrIndex = Index(
+  private val utrIndex = MongoIndex(
     key = Seq("utr" -> IndexType.Ascending),
-    name = Some("utr-index")
+    name = "utr-index"
   )
 
   private lazy val ensureIndexes = for {
