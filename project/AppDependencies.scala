@@ -35,8 +35,8 @@ object AppDependencies {
 
   def apply(): Seq[ModuleID] = compile ++ test
 
-  val akkaVersion = "2.6.7"
-  val akkaHttpVersion = "10.1.12"
+  val akkaVersion = "2.5.23"
+  val akkaHttpVersion = "10.0.15"
 
   val overrides = Seq(
     "com.typesafe.akka" %% "akka-stream_2.12" % akkaVersion,
