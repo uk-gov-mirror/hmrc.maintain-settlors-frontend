@@ -3,7 +3,7 @@ import sbt._
 object AppDependencies {
   import play.core.PlayVersion
 
-  val reactiveMongoVersion = "0.20.13-play27"
+  val reactiveMongoVersion = "0.18.8-play27"
 
   val compile = Seq(
     play.sbt.PlayImport.ws,
@@ -35,8 +35,8 @@ object AppDependencies {
 
   def apply(): Seq[ModuleID] = compile ++ test
 
-  val akkaVersion = "2.5.23"
-  val akkaHttpVersion = "10.0.15"
+  val akkaVersion = "2.6.7"
+  val akkaHttpVersion = "10.1.12"
 
   val overrides = Seq(
     "com.typesafe.akka" %% "akka-stream_2.12" % akkaVersion,
