@@ -163,3 +163,19 @@ override character count display
         display: block;
     }
 }
+
+/*
+====================================
+Date field spacing
+Fixes issue when translated to Welsh
+====================================
+*/
+.form-date .form-group {
+    width: auto;
+}
+.form-date .form-group input {
+    width: 2.7em;
+}
+.form-date .form-group-year input {
+    width: 3.7em;
+}
