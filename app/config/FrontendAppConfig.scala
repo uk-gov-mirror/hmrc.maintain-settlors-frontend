@@ -28,8 +28,9 @@ import play.api.mvc.{Call, Request}
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration) {
 
-  private final val ENGLISH = "en"
-  private final val WELSH = "cy"
+  final val ENGLISH = "en"
+  final val WELSH = "cy"
+  final val UK_COUNTRY_CODE = "GB"
 
   private val contactHost = configuration.get[String]("contact-frontend.host")
   private val contactFormServiceIdentifier = "trusts"
@@ -55,7 +56,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val trustsStoreUrl: String = configuration.get[Service]("microservice.services.trusts-store").baseUrl
 
   lazy val locationCanonicalList: String = configuration.get[String]("location.canonical.list.all")
-  lazy val locationCanonicalListNonUK: String = configuration.get[String]("location.canonical.list.nonUK")
+  lazy val locationCanonicalListCY: String = configuration.get[String]("location.canonical.list.allCY")
 
   lazy val logoutUrl: String = configuration.get[String]("urls.logout")
 
