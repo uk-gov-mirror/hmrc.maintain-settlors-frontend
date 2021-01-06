@@ -18,8 +18,10 @@ package controllers.individual.living.remove
 
 import controllers.actions.StandardActionSets
 import forms.RemoveIndexFormProvider
+import handlers.ErrorHandler
 import javax.inject.Inject
 import models.{RemoveSettlor, SettlorType}
+import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,8 +37,9 @@ class RemoveIndividualSettlorController @Inject()(
                                                     trustService: TrustService,
                                                     formProvider: RemoveIndexFormProvider,
                                                     val controllerComponents: MessagesControllerComponents,
-                                                    view: RemoveIndividualSettlorView
-                                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                    view: RemoveIndividualSettlorView,
+                                                    errorHandler: ErrorHandler
+                                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val messagesPrefix: String = "removeIndividualSettlor"
 
@@ -52,6 +55,17 @@ class RemoveIndividualSettlorController @Inject()(
           } else {
             Redirect(controllers.routes.AddASettlorController.onPageLoad().url)
           }
+      } recoverWith {
+        case iobe: IndexOutOfBoundsException =>
+          logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}]" +
+            s" error getting individual settlor $index from trusts service ${iobe.getMessage}: IndexOutOfBoundsException")
+
+          Future.successful(Redirect(controllers.routes.AddASettlorController.onPageLoad().url))
+        case e =>
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}]" +
+            s" error getting individual settlor $index from trusts service ${e.getMessage}")
+
+          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
       }
 
   }
