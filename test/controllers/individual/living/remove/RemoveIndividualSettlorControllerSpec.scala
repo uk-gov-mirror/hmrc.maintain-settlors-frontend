@@ -223,4 +223,46 @@ class RemoveIndividualSettlorControllerSpec extends SpecBase with ScalaCheckProp
       application.stop()
     }
   }
+
+  "redirect to the add settlors page if we get an Index Not Found Exception" in {
+
+    val index = 1
+
+    when(mockConnector.getSettlors(any())(any(), any()))
+      .thenReturn(Future.failed(new IndexOutOfBoundsException("")))
+
+    val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+      .overrides(bind[TrustConnector].toInstance(mockConnector))
+      .build()
+
+    val request = FakeRequest(GET, routes.RemoveIndividualSettlorController.onPageLoad(index).url)
+
+    val result = route(application, request).value
+
+    status(result) mustEqual SEE_OTHER
+
+    redirectLocation(result).value mustEqual controllers.routes.AddASettlorController.onPageLoad().url
+
+    application.stop()
+  }
+
+  "redirect to the Service down page if we get a RunTimeException" in {
+
+    val index = 1
+
+    when(mockConnector.getSettlors(any())(any(), any()))
+      .thenReturn(Future.failed(new RuntimeException("")))
+
+    val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+      .overrides(bind[TrustConnector].toInstance(mockConnector))
+      .build()
+
+    val request = FakeRequest(GET, routes.RemoveIndividualSettlorController.onPageLoad(index).url)
+
+    val result = route(application, request).value
+
+    status(result) mustEqual INTERNAL_SERVER_ERROR
+
+    application.stop()
+  }
 }
