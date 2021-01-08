@@ -90,7 +90,7 @@ Error styling to bring in line with GDS
 
 // error focus state
 .form-control-error.form-control-error:focus {
-    border-color: $red;
+    border-color: $input-border;
     -webkit-box-shadow: none;
     box-shadow: none
 }
