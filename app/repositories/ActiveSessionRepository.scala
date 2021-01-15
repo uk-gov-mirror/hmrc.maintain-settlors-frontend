@@ -22,23 +22,24 @@ import com.google.inject.ImplementedBy
 import javax.inject.{Inject, Singleton}
 import models.{MongoDateTimeFormats, UtrSession}
 import play.api.libs.json._
-import play.api.{Configuration, Logger}
+import play.api.{Configuration, Logger, Logging}
 import reactivemongo.api.WriteConcern
 import reactivemongo.api.indexes.{Index, IndexType}
 import reactivemongo.bson.BSONDocument
 import reactivemongo.play.json.ImplicitBSONHandlers.JsObjectDocumentWriter
 import reactivemongo.play.json.collection.JSONCollection
+
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ActiveSessionRepositoryImpl @Inject()(
-                                             mongo: MongoDriver,
-                                             config: Configuration
-                                           )(implicit ec: ExecutionContext) extends ActiveSessionRepository {
+                                             override val mongo: MongoDriver,
+                                             override val config: Configuration
+                                           )(override implicit val ec: ExecutionContext)
+  extends ActiveSessionRepository
+    with IndexManager {
 
-  private val logger: Logger = Logger(getClass)
-
-  private val collectionName: String = "session"
+  override val collectionName: String = "session"
 
   private val cacheTtl = config.get[Int]("mongodb.session.ttlSeconds")
 
