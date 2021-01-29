@@ -34,7 +34,6 @@ import scala.concurrent.ExecutionContext
 class LogoutController @Inject()(
                                   appConfig: FrontendAppConfig,
                                   val controllerComponents: MessagesControllerComponents,
-                                  config: FrontendAppConfig,
                                   identify: IdentifierAction,
                                   getData: DataRetrievalAction,
                                   requireData: DataRequiredAction,
@@ -48,7 +47,7 @@ class LogoutController @Inject()(
 
       logger.info(s"[Session ID: ${utils.Session.id(hc)}] user signed out from the service, asking for feedback")
 
-      if(config.logoutAudit) {
+      if(appConfig.logoutAudit) {
 
         val auditData = Map(
           "sessionId" -> Session.id(hc),
