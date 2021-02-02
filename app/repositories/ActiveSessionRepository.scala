@@ -16,19 +16,18 @@
 
 package repositories
 
-import java.time.LocalDateTime
-
 import com.google.inject.ImplementedBy
-import javax.inject.{Inject, Singleton}
 import models.{MongoDateTimeFormats, UtrSession}
+import play.api.Configuration
 import play.api.libs.json._
-import play.api.{Configuration, Logger, Logging}
 import reactivemongo.api.WriteConcern
 import reactivemongo.api.indexes.{Index, IndexType}
 import reactivemongo.bson.BSONDocument
 import reactivemongo.play.json.ImplicitBSONHandlers.JsObjectDocumentWriter
 import reactivemongo.play.json.collection.JSONCollection
 
+import java.time.LocalDateTime
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
