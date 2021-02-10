@@ -17,8 +17,8 @@
 package generators
 
 import models._
-import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
@@ -30,5 +30,8 @@ trait ModelGenerators {
         lastName <- arbitrary[String]
       } yield Name(firstName, middleName, lastName)
     }
+
+  implicit lazy val arbitrarySettlorType: Gen[SettlorType] =
+    Gen.oneOf[SettlorType](SettlorType.values)
 
 }
