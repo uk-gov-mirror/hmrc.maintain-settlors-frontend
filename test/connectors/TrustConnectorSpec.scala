@@ -16,8 +16,6 @@
 
 package connectors
 
-import java.time.LocalDate
-
 import base.SpecBase
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
@@ -25,12 +23,15 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import generators.Generators
 import models.DeedOfVariation.PreviouslyAbsoluteInterestUnderWill
 import models.settlors.{BusinessSettlor, DeceasedSettlor, IndividualSettlor, Settlors}
-import models.{CompanyType, Name, TrustDetails, TypeOfTrust}
+import models.{CompanyType, Name, RemoveSettlor, SettlorType, TrustDetails, TypeOfTrust}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
 import play.api.libs.json.{JsBoolean, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
+
+import java.time.LocalDate
 
 class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
   with Inside with BeforeAndAfterAll with BeforeAndAfterEach with IntegrationPatience {
@@ -58,16 +59,55 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
   val description = "description"
   val date: LocalDate = LocalDate.parse("2019-02-03")
 
+  private val trustsUrl: String = "/trusts"
+  private val settlorsUrl: String = s"$trustsUrl/settlors"
+
+  private def getTrustDetailsUrl(utr: String) = s"$trustsUrl/$utr/trust-details"
+  private def getSettlorsUrl(utr: String) = s"$settlorsUrl/$utr/transformed"
+  private def getIsDeceasedSettlorDateOfDeathRecordedUrl(utr: String) = s"$settlorsUrl/$utr/transformed/deceased-settlor-death-recorded"
+  private def addIndividualSettlorUrl(utr: String) = s"$settlorsUrl/add-individual/$utr"
+  private def amendIndividualSettlorUrl(utr: String, index: Int) = s"$settlorsUrl/amend-individual/$utr/$index"
+  private def addBusinessSettlorUrl(utr: String) = s"$settlorsUrl/add-business/$utr"
+  private def amendBusinessSettlorUrl(utr: String, index: Int) = s"$settlorsUrl/amend-business/$utr/$index"
+  private def amendDeceasedSettlorUrl(utr: String) = s"$settlorsUrl/amend-deceased/$utr"
+  private def removeSettlorUrl(utr: String) = s"$settlorsUrl/$utr/remove"
+
+  private val individual = IndividualSettlor(
+    name = Name("Carmel", None, "Settlor"),
+    dateOfBirth = None,
+    identification = None,
+    address = None,
+    entityStart = date,
+    provisional = false
+  )
+
+  private val business = BusinessSettlor(
+    name = "Settlor Org 24",
+    companyType = Some(CompanyType.Investment),
+    companyTime = Some(false),
+    utr = None,
+    address = None,
+    entityStart = date,
+    provisional = false
+  )
+
+  private val deceased = DeceasedSettlor(
+    bpMatchStatus = None,
+    name = Name("Carmel", None, "Settlor"),
+    dateOfBirth = None,
+    dateOfDeath = None,
+    identification = None,
+    address = None
+  )
+
   "trust connector" when {
 
-    "get trusts details" in {
-
-      val utr = "1000000008"
+    "getTrustsDetails" in {
 
       val json = Json.parse(
         """
           |{
-          | "startDate": "1920-03-28",
+          | "startDate": "2019-02-03",
           | "lawCountry": "AD",
           | "administrationCountry": "GB",
           | "residentialStatus": {
@@ -93,7 +133,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val connector = application.injector.instanceOf[TrustConnector]
 
       server.stubFor(
-        get(urlEqualTo(s"/trusts/$utr/trust-details"))
+        get(urlEqualTo(getTrustDetailsUrl(utr)))
           .willReturn(okJson(json.toString))
       )
 
@@ -101,24 +141,123 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
       whenReady(processed) {
         r =>
-          r mustBe TrustDetails(startDate = LocalDate.parse("1920-03-28"), typeOfTrust = TypeOfTrust.WillTrustOrIntestacyTrust, Some(PreviouslyAbsoluteInterestUnderWill))
+          r mustBe TrustDetails(startDate = date, typeOfTrust = TypeOfTrust.WillTrustOrIntestacyTrust, Some(PreviouslyAbsoluteInterestUnderWill))
       }
 
     }
 
-    "get settlors returns a trust with empty lists" must {
+    "getSettlors" when {
 
-      "return a default empty list beneficiaries" in {
+      "there are no settlors" must {
 
-        val utr = "1000000008"
+        "return a default empty list of settlors" in {
 
-        val json = Json.parse(
-          """
-            |{
-            | "settlors": {
-            | }
-            |}
-            |""".stripMargin)
+          val json = Json.parse(
+            """
+              |{
+              | "settlors": {
+              | }
+              |}
+              |""".stripMargin)
+
+          val application = applicationBuilder()
+            .configure(
+              Seq(
+                "microservice.services.trusts.port" -> server.port(),
+                "auditing.enabled" -> false
+              ): _*
+            ).build()
+
+          val connector = application.injector.instanceOf[TrustConnector]
+
+          server.stubFor(
+            get(urlEqualTo(getSettlorsUrl(utr)))
+              .willReturn(okJson(json.toString))
+          )
+
+          val processed = connector.getSettlors(utr)
+
+          whenReady(processed) {
+            result =>
+              result mustBe Settlors(settlor = Nil, settlorCompany = Nil, None)
+          }
+
+          application.stop()
+        }
+      }
+
+      "there are settlors" must {
+
+        "parse the response and return the settlors" in {
+
+          val json = Json.parse(
+            """
+              |{
+              | "settlors" : {
+              |   "settlor" : [
+              |     {
+              |       "lineNo" : "79",
+              |       "name" : {
+              |         "firstName" : "Carmel",
+              |         "lastName" : "Settlor"
+              |       },
+              |       "entityStart" : "2019-02-03"
+              |     }
+              |   ],
+              |   "settlorCompany" : [
+              |     {
+              |       "lineNo" : "110",
+              |       "bpMatchStatus" : "98",
+              |       "name" : "Settlor Org 24",
+              |       "companyType" : "Investment",
+              |       "companyTime" : false,
+              |       "entityStart" : "2019-02-03"
+              |     }
+              |   ],
+              |    "deceased" : {
+              |       "name" : {
+              |         "firstName" : "Carmel",
+              |         "lastName" : "Settlor"
+              |       }
+              |     }
+              | }
+              |}
+              |""".stripMargin)
+
+          val application = applicationBuilder()
+            .configure(
+              Seq(
+                "microservice.services.trusts.port" -> server.port(),
+                "auditing.enabled" -> false
+              ): _*
+            ).build()
+
+          val connector = application.injector.instanceOf[TrustConnector]
+
+          server.stubFor(
+            get(urlEqualTo(getSettlorsUrl(utr)))
+              .willReturn(okJson(json.toString))
+          )
+
+          val processed = connector.getSettlors(utr)
+
+          whenReady(processed) {
+            result =>
+              result mustBe Settlors(
+                settlor = List(individual),
+                settlorCompany = List(business),
+                deceased = Some(deceased)
+              )
+          }
+
+          application.stop()
+        }
+      }
+    }
+
+    "addIndividualSettlor" must {
+
+      "Return OK when the request is successful" in {
 
         val application = applicationBuilder()
           .configure(
@@ -131,60 +270,18 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
         val connector = application.injector.instanceOf[TrustConnector]
 
         server.stubFor(
-          get(urlEqualTo(s"/trusts/$utr/transformed/settlors"))
-            .willReturn(okJson(json.toString))
+          post(urlEqualTo(addIndividualSettlorUrl(utr)))
+            .willReturn(ok)
         )
 
-        val processed = connector.getSettlors(utr)
+        val result = connector.addIndividualSettlor(utr, individual)
 
-        whenReady(processed) {
-          result =>
-            result mustBe Settlors(settlor = Nil, settlorCompany = Nil, None)
-        }
+        result.futureValue.status mustBe OK
 
         application.stop()
       }
 
-    }
-
-    "get settlors" must {
-
-      "parse the response and return the settlors" in {
-        val utr = "1000000008"
-
-        val json = Json.parse(
-          """
-            |{
-            | "settlors" : {
-            |   "settlor" : [
-            |     {
-            |       "lineNo" : "79",
-            |       "name" : {
-            |         "firstName" : "Carmel",
-            |         "lastName" : "Settlor"
-            |       },
-            |       "entityStart" : "2019-09-23"
-            |     }
-            |   ],
-            |   "settlorCompany" : [
-            |     {
-            |       "lineNo" : "110",
-            |       "bpMatchStatus" : "98",
-            |       "name" : "Settlor Org 24",
-            |       "companyType" : "Investment",
-            |       "companyTime" : false,
-            |       "entityStart" : "2019-09-23"
-            |     }
-            |   ],
-            |    "deceased" : {
-            |       "name" : {
-            |         "firstName" : "Carmel",
-            |         "lastName" : "Settlor"
-            |       }
-            |     }
-            | }
-            |}
-            |""".stripMargin)
+      "return Bad Request when the request is unsuccessful" in {
 
         val application = applicationBuilder()
           .configure(
@@ -197,47 +294,20 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
         val connector = application.injector.instanceOf[TrustConnector]
 
         server.stubFor(
-          get(urlEqualTo(s"/trusts/$utr/transformed/settlors"))
-            .willReturn(okJson(json.toString))
+          post(urlEqualTo(addIndividualSettlorUrl(utr)))
+            .willReturn(badRequest)
         )
 
-        val processed = connector.getSettlors(utr)
+        val result = connector.addIndividualSettlor(utr, individual)
 
-        whenReady(processed) {
-          result =>
-            result mustBe Settlors(settlor = List(
-              IndividualSettlor(
-                name = Name("Carmel", None, "Settlor"),
-                dateOfBirth = None,
-                identification = None,
-                address = None,
-                entityStart = LocalDate.parse("2019-09-23"),
-                provisional = false
-              )
-            ), settlorCompany = List(
-              BusinessSettlor(
-                name = "Settlor Org 24",
-                companyType = Some(CompanyType.Investment),
-                companyTime = Some(false),
-                utr = None,
-                address = None,
-                entityStart = LocalDate.parse("2019-09-23"),
-                provisional = false
-              )
-            ), deceased = Some(
-              DeceasedSettlor(None, Name("Carmel", None, "Settlor"), None, None, None, None))
-            )
-        }
+        result.map(response => response.status mustBe BAD_REQUEST)
 
         application.stop()
       }
 
     }
 
-    "amending an individual settlor" must {
-
-      def amendIndividualSettlorUrl(utr: String, index: Int) =
-        s"/trusts/amend-individual-settlor/$utr/$index"
+    "amendIndividualSettlor" must {
 
       "Return OK when the request is successful" in {
 
@@ -254,19 +324,6 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
         server.stubFor(
           post(urlEqualTo(amendIndividualSettlorUrl(utr, index)))
             .willReturn(ok)
-        )
-
-        val individual = IndividualSettlor(
-          name = Name(
-            firstName = "First",
-            middleName = None,
-            lastName = "Last"
-          ),
-          dateOfBirth = None,
-          identification = None,
-          address = None,
-          entityStart = LocalDate.parse("2020-03-27"),
-          provisional = false
         )
 
         val result = connector.amendIndividualSettlor(utr, index, individual)
@@ -293,19 +350,6 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(badRequest)
         )
 
-        val individual = IndividualSettlor(
-          name = Name(
-            firstName = "First",
-            middleName = None,
-            lastName = "Last"
-          ),
-          dateOfBirth = None,
-          identification = None,
-          address = None,
-          entityStart = LocalDate.parse("2020-03-27"),
-          provisional = false
-        )
-
         val result = connector.amendIndividualSettlor(utr, index, individual)
 
         result.map(response => response.status mustBe BAD_REQUEST)
@@ -315,20 +359,59 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
     }
 
-    "amending a business settlor" must {
+    "addBusinessSettlor" must {
 
-      def amendBusinessSettlorUrl(utr: String, index: Int) =
-        s"/trusts/amend-business-settlor/$utr/$index"
+      "Return OK when the request is successful" in {
 
-      val business = BusinessSettlor(
-        name = "Name",
-        companyType = None,
-        companyTime = None,
-        utr = None,
-        address = None,
-        entityStart = LocalDate.parse("2020-03-27"),
-        provisional = false
-      )
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustConnector]
+
+        server.stubFor(
+          post(urlEqualTo(addBusinessSettlorUrl(utr)))
+            .willReturn(ok)
+        )
+
+        val result = connector.addBusinessSettlor(utr, business)
+
+        result.futureValue.status mustBe OK
+
+        application.stop()
+      }
+
+      "return Bad Request when the request is unsuccessful" in {
+
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustConnector]
+
+        server.stubFor(
+          post(urlEqualTo(addBusinessSettlorUrl(utr)))
+            .willReturn(badRequest)
+        )
+
+        val result = connector.addBusinessSettlor(utr, business)
+
+        result.map(response => response.status mustBe BAD_REQUEST)
+
+        application.stop()
+      }
+
+    }
+
+    "amendBusinessSettlor" must {
 
       "Return OK when the request is successful" in {
 
@@ -380,10 +463,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
     }
 
-    "amending a deceased settlor" must {
-
-      def amendDeceasedSettlorUrl(utr: String) =
-        s"/trusts/amend-deceased-settlor/$utr"
+    "amendDeceasedSettlor" must {
 
       "Return OK when the request is successful" in {
 
@@ -402,20 +482,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(ok)
         )
 
-        val individual = DeceasedSettlor(
-          bpMatchStatus = None,
-          name = Name(
-            firstName = "First",
-            middleName = None,
-            lastName = "Last"
-          ),
-          dateOfDeath = None,
-          dateOfBirth = None,
-          identification = None,
-          address = None
-        )
-
-        val result = connector.amendDeceasedSettlor(utr, individual)
+        val result = connector.amendDeceasedSettlor(utr, deceased)
 
         result.futureValue.status mustBe OK
 
@@ -439,20 +506,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(badRequest)
         )
 
-        val individual = DeceasedSettlor(
-          bpMatchStatus = None,
-          name = Name(
-            firstName = "First",
-            middleName = None,
-            lastName = "Last"
-          ),
-          dateOfDeath = None,
-          dateOfBirth = None,
-          identification = None,
-          address = None
-        )
-
-        val result = connector.amendDeceasedSettlor(utr, individual)
+        val result = connector.amendDeceasedSettlor(utr, deceased)
 
         result.map(response => response.status mustBe BAD_REQUEST)
 
@@ -460,7 +514,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       }
     }
 
-    "get whether deceased settlor date of death is known to ETMP" must {
+    "getIsDeceasedSettlorDateOfDeathRecorded" must {
 
       "Return true or false when the request is successful" in {
 
@@ -477,7 +531,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
         val connector = application.injector.instanceOf[TrustConnector]
 
         server.stubFor(
-          get(urlEqualTo(s"/trusts/$utr/transformed/deceased-settlor-death-recorded"))
+          get(urlEqualTo(getIsDeceasedSettlorDateOfDeathRecordedUrl(utr)))
             .willReturn(okJson(json.toString))
         )
 
@@ -490,6 +544,68 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
         application.stop()
       }
+    }
+
+    "removeSettlor" must {
+
+      def removeSettlor(settlorType: SettlorType): RemoveSettlor = RemoveSettlor(settlorType, index, date)
+
+      "Return OK when the request is successful" in {
+
+        forAll(arbitrarySettlorType) {
+          settlorType =>
+
+            val application = applicationBuilder()
+              .configure(
+                Seq(
+                  "microservice.services.trusts.port" -> server.port(),
+                  "auditing.enabled" -> false
+                ): _*
+              ).build()
+
+            val connector = application.injector.instanceOf[TrustConnector]
+
+            server.stubFor(
+              put(urlEqualTo(removeSettlorUrl(utr)))
+                .willReturn(ok)
+            )
+
+            val result = connector.removeSettlor(utr, removeSettlor(settlorType))
+
+            result.futureValue.status mustBe OK
+
+            application.stop()
+        }
+      }
+
+      "return Bad Request when the request is unsuccessful" in {
+
+        forAll(arbitrarySettlorType) {
+          settlorType =>
+
+            val application = applicationBuilder()
+              .configure(
+                Seq(
+                  "microservice.services.trusts.port" -> server.port(),
+                  "auditing.enabled" -> false
+                ): _*
+              ).build()
+
+            val connector = application.injector.instanceOf[TrustConnector]
+
+            server.stubFor(
+              put(urlEqualTo(removeSettlorUrl(utr)))
+                .willReturn(badRequest)
+            )
+
+            val result = connector.removeSettlor(utr, removeSettlor(settlorType))
+
+            result.map(response => response.status mustBe BAD_REQUEST)
+
+            application.stop()
+        }
+      }
+
     }
   }
 }
