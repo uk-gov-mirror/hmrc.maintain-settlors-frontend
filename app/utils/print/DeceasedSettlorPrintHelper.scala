@@ -22,18 +22,15 @@ import models.UserAnswers
 import pages.AdditionalSettlorsYesNoPage
 import pages.individual.deceased._
 import play.api.i18n.Messages
-import utils.countryOptions.CountryOptions
 import viewmodels.AnswerSection
 
-class DeceasedSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverter,
-                                           countryOptions: CountryOptions
-                                            ) {
+class DeceasedSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
   def apply(userAnswers: UserAnswers,
             settlorName: String,
-            hasAdditionalSettlors: Boolean)(implicit messages: Messages) = {
+            hasAdditionalSettlors: Boolean)(implicit messages: Messages): AnswerSection = {
 
-    val bound = answerRowConverter.bind(userAnswers, settlorName, countryOptions)
+    val bound = answerRowConverter.bind(userAnswers, settlorName)
 
     AnswerSection(
       None,

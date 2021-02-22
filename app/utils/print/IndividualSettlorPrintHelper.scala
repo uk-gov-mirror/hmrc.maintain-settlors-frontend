@@ -23,16 +23,13 @@ import controllers.individual.living.{routes => rts}
 import models.{CheckMode, NormalMode, UserAnswers}
 import pages.individual.living._
 import play.api.i18n.Messages
-import utils.countryOptions.CountryOptions
 import viewmodels.{AnswerRow, AnswerSection}
 
-class IndividualSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverter,
-                                             countryOptions: CountryOptions
-                                            ) {
+class IndividualSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
   def apply(userAnswers: UserAnswers, provisional: Boolean, settlorName: String)(implicit messages: Messages): AnswerSection = {
 
-    val bound = answerRowConverter.bind(userAnswers, settlorName, countryOptions)
+    val bound = answerRowConverter.bind(userAnswers, settlorName)
 
     lazy val add: Seq[AnswerRow] = Seq(
       bound.nameQuestion(NamePage, "livingSettlor.name", Some(rts.NameController.onPageLoad(NormalMode).url)),
