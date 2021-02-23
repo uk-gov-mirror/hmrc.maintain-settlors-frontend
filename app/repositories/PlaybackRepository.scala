@@ -16,17 +16,16 @@
 
 package repositories
 
+import java.time.LocalDateTime
+
+import javax.inject.{Inject, Singleton}
 import models.{MongoDateTimeFormats, UserAnswers}
 import play.api.Configuration
 import play.api.libs.json._
 import reactivemongo.api.WriteConcern
-import reactivemongo.api.indexes.{Index, IndexType}
-import reactivemongo.bson.BSONDocument
-import reactivemongo.play.json.ImplicitBSONHandlers.JsObjectDocumentWriter
+import reactivemongo.api.indexes.IndexType
 import reactivemongo.play.json.collection.JSONCollection
 
-import java.time.LocalDateTime
-import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -47,15 +46,15 @@ class PlaybackRepositoryImpl @Inject()(
       res <- mongo.api.database.map(_.collection[JSONCollection](collectionName))
     } yield res
 
-  private val lastUpdatedIndex = Index(
+  private val lastUpdatedIndex = MongoIndex(
     key = Seq("updatedAt" -> IndexType.Ascending),
-    name = Some("user-answers-updated-at-index"),
-    options = BSONDocument("expireAfterSeconds" -> cacheTtl)
+    name = "user-answers-updated-at-index",
+    expireAfterSeconds = Some(cacheTtl)
   )
 
-  private val internalIdAndUtrIndex = Index(
+  private val internalIdAndUtrIndex = MongoIndex(
     key = Seq("internalId" -> IndexType.Ascending, "utr" -> IndexType.Ascending),
-    name = Some("internal-id-and-utr-compound-index")
+    name = "internal-id-and-utr-compound-index"
   )
 
   private lazy val ensureIndexes = for {
