@@ -16,12 +16,15 @@
 
 package repositories
 
+import play.api.libs.json.{JsObject, OWrites}
 import play.api.{Configuration, Logging}
 import reactivemongo.play.json.collection.JSONCollection
 
 import scala.concurrent.{ExecutionContext, Future}
 
 trait IndexManager extends Logging {
+
+  implicit final val jsObjectWrites: OWrites[JsObject] = OWrites[JsObject](identity)
 
   val collectionName: String
 
