@@ -18,6 +18,7 @@ package utils.mappers
 
 import java.time.LocalDate
 
+import models.Constant.GB
 import models.settlors.BusinessSettlor
 import models.{Address, CompanyType, NonUkAddress, UkAddress, UserAnswers}
 import pages.business._
@@ -36,6 +37,7 @@ class BusinessSettlorMapper {
         CompanyTypePage.path.readNullable[CompanyType] and
         CompanyTimePage.path.readNullable[Boolean] and
         UtrPage.path.readNullable[String] and
+        readCountryOfResidence and
         readAddress and
         StartDatePage.path.read[LocalDate] and
         Reads(_ => JsSuccess(true))
@@ -45,8 +47,18 @@ class BusinessSettlorMapper {
       case JsSuccess(value, _) =>
         Some(value)
       case JsError(errors) =>
-        logger.error(s"[UTR: ${answers.identifier}] Failed to rehydrate BusinessSettlor from UserAnswers due to $errors")
+        logger.error(s"[Identifier: ${answers.identifier}] Failed to rehydrate BusinessSettlor from UserAnswers due to $errors")
         None
+    }
+  }
+
+  private def readCountryOfResidence: Reads[Option[String]] = {
+    CountryOfResidenceYesNoPage.path.readNullable[Boolean].flatMap[Option[String]] {
+      case Some(true) => CountryOfResidenceInTheUkYesNoPage.path.read[Boolean].flatMap {
+        case true => Reads(_ => JsSuccess(Some(GB)))
+        case false => CountryOfResidencePage.path.read[String].map(Some(_))
+      }
+      case _ => Reads(_ => JsSuccess(None))
     }
   }
 

@@ -26,6 +26,7 @@ final case class BusinessSettlor(name: String,
                                  companyType: Option[CompanyType],
                                  companyTime: Option[Boolean],
                                  utr: Option[String],
+                                 countryOfResidence: Option[String] = None,
                                  address: Option[Address],
                                  entityStart: LocalDate,
                                  provisional : Boolean) extends Settlor
@@ -37,12 +38,13 @@ object BusinessSettlor {
       (__ \ 'companyType).readNullable[CompanyType] and
       (__ \ 'companyTime).readNullable[Boolean] and
       __.lazyRead(readNullableAtSubPath[String](__ \ 'identification \ 'utr)) and
+      (__ \ 'countryOfResidence).readNullable[String] and
       __.lazyRead(readNullableAtSubPath[Address](__ \ 'identification \ 'address)) and
       (__ \ "entityStart").read[LocalDate] and
       (__ \ "provisional").readWithDefault(false)).tupled.map {
 
-      case (name, companyType, companyTime, utr, address, entityStart, provisional) =>
-        BusinessSettlor(name, companyType, companyTime, utr, address, entityStart, provisional)
+      case (name, companyType, companyTime, identifier, countryOfResidence, address, entityStart, provisional) =>
+        BusinessSettlor(name, companyType, companyTime, identifier, countryOfResidence, address, entityStart, provisional)
     }
 
   implicit val writes: Writes[BusinessSettlor] =
@@ -50,6 +52,7 @@ object BusinessSettlor {
       (__ \ 'companyType).writeNullable[CompanyType] and
       (__ \ 'companyTime).writeNullable[Boolean] and
       (__ \ 'identification \ 'utr).writeNullable[String] and
+      (__ \ 'countryOfResidence).writeNullable[String] and
       (__ \ 'identification \ 'address).writeNullable[Address] and
       (__ \ "entityStart").write[LocalDate] and
       (__ \ "provisional").write[Boolean]
