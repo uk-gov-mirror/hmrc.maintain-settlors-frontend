@@ -27,13 +27,15 @@ import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
                               internalId: String,
-                              utr: String,
+                              identifier: String,
                               whenTrustSetup: LocalDate,
                               trustType: TypeOfTrust,
                               deedOfVariation: Option[DeedOfVariation],
                               isDateOfDeathRecorded: Boolean,
                               data: JsObject = Json.obj(),
-                              updatedAt: LocalDateTime = LocalDateTime.now
+                              updatedAt: LocalDateTime = LocalDateTime.now,
+                              is5mldEnabled: Boolean = false,
+                              isTaxable: Boolean = true
                             ) {
 
   private val logger: Logger = Logger(getClass)
@@ -113,13 +115,16 @@ object UserAnswers {
 
     (
       (__ \ "internalId").read[String] and
-        (__ \ "utr").read[String] and
+        ((__ \ "utr").read[String] or (__ \ "identifier").read[String]) and
         (__ \ "whenTrustSetup").read[LocalDate] and
         (__ \ "trustType").read[TypeOfTrust] and
         (__ \ "deedOfVariation").readNullable[DeedOfVariation] and
         (__ \ "isDateOfDeathRecorded").read[Boolean] and
         (__ \ "data").read[JsObject] and
-        (__ \ "updatedAt").read(MongoDateTimeFormats.localDateTimeRead)
+        (__ \ "updatedAt").read(MongoDateTimeFormats.localDateTimeRead) and
+        (__ \ "is5mldEnabled").readWithDefault[Boolean](false) and
+        (__ \ "isTaxable").readWithDefault[Boolean](true)
+
       ) (UserAnswers.apply _)
   }
 
@@ -129,13 +134,15 @@ object UserAnswers {
 
     (
       (__ \ "internalId").write[String] and
-        (__ \ "utr").write[String] and
+        (__ \ "identifier").write[String] and
         (__ \ "whenTrustSetup").write[LocalDate] and
         (__ \ "trustType").write[TypeOfTrust] and
         (__ \ "deedOfVariation").writeNullable[DeedOfVariation] and
         (__ \ "isDateOfDeathRecorded").write[Boolean] and
         (__ \ "data").write[JsObject] and
-        (__ \ "updatedAt").write(MongoDateTimeFormats.localDateTimeWrite)
+        (__ \ "updatedAt").write(MongoDateTimeFormats.localDateTimeWrite) and
+        (__ \ "is5mldEnabled").write[Boolean] and
+        (__ \ "isTaxable").write[Boolean]
       ) (unlift(UserAnswers.unapply))
   }
 }

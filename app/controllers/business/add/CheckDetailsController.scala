@@ -59,7 +59,7 @@ class CheckDetailsController @Inject()(
         case None =>
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
         case Some(settlor) =>
-          connector.addBusinessSettlor(request.userAnswers.utr, settlor).map(_ =>
+          connector.addBusinessSettlor(request.userAnswers.identifier, settlor).map(_ =>
             Redirect(controllers.routes.AddASettlorController.onPageLoad())
           )
       }

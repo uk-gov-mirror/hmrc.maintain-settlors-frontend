@@ -48,7 +48,7 @@ class RemoveIndividualSettlorController @Inject()(
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
-      trustService.getIndividualSettlor(request.userAnswers.utr, index).map {
+      trustService.getIndividualSettlor(request.userAnswers.identifier, index).map {
         settlor =>
           if (settlor.provisional) {
             Ok(view(form, index, settlor.name.displayName))
@@ -57,12 +57,12 @@ class RemoveIndividualSettlorController @Inject()(
           }
       } recoverWith {
         case iobe: IndexOutOfBoundsException =>
-          logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}]" +
+          logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" error getting individual settlor $index from trusts service ${iobe.getMessage}: IndexOutOfBoundsException")
 
           Future.successful(Redirect(controllers.routes.AddASettlorController.onPageLoad().url))
         case e =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}]" +
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" error getting individual settlor $index from trusts service ${e.getMessage}")
 
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
@@ -75,7 +75,7 @@ class RemoveIndividualSettlorController @Inject()(
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
-          trustService.getIndividualSettlor(request.userAnswers.utr, index).map {
+          trustService.getIndividualSettlor(request.userAnswers.identifier, index).map {
             settlor =>
               BadRequest(view(formWithErrors, index, settlor.name.displayName))
           }
@@ -84,7 +84,7 @@ class RemoveIndividualSettlorController @Inject()(
 
           if (value) {
 
-            trustService.removeSettlor(request.userAnswers.utr, RemoveSettlor(SettlorType.IndividualSettlor, index)).map(_ =>
+            trustService.removeSettlor(request.userAnswers.identifier, RemoveSettlor(SettlorType.IndividualSettlor, index)).map(_ =>
               Redirect(controllers.routes.AddASettlorController.onPageLoad())
             )
           } else {

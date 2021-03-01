@@ -45,7 +45,7 @@ class BusinessSettlorMapper {
       case JsSuccess(value, _) =>
         Some(value)
       case JsError(errors) =>
-        logger.error(s"[UTR: ${answers.utr}] Failed to rehydrate BusinessSettlor from UserAnswers due to $errors")
+        logger.error(s"[UTR: ${answers.identifier}] Failed to rehydrate BusinessSettlor from UserAnswers due to $errors")
         None
     }
   }

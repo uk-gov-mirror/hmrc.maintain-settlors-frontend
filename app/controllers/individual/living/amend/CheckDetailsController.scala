@@ -62,7 +62,7 @@ class CheckDetailsController @Inject()(
   def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
-      service.getIndividualSettlor(request.userAnswers.utr, index) flatMap {
+      service.getIndividualSettlor(request.userAnswers.identifier, index) flatMap {
         trust =>
           for {
             extractedF <- Future.fromTry(extractor(request.userAnswers, trust, index))
@@ -83,7 +83,7 @@ class CheckDetailsController @Inject()(
 
       mapper(request.userAnswers).map {
         individual =>
-          connector.amendIndividualSettlor(request.userAnswers.utr, index, individual).map(_ =>
+          connector.amendIndividualSettlor(request.userAnswers.identifier, index, individual).map(_ =>
             Redirect(controllers.routes.AddASettlorController.onPageLoad())
           )
       }.getOrElse(Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate)))

@@ -44,7 +44,7 @@ class IndividualSettlorMapper {
       case JsSuccess(value, _) =>
         Some(value)
       case JsError(errors) =>
-        logger.error(s"[UTR: ${answers.utr}] Failed to rehydrate IndividualSettlor from UserAnswers due to $errors")
+        logger.error(s"[UTR: ${answers.identifier}] Failed to rehydrate IndividualSettlor from UserAnswers due to $errors")
         None
     }
   }

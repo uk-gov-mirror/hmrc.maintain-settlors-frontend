@@ -25,6 +25,7 @@ import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
+import services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 
@@ -34,7 +35,9 @@ class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
                                  actions: StandardActionSets,
                                  cacheRepository : PlaybackRepository,
-                                 connector: TrustConnector)
+                                 connector: TrustConnector,
+                                 featureFlagService: FeatureFlagService
+                               )
                                (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val logger: Logger = Logger(getClass)
@@ -44,24 +47,28 @@ class IndexController @Inject()(
         logger.info(s"[Session ID: ${Session.id(hc)}][UTR: $utr] user has started to maintain settlors")
 
         def newUserAnswers(details: TrustDetails,
-                           internalId: String,
                            utr: String,
-                           isDateOfDeathRecorded: Boolean) = UserAnswers(
+                           isDateOfDeathRecorded: Boolean,
+                           is5mldEnabled: Boolean
+                          ) = UserAnswers(
             internalId = request.user.internalId,
-            utr = utr,
+            identifier = utr,
             whenTrustSetup = details.startDate,
             trustType = details.typeOfTrust,
             deedOfVariation = details.deedOfVariation,
-            isDateOfDeathRecorded = isDateOfDeathRecorded
-          )
+            isDateOfDeathRecorded = isDateOfDeathRecorded,
+            is5mldEnabled = is5mldEnabled,
+            isTaxable = details.trustTaxable.getOrElse(true)
+        )
 
         for {
           details <- connector.getTrustDetails(utr)
+          is5mldEnabled <- featureFlagService.is5mldEnabled()
           allSettlors <- connector.getSettlors(utr)
           isDateOfDeathRecorded <- connector.getIsDeceasedSettlorDateOfDeathRecorded(utr)
           ua <- Future.successful {
             request.userAnswers.getOrElse {
-              newUserAnswers(details, request.user.internalId, utr, isDateOfDeathRecorded.value)
+              newUserAnswers(details, utr, isDateOfDeathRecorded.value, is5mldEnabled)
             }
           }
           _ <- cacheRepository.set(ua)

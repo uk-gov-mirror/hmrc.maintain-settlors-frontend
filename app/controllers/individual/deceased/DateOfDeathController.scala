@@ -54,7 +54,7 @@ class DateOfDeathController @Inject()(
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
-      trustsConnector.getTrustDetails(request.userAnswers.utr) map { details =>
+      trustsConnector.getTrustDetails(request.userAnswers.identifier) map { details =>
           val preparedForm = request.userAnswers.get(DateOfDeathPage) match {
             case None => form(details.startDate, minDate)
             case Some(value) => form(details.startDate, minDate).fill(value)
@@ -67,7 +67,7 @@ class DateOfDeathController @Inject()(
   def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
-      trustsConnector.getTrustDetails(request.userAnswers.utr) flatMap { details =>
+      trustsConnector.getTrustDetails(request.userAnswers.identifier) flatMap { details =>
         form(details.startDate, minDate).bindFromRequest().fold(
           formWithErrors =>
             Future.successful(BadRequest(view(formWithErrors, request.settlorName))),

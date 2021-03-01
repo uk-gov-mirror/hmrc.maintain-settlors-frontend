@@ -44,7 +44,7 @@ class DeceasedSettlorMapper {
       case JsSuccess(value, _) =>
         Some(value)
       case JsError(errors) =>
-        logger.error(s"[UTR: ${answers.utr}] Failed to rehydrate DeceasedSettlor from UserAnswers due to $errors")
+        logger.error(s"[UTR: ${answers.identifier}] Failed to rehydrate DeceasedSettlor from UserAnswers due to $errors")
         None
     }
   }

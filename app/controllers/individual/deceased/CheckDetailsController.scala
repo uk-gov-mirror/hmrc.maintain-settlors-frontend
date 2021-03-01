@@ -74,7 +74,7 @@ class CheckDetailsController @Inject()(
   def extractAndRender(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
-      service.getSettlors(request.userAnswers.utr) flatMap {
+      service.getSettlors(request.userAnswers.identifier) flatMap {
         case Settlors(individuals, businesses, Some(deceased)) =>
           for {
             hasAdditionalSettlors <- Future.successful(individuals.nonEmpty || businesses.nonEmpty)
@@ -91,7 +91,7 @@ class CheckDetailsController @Inject()(
 
   def renderFromUserAnswers(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
-      service.getSettlors(request.userAnswers.utr).flatMap { settlors =>
+      service.getSettlors(request.userAnswers.identifier).flatMap { settlors =>
         Future.successful(render(
           request.userAnswers,
           request.settlorName,
@@ -105,11 +105,11 @@ class CheckDetailsController @Inject()(
 
       mapper(request.userAnswers).map {
         deceasedSettlor =>
-          connector.amendDeceasedSettlor(request.userAnswers.utr, deceasedSettlor).flatMap(_ =>
-            service.getSettlors(request.userAnswers.utr).flatMap { settlors =>
+          connector.amendDeceasedSettlor(request.userAnswers.identifier, deceasedSettlor).flatMap(_ =>
+            service.getSettlors(request.userAnswers.identifier).flatMap { settlors =>
               (settlors.hasLivingSettlors, request.userAnswers.get(AdditionalSettlorsYesNoPage)) match {
                 case (false, Some(false)) =>
-                  trustStoreConnector.setTaskComplete(request.userAnswers.utr).map(_ =>
+                  trustStoreConnector.setTaskComplete(request.userAnswers.identifier).map(_ =>
                     Redirect(appConfig.maintainATrustOverview)
                   )
                 case _ =>

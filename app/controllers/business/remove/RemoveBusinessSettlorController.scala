@@ -48,7 +48,7 @@ class RemoveBusinessSettlorController @Inject()(
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
-      trustService.getBusinessSettlor(request.userAnswers.utr, index).map {
+      trustService.getBusinessSettlor(request.userAnswers.identifier, index).map {
         settlor =>
           if (settlor.provisional) {
             Ok(view(form, index, settlor.name))
@@ -57,12 +57,12 @@ class RemoveBusinessSettlorController @Inject()(
           }
       } recoverWith {
         case iobe: IndexOutOfBoundsException =>
-          logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}]" +
+          logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" error getting business settlor $index from trusts service ${iobe.getMessage}: IndexOutOfBoundsException")
 
           Future.successful(Redirect(controllers.routes.AddASettlorController.onPageLoad().url))
         case e =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.utr}]" +
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" error getting business settlor $index from trusts service ${e.getMessage}")
 
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
@@ -75,7 +75,7 @@ class RemoveBusinessSettlorController @Inject()(
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
-          trustService.getBusinessSettlor(request.userAnswers.utr, index).map {
+          trustService.getBusinessSettlor(request.userAnswers.identifier, index).map {
             settlor =>
               BadRequest(view(formWithErrors, index, settlor.name))
           }
@@ -84,7 +84,7 @@ class RemoveBusinessSettlorController @Inject()(
 
           if (value) {
 
-            trustService.removeSettlor(request.userAnswers.utr, RemoveSettlor(SettlorType.BusinessSettlor, index)).map(_ =>
+            trustService.removeSettlor(request.userAnswers.identifier, RemoveSettlor(SettlorType.BusinessSettlor, index)).map(_ =>
               Redirect(controllers.routes.AddASettlorController.onPageLoad())
             )
           } else {
