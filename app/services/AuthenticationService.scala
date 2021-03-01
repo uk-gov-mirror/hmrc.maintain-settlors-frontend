@@ -46,7 +46,7 @@ class AuthenticationServiceImpl @Inject()(errorHandler: ErrorHandler,
 
   override def authenticateForUtr[A](utr: String)
                                     (implicit request: DataRequest[A], hc: HeaderCarrier): Future[Either[Result, DataRequest[A]]] = {
-    trustAuthConnector.authorisedForUtr(utr).flatMap {
+    trustAuthConnector.authorisedUrlFor(utr).flatMap {
       case _: TrustAuthAllowed => Future.successful(Right(request))
       case TrustAuthDenied(redirectUrl) => Future.successful(Left(Redirect(redirectUrl)))
       case _ =>

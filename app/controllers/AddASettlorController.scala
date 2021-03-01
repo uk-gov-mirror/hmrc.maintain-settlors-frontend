@@ -54,7 +54,7 @@ class AddASettlorController @Inject()(
     implicit request =>
 
       for {
-        settlors <- trustService.getSettlors(request.userAnswers.utr)
+        settlors <- trustService.getSettlors(request.userAnswers.identifier)
         updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
         _ <- repository.set(updatedAnswers)
       } yield {
@@ -82,7 +82,7 @@ class AddASettlorController @Inject()(
   def submit(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
-      trustService.getSettlors(request.userAnswers.utr).flatMap { settlors =>
+      trustService.getSettlors(request.userAnswers.identifier).flatMap { settlors =>
         addAnotherForm.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
 
@@ -110,7 +110,7 @@ class AddASettlorController @Inject()(
 
             case AddASettlor.NoComplete =>
               for {
-                _ <- trustStoreConnector.setTaskComplete(request.userAnswers.utr)
+                _ <- trustStoreConnector.setTaskComplete(request.userAnswers.identifier)
               } yield {
                 Redirect(appConfig.maintainATrustOverview)
               }
@@ -123,7 +123,7 @@ class AddASettlorController @Inject()(
     implicit request =>
 
       for {
-        _ <- trustStoreConnector.setTaskComplete(request.userAnswers.utr)
+        _ <- trustStoreConnector.setTaskComplete(request.userAnswers.identifier)
       } yield {
         Redirect(appConfig.maintainATrustOverview)
       }

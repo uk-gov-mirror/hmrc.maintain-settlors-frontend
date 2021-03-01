@@ -54,7 +54,7 @@ class LogoutController @Inject()(
           "event" -> "signout",
           "service" -> "maintain-settlors-frontend",
           "userGroup" -> request.user.affinityGroup.toString,
-          "utr" -> request.userAnswers.utr
+          "utr" -> request.userAnswers.identifier
         )
 
         auditConnector.sendExplicitAudit(

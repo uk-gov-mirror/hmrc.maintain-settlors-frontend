@@ -32,57 +32,57 @@ class TrustConnector @Inject()(http: HttpClient, config: FrontendAppConfig) {
   private val trustsUrl: String = s"${config.trustsUrl}/trusts"
   private val settlorsUrl: String = s"$trustsUrl/settlors"
 
-  def getTrustDetails(utr: String)
+  def getTrustDetails(identifier: String)
                      (implicit hc: HeaderCarrier, ex: ExecutionContext): Future[TrustDetails] = {
-    val url: String = s"$trustsUrl/$utr/trust-details"
+    val url: String = s"$trustsUrl/$identifier/trust-details"
     http.GET[TrustDetails](url)
   }
 
-  def getSettlors(utr: String)
+  def getSettlors(identifier: String)
                  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Settlors] = {
-    val url: String = s"$settlorsUrl/$utr/transformed"
+    val url: String = s"$settlorsUrl/$identifier/transformed"
     http.GET[Settlors](url)
   }
 
-  def getIsDeceasedSettlorDateOfDeathRecorded(utr: String)
+  def getIsDeceasedSettlorDateOfDeathRecorded(identifier: String)
                                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JsBoolean] = {
-    val url: String = s"$settlorsUrl/$utr/transformed/deceased-settlor-death-recorded"
+    val url: String = s"$settlorsUrl/$identifier/transformed/deceased-settlor-death-recorded"
     http.GET[JsBoolean](url)
   }
 
-  def addIndividualSettlor(utr: String, settlor: IndividualSettlor)
+  def addIndividualSettlor(identifier: String, settlor: IndividualSettlor)
                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val url: String = s"$settlorsUrl/add-individual/$utr"
+    val url: String = s"$settlorsUrl/add-individual/$identifier"
     http.POST[JsValue, HttpResponse](url, Json.toJson(settlor))
   }
 
-  def amendIndividualSettlor(utr: String, index: Int, individual: IndividualSettlor)
+  def amendIndividualSettlor(identifier: String, index: Int, individual: IndividualSettlor)
                             (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val url: String = s"$settlorsUrl/amend-individual/$utr/$index"
+    val url: String = s"$settlorsUrl/amend-individual/$identifier/$index"
     http.POST[JsValue, HttpResponse](url, Json.toJson(individual))
   }
 
-  def addBusinessSettlor(utr: String, settlor: BusinessSettlor)
+  def addBusinessSettlor(identifier: String, settlor: BusinessSettlor)
                         (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val url: String = s"$settlorsUrl/add-business/$utr"
+    val url: String = s"$settlorsUrl/add-business/$identifier"
     http.POST[JsValue, HttpResponse](url, Json.toJson(settlor))
   }
 
-  def amendBusinessSettlor(utr: String, index: Int, business: BusinessSettlor)
+  def amendBusinessSettlor(identifier: String, index: Int, business: BusinessSettlor)
                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val url: String = s"$settlorsUrl/amend-business/$utr/$index"
+    val url: String = s"$settlorsUrl/amend-business/$identifier/$index"
     http.POST[JsValue, HttpResponse](url, Json.toJson(business))
   }
 
-  def amendDeceasedSettlor(utr: String, deceasedSettlor: DeceasedSettlor)
+  def amendDeceasedSettlor(identifier: String, deceasedSettlor: DeceasedSettlor)
                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val url: String = s"$settlorsUrl/amend-deceased/$utr"
+    val url: String = s"$settlorsUrl/amend-deceased/$identifier"
     http.POST[JsValue, HttpResponse](url, Json.toJson(deceasedSettlor))
   }
 
-  def removeSettlor(utr: String, settlor: RemoveSettlor)
+  def removeSettlor(identifier: String, settlor: RemoveSettlor)
                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val url: String = s"$settlorsUrl/$utr/remove"
+    val url: String = s"$settlorsUrl/$identifier/remove"
     http.PUT[JsValue, HttpResponse](url, Json.toJson(settlor))
   }
 }

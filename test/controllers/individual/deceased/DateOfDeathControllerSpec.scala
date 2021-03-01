@@ -75,7 +75,8 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
         .thenReturn(Future.successful(TrustDetails(
           LocalDate.now,
           TypeOfTrust.WillTrustOrIntestacyTrust,
-          None
+          None,
+          Some(true)
         )))
 
       val application = applicationBuilder(userAnswers = Some(userAnswersWithName))
@@ -106,7 +107,8 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
         .thenReturn(Future.successful(TrustDetails(
           LocalDate.now,
           TypeOfTrust.WillTrustOrIntestacyTrust,
-          None
+          None,
+          Some(true)
         )))
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
@@ -137,7 +139,8 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
         .thenReturn(Future.successful(TrustDetails(
           LocalDate.now,
           TypeOfTrust.WillTrustOrIntestacyTrust,
-          None
+          None,
+          Some(true)
         )))
 
       val application =
@@ -163,7 +166,8 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
         .thenReturn(Future.successful(TrustDetails(
           LocalDate.now,
           TypeOfTrust.WillTrustOrIntestacyTrust,
-          None
+          None,
+          Some(true)
         )))
 
       val application = applicationBuilder(userAnswers = Some(userAnswersWithName))
@@ -205,7 +209,8 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
         .thenReturn(Future.successful(TrustDetails(
           LocalDate.now,
           TypeOfTrust.WillTrustOrIntestacyTrust,
-          None
+          None,
+          Some(true)
         )))
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
@@ -258,7 +263,8 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
         .thenReturn(Future.successful(TrustDetails(
           LocalDate.now,
           TypeOfTrust.WillTrustOrIntestacyTrust,
-          None
+          None,
+          Some(true)
         )))
 
       val application = applicationBuilder(userAnswers = None)

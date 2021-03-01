@@ -48,7 +48,7 @@ trait UserAnswersGenerator extends TryValues {
         }
       } yield UserAnswers(
         internalId = id,
-        utr = utr,
+        identifier = utr,
         whenTrustSetup = LocalDate.now(),
         trustType = TypeOfTrust.WillTrustOrIntestacyTrust,
         deedOfVariation = None,

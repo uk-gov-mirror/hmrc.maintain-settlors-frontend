@@ -62,15 +62,15 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
   private val trustsUrl: String = "/trusts"
   private val settlorsUrl: String = s"$trustsUrl/settlors"
 
-  private def getTrustDetailsUrl(utr: String) = s"$trustsUrl/$utr/trust-details"
-  private def getSettlorsUrl(utr: String) = s"$settlorsUrl/$utr/transformed"
-  private def getIsDeceasedSettlorDateOfDeathRecordedUrl(utr: String) = s"$settlorsUrl/$utr/transformed/deceased-settlor-death-recorded"
-  private def addIndividualSettlorUrl(utr: String) = s"$settlorsUrl/add-individual/$utr"
-  private def amendIndividualSettlorUrl(utr: String, index: Int) = s"$settlorsUrl/amend-individual/$utr/$index"
-  private def addBusinessSettlorUrl(utr: String) = s"$settlorsUrl/add-business/$utr"
-  private def amendBusinessSettlorUrl(utr: String, index: Int) = s"$settlorsUrl/amend-business/$utr/$index"
-  private def amendDeceasedSettlorUrl(utr: String) = s"$settlorsUrl/amend-deceased/$utr"
-  private def removeSettlorUrl(utr: String) = s"$settlorsUrl/$utr/remove"
+  private def getTrustDetailsUrl(identifier: String) = s"$trustsUrl/$identifier/trust-details"
+  private def getSettlorsUrl(identifier: String) = s"$settlorsUrl/$identifier/transformed"
+  private def getIsDeceasedSettlorDateOfDeathRecordedUrl(identifier: String) = s"$settlorsUrl/$identifier/transformed/deceased-settlor-death-recorded"
+  private def addIndividualSettlorUrl(identifier: String) = s"$settlorsUrl/add-individual/$identifier"
+  private def amendIndividualSettlorUrl(identifier: String, index: Int) = s"$settlorsUrl/amend-individual/$identifier/$index"
+  private def addBusinessSettlorUrl(identifier: String) = s"$settlorsUrl/add-business/$identifier"
+  private def amendBusinessSettlorUrl(identifier: String, index: Int) = s"$settlorsUrl/amend-business/$identifier/$index"
+  private def amendDeceasedSettlorUrl(identifier: String) = s"$settlorsUrl/amend-deceased/$identifier"
+  private def removeSettlorUrl(identifier: String) = s"$settlorsUrl/$identifier/remove"
 
   private val individual = IndividualSettlor(
     name = Name("Carmel", None, "Settlor"),
@@ -141,7 +141,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
       whenReady(processed) {
         r =>
-          r mustBe TrustDetails(startDate = date, typeOfTrust = TypeOfTrust.WillTrustOrIntestacyTrust, Some(PreviouslyAbsoluteInterestUnderWill))
+          r mustBe TrustDetails(startDate = date, typeOfTrust = TypeOfTrust.WillTrustOrIntestacyTrust, Some(PreviouslyAbsoluteInterestUnderWill), None)
       }
 
     }
