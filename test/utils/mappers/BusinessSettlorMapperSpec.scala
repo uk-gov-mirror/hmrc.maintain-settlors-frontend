@@ -19,6 +19,7 @@ package utils.mappers
 import java.time.LocalDate
 
 import base.SpecBase
+import models.Constant.GB
 import models.{CompanyType, NonUkAddress, TypeOfTrust, UkAddress}
 import pages.business._
 
@@ -41,6 +42,7 @@ class BusinessSettlorMapperSpec extends SpecBase {
         val userAnswers = emptyUserAnswers
           .set(NamePage, name).success.value
           .set(UtrYesNoPage, false).success.value
+          .set(CountryOfResidenceYesNoPage, false).success.value
           .set(AddressYesNoPage, false).success.value
           .set(StartDatePage, startDate).success.value
 
@@ -48,6 +50,7 @@ class BusinessSettlorMapperSpec extends SpecBase {
 
         result.name mustBe name
         result.utr mustBe None
+        result.countryOfResidence mustBe None
         result.address mustBe None
         result.entityStart mustBe startDate
       }
@@ -64,6 +67,7 @@ class BusinessSettlorMapperSpec extends SpecBase {
 
         result.name mustBe name
         result.utr mustBe Some(utr)
+        result.countryOfResidence mustBe None
         result.address mustBe None
         result.entityStart mustBe startDate
       }
@@ -73,6 +77,7 @@ class BusinessSettlorMapperSpec extends SpecBase {
         val userAnswers = emptyUserAnswers
           .set(NamePage, name).success.value
           .set(UtrYesNoPage, false).success.value
+          .set(CountryOfResidenceYesNoPage, false).success.value
           .set(AddressYesNoPage, true).success.value
           .set(LiveInTheUkYesNoPage, true).success.value
           .set(UkAddressPage, ukAddress).success.value
@@ -82,6 +87,7 @@ class BusinessSettlorMapperSpec extends SpecBase {
 
         result.name mustBe name
         result.utr mustBe None
+        result.countryOfResidence mustBe None
         result.address mustBe Some(ukAddress)
         result.entityStart mustBe startDate
       }
@@ -91,6 +97,7 @@ class BusinessSettlorMapperSpec extends SpecBase {
         val userAnswers = emptyUserAnswers
           .set(NamePage, name).success.value
           .set(UtrYesNoPage, false).success.value
+          .set(CountryOfResidenceYesNoPage, false).success.value
           .set(AddressYesNoPage, true).success.value
           .set(LiveInTheUkYesNoPage, false).success.value
           .set(NonUkAddressPage, nonUkAddress).success.value
@@ -100,7 +107,47 @@ class BusinessSettlorMapperSpec extends SpecBase {
 
         result.name mustBe name
         result.utr mustBe None
+        result.countryOfResidence mustBe None
         result.address mustBe Some(nonUkAddress)
+        result.entityStart mustBe startDate
+      }
+
+      "generate business settlor model with GB Residency" in {
+
+        val userAnswers = emptyUserAnswers
+          .set(NamePage, name).success.value
+          .set(UtrYesNoPage, false).success.value
+          .set(CountryOfResidenceYesNoPage, true).success.value
+          .set(CountryOfResidenceInTheUkYesNoPage, true).success.value
+          .set(AddressYesNoPage, false).success.value
+          .set(StartDatePage, startDate).success.value
+
+        val result = mapper(userAnswers).get
+
+        result.name mustBe name
+        result.utr mustBe None
+        result.countryOfResidence mustBe Some(GB)
+        result.address mustBe None
+        result.entityStart mustBe startDate
+      }
+
+      "generate business settlor model with US Residency" in {
+
+        val userAnswers = emptyUserAnswers
+          .set(NamePage, name).success.value
+          .set(UtrYesNoPage, false).success.value
+          .set(CountryOfResidenceYesNoPage, true).success.value
+          .set(CountryOfResidenceInTheUkYesNoPage, false).success.value
+          .set(CountryOfResidencePage, "US").success.value
+          .set(AddressYesNoPage, false).success.value
+          .set(StartDatePage, startDate).success.value
+
+        val result = mapper(userAnswers).get
+
+        result.name mustBe name
+        result.utr mustBe None
+        result.countryOfResidence mustBe Some("US")
+        result.address mustBe None
         result.entityStart mustBe startDate
       }
     }
@@ -114,6 +161,7 @@ class BusinessSettlorMapperSpec extends SpecBase {
         val userAnswers = emptyUserAnswers
           .set(NamePage, name).success.value
           .set(UtrYesNoPage, false).success.value
+          .set(CountryOfResidenceYesNoPage, false).success.value
           .set(AddressYesNoPage, false).success.value
           .set(StartDatePage, startDate).success.value
 
@@ -121,6 +169,7 @@ class BusinessSettlorMapperSpec extends SpecBase {
 
         result.name mustBe name
         result.utr mustBe None
+        result.countryOfResidence mustBe None
         result.address mustBe None
         result.entityStart mustBe startDate
       }
@@ -131,6 +180,7 @@ class BusinessSettlorMapperSpec extends SpecBase {
           .set(NamePage, name).success.value
           .set(UtrYesNoPage, true).success.value
           .set(UtrPage, utr).success.value
+          .set(CountryOfResidenceYesNoPage, false).success.value
           .set(CompanyTypePage, CompanyType.Trading).success.value
           .set(CompanyTimePage, true).success.value
           .set(StartDatePage, startDate).success.value
@@ -139,6 +189,7 @@ class BusinessSettlorMapperSpec extends SpecBase {
 
         result.name mustBe name
         result.utr mustBe Some(utr)
+        result.countryOfResidence mustBe None
         result.address mustBe None
         result.companyType mustBe Some(CompanyType.Trading)
         result.companyTime mustBe Some(true)
@@ -150,6 +201,7 @@ class BusinessSettlorMapperSpec extends SpecBase {
         val userAnswers = emptyUserAnswers
           .set(NamePage, name).success.value
           .set(UtrYesNoPage, false).success.value
+          .set(CountryOfResidenceYesNoPage, false).success.value
           .set(AddressYesNoPage, true).success.value
           .set(LiveInTheUkYesNoPage, true).success.value
           .set(UkAddressPage, ukAddress).success.value
@@ -161,6 +213,7 @@ class BusinessSettlorMapperSpec extends SpecBase {
 
         result.name mustBe name
         result.utr mustBe None
+        result.countryOfResidence mustBe None
         result.address mustBe Some(ukAddress)
         result.companyType mustBe Some(CompanyType.Investment)
         result.companyTime mustBe Some(true)
@@ -172,6 +225,7 @@ class BusinessSettlorMapperSpec extends SpecBase {
         val userAnswers = emptyUserAnswers
           .set(NamePage, name).success.value
           .set(UtrYesNoPage, false).success.value
+          .set(CountryOfResidenceYesNoPage, false).success.value
           .set(AddressYesNoPage, true).success.value
           .set(LiveInTheUkYesNoPage, false).success.value
           .set(NonUkAddressPage, nonUkAddress).success.value
@@ -183,6 +237,7 @@ class BusinessSettlorMapperSpec extends SpecBase {
 
         result.name mustBe name
         result.utr mustBe None
+        result.countryOfResidence mustBe None
         result.address mustBe Some(nonUkAddress)
         result.companyType mustBe Some(CompanyType.Trading)
         result.companyTime mustBe Some(false)
