@@ -39,7 +39,7 @@ class CountryOfResidenceInTheUkYesNoController @Inject()(
                                                           formProvider: YesNoFormProvider,
                                                           view: CountryOfResidenceInTheUkYesNoView,
                                                           sessionRepository: PlaybackRepository,
-                                                          nameAction: NameRequiredAction,
+                                                          nameAction: NameRequiredAction
                                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider.withPrefix("businessSettlor.countryOfResidenceInTheUkYesNo")

@@ -67,7 +67,6 @@ class CountryOfResidenceYesNoControllerSpec extends SpecBase with MockitoSugar {
       val userAnswers = baseAnswers
         .set(CountryOfResidenceYesNoPage, true).success.value
 
-
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       val request = FakeRequest(GET, countryOfResidenceYesNo)
