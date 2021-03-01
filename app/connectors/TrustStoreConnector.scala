@@ -26,10 +26,10 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TrustStoreConnector @Inject()(http: HttpClient, config: FrontendAppConfig) {
 
-  private def maintainTasksUrl(utr: String) = s"${config.trustsStoreUrl}/trusts-store/maintain/tasks/settlors/$utr"
+  private def maintainTasksUrl(identifier: String) = s"${config.trustsStoreUrl}/trusts-store/maintain/tasks/settlors/$identifier"
 
-  def setTaskComplete(utr: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[HttpResponse] = {
-    http.POSTEmpty[HttpResponse](maintainTasksUrl(utr))
+  def setTaskComplete(identifier: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[HttpResponse] = {
+    http.POSTEmpty[HttpResponse](maintainTasksUrl(identifier))
   }
 
   def getFeature(feature: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[FeatureResponse] = {

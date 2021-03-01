@@ -34,7 +34,7 @@ class AddressYesNoPageSpec extends PageBehaviours {
     beRemovable[Boolean](AddressYesNoPage)
 
     "implement cleanup logic when NO selected" in {
-      val userAnswers = UserAnswers("id", "utr", LocalDate.now, TypeOfTrust.WillTrustOrIntestacyTrust, None, isDateOfDeathRecorded = true)
+      val userAnswers = UserAnswers("id", "identifier", LocalDate.now, TypeOfTrust.WillTrustOrIntestacyTrust, None, isDateOfDeathRecorded = true)
         .set(UkAddressPage, UkAddress("line1", "line2", None, None, "postcode")).success.value
         .set(LivedInTheUkYesNoPage, false)
 
@@ -42,7 +42,7 @@ class AddressYesNoPageSpec extends PageBehaviours {
     }
 
     "implement cleanup logic when YES selected" in {
-      val userAnswers = UserAnswers("id", "utr", LocalDate.now, TypeOfTrust.WillTrustOrIntestacyTrust, None, isDateOfDeathRecorded = true)
+      val userAnswers = UserAnswers("id", "identifier", LocalDate.now, TypeOfTrust.WillTrustOrIntestacyTrust, None, isDateOfDeathRecorded = true)
         .set(NonUkAddressPage, NonUkAddress("line1", "line2", None,"country")).success.value
         .set(LivedInTheUkYesNoPage, true)
 

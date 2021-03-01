@@ -42,9 +42,9 @@ class IndexController @Inject()(
 
   private val logger: Logger = Logger(getClass)
 
-  def onPageLoad(utr: String): Action[AnyContent] = (actions.auth andThen actions.saveSession(utr) andThen actions.getData).async {
+  def onPageLoad(identifier: String): Action[AnyContent] = (actions.auth andThen actions.saveSession(identifier) andThen actions.getData).async {
       implicit request =>
-        logger.info(s"[Session ID: ${Session.id(hc)}][UTR: $utr] user has started to maintain settlors")
+        logger.info(s"[Session ID: ${Session.id(hc)}][Identifier: $identifier] user has started to maintain settlors")
 
         def newUserAnswers(details: TrustDetails,
                            utr: String,
@@ -62,13 +62,13 @@ class IndexController @Inject()(
         )
 
         for {
-          details <- connector.getTrustDetails(utr)
+          details <- connector.getTrustDetails(identifier)
           is5mldEnabled <- featureFlagService.is5mldEnabled()
-          allSettlors <- connector.getSettlors(utr)
-          isDateOfDeathRecorded <- connector.getIsDeceasedSettlorDateOfDeathRecorded(utr)
+          allSettlors <- connector.getSettlors(identifier)
+          isDateOfDeathRecorded <- connector.getIsDeceasedSettlorDateOfDeathRecorded(identifier)
           ua <- Future.successful {
             request.userAnswers.getOrElse {
-              newUserAnswers(details, utr, isDateOfDeathRecorded.value, is5mldEnabled)
+              newUserAnswers(details, identifier, isDateOfDeathRecorded.value, is5mldEnabled)
             }
           }
           _ <- cacheRepository.set(ua)
