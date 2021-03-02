@@ -98,9 +98,8 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
 
   private def navigateToEndPages(mode:Mode, trustType: TypeOfTrust, ua: UserAnswers): Call = {
     (mode, trustType) match {
-      case (NormalMode, EmployeeRelated) => rts.CompanyTypeController.onPageLoad(mode)
+      case (_, EmployeeRelated) => rts.CompanyTypeController.onPageLoad(mode)
       case (NormalMode, _) => rts.StartDateController.onPageLoad()
-      case (CheckMode, EmployeeRelated) => rts.CompanyTypeController.onPageLoad(mode)
       case (CheckMode, _) => checkDetailsRoute(ua)
     }
   }
