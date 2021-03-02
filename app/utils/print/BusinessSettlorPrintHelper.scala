@@ -36,6 +36,9 @@ class BusinessSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverte
         bound.yesNoQuestion(LiveInTheUkYesNoPage, "businessSettlor.liveInTheUkYesNo", Some(controllers.business.routes.LiveInTheUkYesNoController.onPageLoad(NormalMode).url)),
         bound.addressQuestion(UkAddressPage, "businessSettlor.ukAddress", Some(controllers.business.routes.UkAddressController.onPageLoad(NormalMode).url)),
         bound.addressQuestion(NonUkAddressPage, "businessSettlor.nonUkAddress", Some(controllers.business.routes.NonUkAddressController.onPageLoad(NormalMode).url)),
+        bound.yesNoQuestion(CountryOfResidenceYesNoPage, "businessSettlor.countryOfResidenceYesNo", Some(controllers.business.routes.CountryOfResidenceYesNoController.onPageLoad(NormalMode).url)),
+        bound.yesNoQuestion(CountryOfResidenceInTheUkYesNoPage, "businessSettlor.countryOfResidenceInTheUkYesNo", Some(controllers.business.routes.CountryOfResidenceInTheUkYesNoController.onPageLoad(NormalMode).url)),
+        bound.countryQuestion(CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, "businessSettlor.countryOfResidence", Some(controllers.business.routes.CountryOfResidenceController.onPageLoad(NormalMode).url)),
         bound.companyTypeQuestion(CompanyTypePage, "businessSettlor.companyType", Some(controllers.business.routes.CompanyTypeController.onPageLoad(NormalMode).url)),
         bound.yesNoQuestion(CompanyTimePage, "businessSettlor.companyTime", Some(controllers.business.routes.CompanyTimeController.onPageLoad(NormalMode).url)),
         bound.dateQuestion(StartDatePage, "businessSettlor.startDate", Some(controllers.business.routes.StartDateController.onPageLoad().url))
@@ -49,6 +52,9 @@ class BusinessSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverte
       bound.yesNoQuestion(LiveInTheUkYesNoPage, "businessSettlor.liveInTheUkYesNo", Some(controllers.business.routes.LiveInTheUkYesNoController.onPageLoad(CheckMode).url)),
       bound.addressQuestion(UkAddressPage, "businessSettlor.ukAddress", Some(controllers.business.routes.UkAddressController.onPageLoad(CheckMode).url)),
       bound.addressQuestion(NonUkAddressPage, "businessSettlor.nonUkAddress", Some(controllers.business.routes.NonUkAddressController.onPageLoad(CheckMode).url)),
+      bound.yesNoQuestion(CountryOfResidenceYesNoPage, "businessSettlor.countryOfResidenceYesNo", Some(controllers.business.routes.CountryOfResidenceYesNoController.onPageLoad(CheckMode).url)),
+      bound.yesNoQuestion(CountryOfResidenceInTheUkYesNoPage, "businessSettlor.countryOfResidenceInTheUkYesNo", Some(controllers.business.routes.CountryOfResidenceInTheUkYesNoController.onPageLoad(CheckMode).url)),
+      bound.countryQuestion(CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, "businessSettlor.countryOfResidence", Some(controllers.business.routes.CountryOfResidenceController.onPageLoad(CheckMode).url)),
       bound.companyTypeQuestion(CompanyTypePage, "businessSettlor.companyType", Some(controllers.business.routes.CompanyTypeController.onPageLoad(CheckMode).url)),
       bound.yesNoQuestion(CompanyTimePage, "businessSettlor.companyTime", Some(controllers.business.routes.CompanyTimeController.onPageLoad(CheckMode).url))
     ).flatten

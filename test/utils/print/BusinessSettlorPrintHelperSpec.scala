@@ -41,6 +41,9 @@ class BusinessSettlorPrintHelperSpec extends SpecBase {
       .set(LiveInTheUkYesNoPage, true).success.value
       .set(UkAddressPage, ukAddress).success.value
       .set(NonUkAddressPage, nonUkAddress).success.value
+      .set(CountryOfResidenceYesNoPage, true).success.value
+      .set(CountryOfResidenceInTheUkYesNoPage, false).success.value
+      .set(CountryOfResidencePage, "ES").success.value
       .set(CompanyTypePage, CompanyType.Investment).success.value
       .set(CompanyTimePage, true).success.value
       .set(StartDatePage, LocalDate.of(2020, 1, 1)).success.value
@@ -63,6 +66,9 @@ class BusinessSettlorPrintHelperSpec extends SpecBase {
           AnswerRow(label = Html(messages("businessSettlor.liveInTheUkYesNo.checkYourAnswersLabel", name)), answer = Html("Yes"), changeUrl = Some(controllers.business.routes.LiveInTheUkYesNoController.onPageLoad(mode).url)),
           AnswerRow(label = Html(messages("businessSettlor.ukAddress.checkYourAnswersLabel", name)), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = Some(controllers.business.routes.UkAddressController.onPageLoad(mode).url)),
           AnswerRow(label = Html(messages("businessSettlor.nonUkAddress.checkYourAnswersLabel", name)), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = Some(controllers.business.routes.NonUkAddressController.onPageLoad(mode).url)),
+          AnswerRow(label = Html(messages("businessSettlor.countryOfResidenceYesNo.checkYourAnswersLabel", name)), answer = Html("Yes"), changeUrl = Some(controllers.business.routes.CountryOfResidenceYesNoController.onPageLoad(mode).url)),
+          AnswerRow(label = Html(messages("businessSettlor.countryOfResidenceInTheUkYesNo.checkYourAnswersLabel", name)), answer = Html("No"), changeUrl = Some(controllers.business.routes.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode).url)),
+          AnswerRow(label = Html(messages("businessSettlor.countryOfResidence.checkYourAnswersLabel", name)), answer = Html("Spain"), changeUrl = Some(controllers.business.routes.CountryOfResidenceController.onPageLoad(mode).url)),
           AnswerRow(label = Html(messages("businessSettlor.companyType.checkYourAnswersLabel", name)), answer = Html("Investment"), changeUrl = Some(controllers.business.routes.CompanyTypeController.onPageLoad(mode).url)),
           AnswerRow(label = Html(messages("businessSettlor.companyTime.checkYourAnswersLabel")), answer = Html("Yes"), changeUrl = Some(controllers.business.routes.CompanyTimeController.onPageLoad(mode).url)),
           AnswerRow(label = Html(messages("businessSettlor.startDate.checkYourAnswersLabel", name)), answer = Html("1 January 2020"), changeUrl = Some(controllers.business.routes.StartDateController.onPageLoad().url))
@@ -86,6 +92,9 @@ class BusinessSettlorPrintHelperSpec extends SpecBase {
           AnswerRow(label = Html(messages("businessSettlor.liveInTheUkYesNo.checkYourAnswersLabel", name)), answer = Html("Yes"), changeUrl = Some(controllers.business.routes.LiveInTheUkYesNoController.onPageLoad(mode).url)),
           AnswerRow(label = Html(messages("businessSettlor.ukAddress.checkYourAnswersLabel", name)), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = Some(controllers.business.routes.UkAddressController.onPageLoad(mode).url)),
           AnswerRow(label = Html(messages("businessSettlor.nonUkAddress.checkYourAnswersLabel", name)), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = Some(controllers.business.routes.NonUkAddressController.onPageLoad(mode).url)),
+          AnswerRow(label = Html(messages("businessSettlor.countryOfResidenceYesNo.checkYourAnswersLabel", name)), answer = Html("Yes"), changeUrl = Some(controllers.business.routes.CountryOfResidenceYesNoController.onPageLoad(mode).url)),
+          AnswerRow(label = Html(messages("businessSettlor.countryOfResidenceInTheUkYesNo.checkYourAnswersLabel", name)), answer = Html("No"), changeUrl = Some(controllers.business.routes.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode).url)),
+          AnswerRow(label = Html(messages("businessSettlor.countryOfResidence.checkYourAnswersLabel", name)), answer = Html("Spain"), changeUrl = Some(controllers.business.routes.CountryOfResidenceController.onPageLoad(mode).url)),
           AnswerRow(label = Html(messages("businessSettlor.companyType.checkYourAnswersLabel", name)), answer = Html("Investment"), changeUrl = Some(controllers.business.routes.CompanyTypeController.onPageLoad(mode).url)),
           AnswerRow(label = Html(messages("businessSettlor.companyTime.checkYourAnswersLabel")), answer = Html("Yes"), changeUrl = Some(controllers.business.routes.CompanyTimeController.onPageLoad(mode).url))
         )
