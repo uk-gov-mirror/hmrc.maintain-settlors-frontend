@@ -304,22 +304,32 @@ class BusinessSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             .mustBe(controllers.business.routes.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode))
         }
 
-        "Do you know the country of residence -> No (Employee-related trust) -> Company type page" in {
+        "Do you know the country of residence -> No -> With Utr (Employee-related trust) -> Company type page" in {
           val answers = baseAnswers
             .set(CountryOfResidenceYesNoPage, false).success.value
-
+            .set(UtrYesNoPage, true).success.value
+            .set(UtrPage, "12345678").success.value
           navigator.nextPage(CountryOfResidenceYesNoPage, mode, answers, TypeOfTrust.EmployeeRelated)
             .mustBe(controllers.business.routes.CompanyTypeController.onPageLoad(mode))
         }
 
-        "Do you know the country of residence -> No (Non-employee-related trust) -> Start date page" in {
+        "Do you know the country of residence -> No -> With Utr (Non-employee-related trust) -> Start date page" in {
           val answers = baseAnswers
             .set(CountryOfResidenceYesNoPage, false).success.value
-
+            .set(UtrYesNoPage, true).success.value
+            .set(UtrPage, "12345678").success.value
           navigator.nextPage(CountryOfResidenceYesNoPage, mode, answers, TypeOfTrust.HeritageTrust)
             .mustBe(controllers.business.routes.StartDateController.onPageLoad())
         }
 
+        "Do you know the country of residence -> No -> With No Utr -> Address page" in {
+          val answers = baseAnswers
+            .set(CountryOfResidenceYesNoPage, false).success.value
+            .set(UtrYesNoPage, false).success.value
+
+          navigator.nextPage(CountryOfResidenceYesNoPage, mode, answers, TypeOfTrust.HeritageTrust)
+            .mustBe(controllers.business.routes.AddressYesNoController.onPageLoad(mode))
+        }
 
         "Is residence in UK page-> Yes -> Do you know address" in {
           val answers = baseAnswers
@@ -488,22 +498,34 @@ class BusinessSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             .mustBe(controllers.business.routes.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode))
         }
 
-        "Do you know the country of residence -> No (Employee-related trust) -> Company type page" in {
+        "Do you know the country of residence -> No -> With Utr (Employee-related trust) -> Company type page" in {
           val answers = baseAnswers
             .set(CountryOfResidenceYesNoPage, false).success.value
+            .set(UtrYesNoPage, true).success.value
+            .set(UtrPage, "12345678").success.value
 
           navigator.nextPage(CountryOfResidenceYesNoPage, mode, answers, TypeOfTrust.EmployeeRelated)
             .mustBe(controllers.business.routes.CompanyTypeController.onPageLoad(mode))
         }
 
-        "Do you know the country of residence -> No (Non-employee-related trust) -> Check Details page" in {
+        "Do you know the country of residence -> No -> With Utr (Non-employee-related trust) -> Check Details page" in {
           val answers = baseAnswers
             .set(CountryOfResidenceYesNoPage, false).success.value
+            .set(UtrYesNoPage, true).success.value
+            .set(UtrPage, "12345678").success.value
 
           navigator.nextPage(CountryOfResidenceYesNoPage, mode, answers, TypeOfTrust.HeritageTrust)
             .mustBe(controllers.business.amend.routes.CheckDetailsController.renderFromUserAnswers(index))
         }
 
+        "Do you know the country of residence -> No -> With No Utr -> Address page" in {
+          val answers = baseAnswers
+            .set(CountryOfResidenceYesNoPage, false).success.value
+            .set(UtrYesNoPage, false).success.value
+
+          navigator.nextPage(CountryOfResidenceYesNoPage, mode, answers, TypeOfTrust.HeritageTrust)
+            .mustBe(controllers.business.routes.AddressYesNoController.onPageLoad(mode))
+        }
 
         "Is residence in UK page-> Yes -> Do you know address" in {
           val answers = baseAnswers

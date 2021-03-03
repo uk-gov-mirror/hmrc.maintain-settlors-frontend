@@ -49,7 +49,7 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
     case UtrPage => ua =>
       navigateAwayFromUtrPages(mode, trustType, ua)
     case CountryOfResidenceYesNoPage => ua =>
-      yesNoNav(ua, CountryOfResidenceYesNoPage, rts.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode), navigateToEndPages(mode, trustType, ua))
+      yesNoNav(ua, CountryOfResidenceYesNoPage, rts.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode), navigateAwayFromResidencePages(mode, trustType, ua))
     case CountryOfResidenceInTheUkYesNoPage => ua =>
       yesNoNav(ua, CountryOfResidenceInTheUkYesNoPage, navigateAwayFromResidencePages(mode, trustType, ua), rts.CountryOfResidenceController.onPageLoad(mode))
     case CountryOfResidencePage => ua =>
