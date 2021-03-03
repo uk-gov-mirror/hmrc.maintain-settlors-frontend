@@ -44,10 +44,10 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
   private def conditionalNavigation(mode: Mode, trustType: TypeOfTrust): PartialFunction[Page, UserAnswers => Call] = {
     case NamePage => ua =>
       navigateAwayFromNamePage(mode, ua)
-    case UtrPage => ua =>
-      navigateAwayFromUtrPages(mode, trustType, ua)
     case UtrYesNoPage => ua =>
       yesNoNav(ua, UtrYesNoPage, rts.UtrController.onPageLoad(mode), navigateAwayFromUtrPages(mode, trustType, ua))
+    case UtrPage => ua =>
+      navigateAwayFromUtrPages(mode, trustType, ua)
     case CountryOfResidenceYesNoPage => ua =>
       yesNoNav(ua, CountryOfResidenceYesNoPage, rts.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode), navigateToEndPages(mode, trustType, ua))
     case CountryOfResidenceInTheUkYesNoPage => ua =>
