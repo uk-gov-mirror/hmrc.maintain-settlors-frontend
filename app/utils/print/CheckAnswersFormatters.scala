@@ -82,7 +82,7 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
     breakLines(lines)
   }
 
-  private def country(code: String)(implicit messages: Messages): Html =
+  def country(code: String)(implicit messages: Messages): Html =
     escape(countryOptions.options.find(_.value.equals(code)).map(_.label).getOrElse(""))
 
   def formatPassportDetails(passport: Passport)(implicit messages: Messages): Html = {

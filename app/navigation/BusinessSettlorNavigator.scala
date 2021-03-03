@@ -19,10 +19,11 @@ package navigation
 import controllers.business.{routes => rts}
 import javax.inject.Inject
 import models.TypeOfTrust.EmployeeRelated
-import models.{CheckMode, Mode, NormalMode, TypeOfTrust, UserAnswers}
+import models.{Mode, NormalMode, TypeOfTrust, UserAnswers}
 import pages.Page
 import pages.business._
 import play.api.mvc.Call
+
 
 class BusinessSettlorNavigator @Inject()() extends Navigator {
 
@@ -36,46 +37,73 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
     nextPage(page, NormalMode, userAnswers)
 
   private def simpleNavigation(mode: Mode): PartialFunction[Page, Call] = {
-    case NamePage => rts.UtrYesNoController.onPageLoad(mode)
     case CompanyTypePage => rts.CompanyTimeController.onPageLoad(mode)
     case StartDatePage => controllers.business.add.routes.CheckDetailsController.onPageLoad()
   }
 
-  private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+  private def conditionalNavigation(mode: Mode, trustType: TypeOfTrust): PartialFunction[Page, UserAnswers => Call] = {
+    case NamePage => ua =>
+      navigateAwayFromNamePage(mode, ua)
     case UtrYesNoPage => ua =>
-      yesNoNav(ua, UtrYesNoPage, rts.UtrController.onPageLoad(mode), rts.AddressYesNoController.onPageLoad(mode))
+      yesNoNav(ua, UtrYesNoPage, rts.UtrController.onPageLoad(mode), navigateAwayFromUtrPages(mode, trustType, ua))
+    case UtrPage => ua =>
+      navigateAwayFromUtrPages(mode, trustType, ua)
+    case CountryOfResidenceYesNoPage => ua =>
+      yesNoNav(ua, CountryOfResidenceYesNoPage, rts.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode), navigateAwayFromResidencePages(mode, trustType, ua))
+    case CountryOfResidenceInTheUkYesNoPage => ua =>
+      yesNoNav(ua, CountryOfResidenceInTheUkYesNoPage, navigateAwayFromResidencePages(mode, trustType, ua), rts.CountryOfResidenceController.onPageLoad(mode))
+    case CountryOfResidencePage => ua =>
+      navigateAwayFromResidencePages(mode, trustType, ua)
+    case AddressYesNoPage => ua =>
+      yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(mode), navigateToEndPages(mode, trustType, ua))
     case LiveInTheUkYesNoPage => ua =>
       yesNoNav(ua, LiveInTheUkYesNoPage, rts.UkAddressController.onPageLoad(mode), rts.NonUkAddressController.onPageLoad(mode))
+    case UkAddressPage | NonUkAddressPage => ua =>
+      navigateToEndPages(mode, trustType, ua)
+    case CompanyTimePage => ua =>
+      navigateToStartDateOrCheckDetails(mode, ua)
   }
 
-  private def navigationWithCheckAndTrustType(mode: Mode, trustType: TypeOfTrust): PartialFunction[Page, UserAnswers => Call] = {
-    mode match {
-      case NormalMode => {
-        case UtrPage | UkAddressPage | NonUkAddressPage => _ =>
-          trustType match {
-            case EmployeeRelated =>
-              rts.CompanyTypeController.onPageLoad(mode)
-            case _ =>
-              rts.StartDateController.onPageLoad()
-          }
-        case CompanyTimePage => _ =>
-          rts.StartDateController.onPageLoad()
-        case AddressYesNoPage => ua =>
-          yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(mode), rts.StartDateController.onPageLoad())
-      }
-      case CheckMode => {
-        case UtrPage | UkAddressPage | NonUkAddressPage => ua =>
-          trustType match {
-            case EmployeeRelated =>
-              rts.CompanyTypeController.onPageLoad(mode)
-            case _ =>
-              checkDetailsRoute(ua)
-          }
-        case CompanyTimePage => ua =>
-          checkDetailsRoute(ua)
-        case AddressYesNoPage => ua =>
-          yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(mode), checkDetailsRoute(ua))
-      }
+
+  private def navigateAwayFromNamePage(mode: Mode, answers: UserAnswers): Call = {
+    if (answers.is5mldEnabled && !answers.isTaxable) {
+      rts.CountryOfResidenceYesNoController.onPageLoad(mode)
+    } else {
+      rts.UtrYesNoController.onPageLoad(mode)
+    }
+  }
+
+  private def navigateAwayFromUtrPages(mode: Mode, trustType: TypeOfTrust, answers: UserAnswers): Call = {
+    (answers.is5mldEnabled, isUtrDefined(answers)) match {
+      case (true, _) => rts.CountryOfResidenceYesNoController.onPageLoad(mode)
+      case (false, true) => navigateToEndPages(mode, trustType, answers)
+      case (false, _) => rts.AddressYesNoController.onPageLoad(mode)
+    }
+  }
+
+  private def navigateAwayFromResidencePages(mode: Mode, trustType: TypeOfTrust, answers: UserAnswers): Call = {
+    val isNonTaxable5mld = answers.is5mldEnabled && !answers.isTaxable
+
+    if (isNonTaxable5mld || isUtrDefined(answers)){
+      navigateToEndPages(mode, trustType, answers)
+    } else {
+     rts.AddressYesNoController.onPageLoad(mode)
+    }
+  }
+
+  private def navigateToEndPages(mode:Mode, trustType: TypeOfTrust, ua: UserAnswers): Call = {
+    if (trustType == EmployeeRelated) {
+      rts.CompanyTypeController.onPageLoad(mode)
+    } else {
+      navigateToStartDateOrCheckDetails(mode, ua)
+    }
+  }
+
+  private def navigateToStartDateOrCheckDetails(mode: Mode, answers: UserAnswers) = {
+    if (mode == NormalMode) {
+      rts.StartDateController.onPageLoad()
+    } else {
+      checkDetailsRoute(answers)
     }
   }
 
@@ -89,8 +117,8 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
 
   private def routes(mode: Mode, trustType: TypeOfTrust): PartialFunction[Page, UserAnswers => Call] =
     simpleNavigation(mode) andThen (c => (_: UserAnswers) => c) orElse
-      yesNoNavigation(mode) orElse
-      navigationWithCheckAndTrustType(mode, trustType)
+      conditionalNavigation(mode, trustType)
 
+  private def isUtrDefined(answers: UserAnswers): Boolean = answers.get(UtrYesNoPage).getOrElse(false)
 }
 

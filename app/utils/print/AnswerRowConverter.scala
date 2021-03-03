@@ -116,6 +116,19 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
       }
     }
 
+    def countryQuestion(isUkQuery: Gettable[Boolean],
+                        query: Gettable[String],
+                        labelKey: String,
+                        changeUrl: Option[String]): Option[AnswerRow] = {
+      userAnswers.get(isUkQuery) flatMap {
+        case false =>
+          val format = (x: String) => checkAnswersFormatters.country(x)
+          question(query, labelKey, format, changeUrl)
+        case _ =>
+          None
+      }
+    }
+
     private def question[T](query: Gettable[T],
                             labelKey: String,
                             format: T => Html,

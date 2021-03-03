@@ -42,6 +42,7 @@ class IndexControllerSpec extends SpecBase {
     val typeOfTrust = TypeOfTrust.WillTrustOrIntestacyTrust
     val is5mldEnabled = false
     val isTaxable = false
+    val isUnderlyingData5mld = false
 
     "redirect to task list when there are living settlors" in {
 
@@ -53,6 +54,9 @@ class IndexControllerSpec extends SpecBase {
 
       when(mockFeatureFlagService.is5mldEnabled()(any(), any()))
         .thenReturn(Future.successful(is5mldEnabled))
+
+      when(mockTrustConnector.isTrust5mld(any())(any(), any()))
+        .thenReturn(Future.successful(isUnderlyingData5mld))
 
       when(mockTrustConnector.getSettlors(any())(any(), any()))
         .thenReturn(Future.successful(
@@ -108,6 +112,9 @@ class IndexControllerSpec extends SpecBase {
       when(mockFeatureFlagService.is5mldEnabled()(any(), any()))
         .thenReturn(Future.successful(is5mldEnabled))
 
+      when(mockTrustConnector.isTrust5mld(any())(any(), any()))
+        .thenReturn(Future.successful(isUnderlyingData5mld))
+
       when(mockTrustConnector.getSettlors(any())(any(), any()))
         .thenReturn(Future.successful(
           Settlors(
@@ -151,6 +158,9 @@ class IndexControllerSpec extends SpecBase {
 
       when(mockFeatureFlagService.is5mldEnabled()(any(), any()))
         .thenReturn(Future.successful(is5mldEnabled))
+
+      when(mockTrustConnector.isTrust5mld(any())(any(), any()))
+        .thenReturn(Future.successful(isUnderlyingData5mld))
 
       when(mockTrustConnector.getIsDeceasedSettlorDateOfDeathRecorded(any())(any(), any()))
         .thenReturn(Future.successful(JsBoolean(true)))

@@ -18,25 +18,13 @@ package extractors
 
 import java.time.LocalDate
 
-import generators.ModelGenerators
+import base.SpecBase
+import models.Constant.GB
 import models.settlors.BusinessSettlor
-import models.{TypeOfTrust, UkAddress, UserAnswers}
-import org.scalatest.{FreeSpec, MustMatchers}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import models.{UkAddress, UserAnswers}
 import pages.business._
-import play.api.libs.json.Json
 
-class BusinessSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyChecks with ModelGenerators with MustMatchers {
-
-  private val answers: UserAnswers = UserAnswers(
-    "Id",
-    "UTRUTRUTR",
-    LocalDate.of(1987, 12, 31),
-    TypeOfTrust.WillTrustOrIntestacyTrust,
-    None,
-    isDateOfDeathRecorded = true,
-    Json.obj()
-  )
+class BusinessSettlorExtractorSpec extends SpecBase {
 
   private val index = 0
 
@@ -47,81 +35,387 @@ class BusinessSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyCheck
 
   private val extractor = new BusinessSettlorExtractor()
 
-  "should populate user answers when the business has a UTR" in {
+  "BusinessSettlorExtractor" must {
 
-    val business = BusinessSettlor(
-      name = name,
-      companyType = None,
-      companyTime = None,
-      utr = Some(utr),
-      address = None,
-      entityStart = date,
-      provisional = true
-    )
+    "Populate user answers" when {
 
-    val result = extractor(answers, business, index).get
+      "4mld" when {
+        val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = false, isTaxable = true, isUnderlyingData5mld = false)
 
-    result.get(IndexPage).get mustBe index
-    result.get(NamePage).get mustBe name
-    result.get(UtrYesNoPage).get mustBe true
-    result.get(UtrPage).get mustBe utr
-    result.get(AddressYesNoPage) mustNot be(defined)
-    result.get(LiveInTheUkYesNoPage) mustNot be(defined)
-    result.get(UkAddressPage) mustNot be(defined)
-    result.get(NonUkAddressPage) mustNot be(defined)
-    result.get(StartDatePage).get mustBe date
-  }
+        "should populate user answers when the business has a UTR" in {
 
+          val business = BusinessSettlor(
+            name = name,
+            companyType = None,
+            companyTime = None,
+            utr = Some(utr),
+            address = None,
+            entityStart = date,
+            provisional = true
+          )
 
-  "should populate user answers when the business has an address" in {
+          val result = extractor(baseAnswers, business, index).get
 
-    val business = BusinessSettlor(
-      name = name,
-      companyType = None,
-      companyTime = None,
-      utr = None,
-      address = Some(address),
-      entityStart = date,
-      provisional = true
-    )
+          result.get(IndexPage).get mustBe index
+          result.get(NamePage).get mustBe name
+          result.get(UtrYesNoPage).get mustBe true
+          result.get(UtrPage).get mustBe utr
+          result.get(AddressYesNoPage) mustBe None
+          result.get(LiveInTheUkYesNoPage) mustBe None
+          result.get(UkAddressPage) mustBe None
+          result.get(NonUkAddressPage) mustBe None
+          result.get(StartDatePage).get mustBe date
+        }
 
-    val result = extractor(answers, business, index).get
+        "should populate user answers when the business has an address" in {
 
-    result.get(IndexPage).get mustBe index
-    result.get(NamePage).get mustBe name
-    result.get(UtrYesNoPage).get mustBe false
-    result.get(UtrPage) mustNot be(defined)
-    result.get(AddressYesNoPage).get mustBe true
-    result.get(LiveInTheUkYesNoPage).get mustBe true
-    result.get(UkAddressPage).get mustBe address
-    result.get(NonUkAddressPage) mustNot be(defined)
-    result.get(StartDatePage).get mustBe date
+          val business = BusinessSettlor(
+            name = name,
+            companyType = None,
+            companyTime = None,
+            utr = None,
+            address = Some(address),
+            entityStart = date,
+            provisional = true
+          )
 
-  }
+          val result = extractor(baseAnswers, business, index).get
 
-  "should populate user answers when the business has no UTR or address" in {
+          result.get(IndexPage).get mustBe index
+          result.get(NamePage).get mustBe name
+          result.get(UtrYesNoPage).get mustBe false
+          result.get(UtrPage) mustBe None
+          result.get(AddressYesNoPage).get mustBe true
+          result.get(LiveInTheUkYesNoPage).get mustBe true
+          result.get(UkAddressPage).get mustBe address
+          result.get(NonUkAddressPage) mustBe None
+          result.get(StartDatePage).get mustBe date
 
-    val business = BusinessSettlor(
-      name = name,
-      companyType = None,
-      companyTime = None,
-      utr = None,
-      address = None,
-      entityStart = date,
-      provisional = true
-    )
+        }
 
-    val result = extractor(answers, business, index).get
+        "should populate user answers when the business has no UTR or address" in {
 
-    result.get(IndexPage).get mustBe index
-    result.get(NamePage).get mustBe name
-    result.get(UtrYesNoPage).get mustBe false
-    result.get(UtrPage) mustNot be(defined)
-    result.get(AddressYesNoPage).get mustBe false
-    result.get(LiveInTheUkYesNoPage) mustNot be(defined)
-    result.get(UkAddressPage) mustNot be(defined)
-    result.get(NonUkAddressPage) mustNot be(defined)
-    result.get(StartDatePage).get mustBe date
+          val business = BusinessSettlor(
+            name = name,
+            companyType = None,
+            companyTime = None,
+            utr = None,
+            address = None,
+            entityStart = date,
+            provisional = true
+          )
+
+          val result = extractor(baseAnswers, business, index).get
+
+          result.get(IndexPage).get mustBe index
+          result.get(NamePage).get mustBe name
+          result.get(UtrYesNoPage).get mustBe false
+          result.get(UtrPage) mustBe None
+          result.get(AddressYesNoPage).get mustBe false
+          result.get(LiveInTheUkYesNoPage) mustBe None
+          result.get(UkAddressPage) mustBe None
+          result.get(NonUkAddressPage) mustBe None
+          result.get(StartDatePage).get mustBe date
+        }
+      }
+
+      "5mld" when {
+        "taxable" when {
+          "underlying trust data is 4mld" when {
+            val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true, isUnderlyingData5mld = false)
+            "has no country of residence and no address" in {
+
+              val business = BusinessSettlor(
+                name = name,
+                companyType = None,
+                companyTime = None,
+                utr = None,
+                address = None,
+                entityStart = date,
+                provisional = true
+              )
+
+              val result = extractor.apply(baseAnswers, business, index).get
+
+              result.get(IndexPage).get mustBe index
+              result.get(NamePage).get mustBe name
+              result.get(UtrYesNoPage).get mustBe false
+              result.get(UtrPage) mustBe None
+              result.get(CountryOfResidenceYesNoPage) mustBe None
+              result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
+              result.get(CountryOfResidencePage) mustBe None
+              result.get(AddressYesNoPage).get mustBe false
+              result.get(LiveInTheUkYesNoPage) mustBe None
+              result.get(UkAddressPage) mustBe None
+              result.get(NonUkAddressPage) mustBe None
+              result.get(StartDatePage).get mustBe date
+            }
+
+            "has no country of residence but does have an address" in {
+              val business = BusinessSettlor(
+                name = name,
+                companyType = None,
+                companyTime = None,
+                utr = None,
+                countryOfResidence = None,
+                address = Some(address),
+                entityStart = date,
+                provisional = true
+              )
+
+              val result = extractor.apply(baseAnswers, business, index).get
+
+              result.get(IndexPage).get mustBe index
+              result.get(NamePage).get mustBe name
+              result.get(UtrYesNoPage).get mustBe false
+              result.get(UtrPage) mustBe None
+              result.get(CountryOfResidenceYesNoPage) mustBe None
+              result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
+              result.get(CountryOfResidencePage) mustBe None
+              result.get(AddressYesNoPage).get mustBe true
+              result.get(LiveInTheUkYesNoPage).get mustBe true
+              result.get(UkAddressPage).get mustBe address
+              result.get(NonUkAddressPage) mustBe None
+              result.get(StartDatePage).get mustBe date
+            }
+          }
+
+          "underlying trust data is 5mld" when {
+            val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true, isUnderlyingData5mld = true)
+
+            "has a UTR" in {
+
+              val business = BusinessSettlor(
+                name = name,
+                companyType = None,
+                companyTime = None,
+                utr = Some(utr),
+                countryOfResidence = None,
+                address = None,
+                entityStart = date,
+                provisional = true
+              )
+
+              val result = extractor(baseAnswers, business, index).get
+
+              result.get(IndexPage).get mustBe index
+              result.get(NamePage).get mustBe name
+              result.get(UtrYesNoPage).get mustBe true
+              result.get(UtrPage).get mustBe utr
+              result.get(CountryOfResidenceYesNoPage).get mustBe false
+              result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
+              result.get(CountryOfResidencePage) mustBe None
+              result.get(AddressYesNoPage) mustBe None
+              result.get(LiveInTheUkYesNoPage) mustBe None
+              result.get(UkAddressPage) mustBe None
+              result.get(NonUkAddressPage) mustBe None
+              result.get(StartDatePage).get mustBe date
+            }
+
+            "has no country of residence and no address" in {
+              val business = BusinessSettlor(
+                name = name,
+                companyType = None,
+                companyTime = None,
+                utr = None,
+                countryOfResidence = None,
+                address = None,
+                entityStart = date,
+                provisional = true
+              )
+
+              val result = extractor.apply(baseAnswers, business, index).get
+
+              result.get(IndexPage).get mustBe index
+              result.get(NamePage).get mustBe name
+              result.get(UtrYesNoPage).get mustBe false
+              result.get(UtrPage) mustBe None
+              result.get(CountryOfResidenceYesNoPage).get mustBe false
+              result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
+              result.get(CountryOfResidencePage) mustBe None
+              result.get(AddressYesNoPage).get mustBe false
+              result.get(LiveInTheUkYesNoPage) mustBe None
+              result.get(UkAddressPage) mustBe None
+              result.get(NonUkAddressPage) mustBe None
+              result.get(StartDatePage).get mustBe date
+            }
+
+            "has no country of residence but does have an address" in {
+              val business = BusinessSettlor(
+                name = name,
+                companyType = None,
+                companyTime = None,
+                utr = None,
+                countryOfResidence = None,
+                address = Some(address),
+                entityStart = date,
+                provisional = true
+              )
+
+              val result = extractor.apply(baseAnswers, business, index).get
+
+              result.get(IndexPage).get mustBe index
+              result.get(NamePage).get mustBe name
+              result.get(UtrYesNoPage).get mustBe false
+              result.get(UtrPage) mustBe None
+              result.get(CountryOfResidenceYesNoPage).get mustBe false
+              result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
+              result.get(CountryOfResidencePage) mustBe None
+              result.get(AddressYesNoPage).get mustBe true
+              result.get(LiveInTheUkYesNoPage).get mustBe true
+              result.get(UkAddressPage).get mustBe address
+              result.get(NonUkAddressPage) mustBe None
+              result.get(StartDatePage).get mustBe date
+            }
+
+            "has a country of residence in GB" in {
+              val business = BusinessSettlor(
+                name = name,
+                companyType = None,
+                companyTime = None,
+                utr = None,
+                countryOfResidence = Some(GB),
+                address = None,
+                entityStart = date,
+                provisional = true
+              )
+
+              val result = extractor.apply(baseAnswers, business, index).get
+
+              result.get(IndexPage).get mustBe index
+              result.get(NamePage).get mustBe name
+              result.get(UtrYesNoPage).get mustBe false
+              result.get(UtrPage) mustBe None
+              result.get(CountryOfResidenceYesNoPage).get mustBe true
+              result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe true
+              result.get(CountryOfResidencePage).get mustBe GB
+              result.get(AddressYesNoPage).get mustBe false
+              result.get(LiveInTheUkYesNoPage) mustBe None
+              result.get(UkAddressPage) mustBe None
+              result.get(NonUkAddressPage) mustBe None
+              result.get(StartDatePage).get mustBe date
+            }
+
+            "has a country of residence in Spain" in {
+              val business = BusinessSettlor(
+                name = name,
+                companyType = None,
+                companyTime = None,
+                utr = None,
+                countryOfResidence = Some("Spain"),
+                address = None,
+                entityStart = date,
+                provisional = true
+              )
+
+              val result = extractor.apply(baseAnswers, business, index).get
+
+              result.get(IndexPage).get mustBe index
+              result.get(NamePage).get mustBe name
+              result.get(UtrYesNoPage).get mustBe false
+              result.get(UtrPage) mustBe None
+              result.get(CountryOfResidenceYesNoPage).get mustBe true
+              result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe false
+              result.get(CountryOfResidencePage).get mustBe "Spain"
+              result.get(AddressYesNoPage).get mustBe false
+              result.get(LiveInTheUkYesNoPage) mustBe None
+              result.get(UkAddressPage) mustBe None
+              result.get(NonUkAddressPage) mustBe None
+              result.get(StartDatePage).get mustBe date
+            }
+          }
+        }
+
+        "non taxable" when {
+          val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = false, isUnderlyingData5mld = true)
+
+          "has a UTR" in {
+
+            val business = BusinessSettlor(
+              name = name,
+              companyType = None,
+              companyTime = None,
+              utr = Some(utr),
+              countryOfResidence = None,
+              address = None,
+              entityStart = date,
+              provisional = true
+            )
+
+            val result = extractor(baseAnswers, business, index).get
+
+            result.get(IndexPage).get mustBe index
+            result.get(NamePage).get mustBe name
+            result.get(UtrYesNoPage) mustBe None
+            result.get(UtrPage) mustBe None
+            result.get(CountryOfResidenceYesNoPage).get mustBe false
+            result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
+            result.get(CountryOfResidencePage) mustBe None
+            result.get(AddressYesNoPage) mustBe None
+            result.get(LiveInTheUkYesNoPage) mustBe None
+            result.get(UkAddressPage) mustBe None
+            result.get(NonUkAddressPage) mustBe None
+            result.get(StartDatePage).get mustBe date
+          }
+
+          "has no country of residence" in {
+            val business = BusinessSettlor(
+              name = name,
+              companyType = None,
+              companyTime = None,
+              utr = None,
+              countryOfResidence = None,
+              address = None,
+              entityStart = date,
+              provisional = true
+            )
+
+            val result = extractor.apply(baseAnswers, business, index).get
+
+            result.get(IndexPage).get mustBe index
+            result.get(NamePage).get mustBe name
+            result.get(UtrYesNoPage) mustBe None
+            result.get(UtrPage) mustBe None
+            result.get(CountryOfResidenceYesNoPage).get mustBe false
+            result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
+            result.get(CountryOfResidencePage) mustBe None
+            result.get(AddressYesNoPage) mustBe None
+            result.get(LiveInTheUkYesNoPage) mustBe None
+            result.get(UkAddressPage) mustBe None
+            result.get(NonUkAddressPage) mustBe None
+            result.get(StartDatePage).get mustBe date
+          }
+
+          "has a country of residence in GB" in {
+            val business = BusinessSettlor(
+              name = name,
+              companyType = None,
+              companyTime = None,
+              utr = None,
+              countryOfResidence = Some(GB),
+              address = None,
+              entityStart = date,
+              provisional = true
+            )
+
+            val result = extractor.apply(baseAnswers, business, index).get
+
+            result.get(IndexPage).get mustBe index
+            result.get(NamePage).get mustBe name
+            result.get(UtrYesNoPage) mustBe None
+            result.get(UtrPage) mustBe None
+            result.get(CountryOfResidenceYesNoPage).get mustBe true
+            result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe true
+            result.get(CountryOfResidencePage).get mustBe GB
+            result.get(AddressYesNoPage) mustBe None
+            result.get(LiveInTheUkYesNoPage) mustBe None
+            result.get(UkAddressPage) mustBe None
+            result.get(NonUkAddressPage) mustBe None
+            result.get(StartDatePage).get mustBe date
+          }
+        }
+      }
+    }
   }
 
 }

@@ -17,6 +17,7 @@
 package extractors
 
 import com.google.inject.Inject
+import models.Constant.GB
 import models.settlors.BusinessSettlor
 import models.{Address, CompanyType, NonUkAddress, UkAddress, UserAnswers}
 import pages.business._
@@ -31,6 +32,7 @@ class BusinessSettlorExtractor @Inject()() {
       .flatMap(answers => extractCompanyType(business.companyType, answers))
       .flatMap(answers => extractCompanyTime(business.companyTime, answers))
       .flatMap(answers => extractAddress(business.address, answers))
+      .flatMap(answers => extractCountryOfResidence(business.countryOfResidence, answers))
       .flatMap(answers => extractUtr(business.utr, answers))
       .flatMap(_.set(StartDatePage, business.entityStart))
       .flatMap(_.set(IndexPage, index))
@@ -50,26 +52,52 @@ class BusinessSettlorExtractor @Inject()() {
   }
 
   private def extractUtr(utr: Option[String], answers: UserAnswers) : Try[UserAnswers] = {
-    utr match {
-      case Some(utr) =>
-        answers.set(UtrYesNoPage, true)
-        .flatMap(_.set(UtrPage, utr))
-      case _ => answers.set(UtrYesNoPage, false)
+    if (answers.isTaxable) {
+      utr match {
+        case Some(utr) =>
+          answers.set(UtrYesNoPage, true)
+          .flatMap(_.set(UtrPage, utr))
+        case _ => answers.set(UtrYesNoPage, false)
+      }
+    } else {
+      Success(answers)
     }
   }
 
+  private def extractCountryOfResidence(countryOfResidence: Option[String], answers: UserAnswers): Try[UserAnswers] = {
+    if (answers.is5mldEnabled && answers.isUnderlyingData5mld) {
+      countryOfResidence match {
+        case Some(GB) => answers
+          .set(CountryOfResidenceYesNoPage, true)
+          .flatMap(_.set(CountryOfResidenceInTheUkYesNoPage, true))
+          .flatMap(_.set(CountryOfResidencePage, GB))
+        case Some(country) => answers
+          .set(CountryOfResidenceYesNoPage, true)
+          .flatMap(_.set(CountryOfResidenceInTheUkYesNoPage, false))
+          .flatMap(_.set(CountryOfResidencePage, country))
+        case None => answers
+          .set(CountryOfResidenceYesNoPage, false)
+      }
+    } else {
+      Success(answers)
+    }
+  }
   private def extractAddress(address: Option[Address], answers: UserAnswers) : Try[UserAnswers] = {
-    address match {
-      case Some(uk: UkAddress) =>
-        answers.set(AddressYesNoPage, true)
-          .flatMap(_.set(LiveInTheUkYesNoPage, true))
-          .flatMap(_.set(UkAddressPage, uk))
-      case Some(nonUk: NonUkAddress) =>
-        answers.set(AddressYesNoPage, true)
-          .flatMap(_.set(LiveInTheUkYesNoPage, false))
-          .flatMap(_.set(NonUkAddressPage, nonUk))
-      case _ =>
-        answers.set(AddressYesNoPage, false)
+    if (answers.isTaxable) {
+      address match {
+        case Some(uk: UkAddress) =>
+          answers.set(AddressYesNoPage, true)
+            .flatMap(_.set(LiveInTheUkYesNoPage, true))
+            .flatMap(_.set(UkAddressPage, uk))
+        case Some(nonUk: NonUkAddress) =>
+          answers.set(AddressYesNoPage, true)
+            .flatMap(_.set(LiveInTheUkYesNoPage, false))
+            .flatMap(_.set(NonUkAddressPage, nonUk))
+        case _ =>
+          answers.set(AddressYesNoPage, false)
+      }
+    } else {
+      Success(answers)
     }
   }
 }

@@ -331,6 +331,23 @@ businessSettlor.startDate.error.future=Mae’n rhaid i’r dyddiad yr ychwanegwy
 businessSettlor.startDate.error.past=Ni all y dyddiad yr ychwanegwyd y setlwr at yr ymddiriedolaeth fod cyn dyddiad dechrau’r ymddiriedolaeth
 businessSettlor.checkDetails.title=Gwiriwch fanylion setlwr y busnes
 businessSettlor.checkDetails.heading=Gwiriwch fanylion setlwr y busnes
+
+businessSettlor.countryOfResidenceYesNo.title =
+businessSettlor.countryOfResidenceYesNo.heading =
+businessSettlor.countryOfResidenceYesNo.checkYourAnswersLabel=
+businessSettlor.countryOfResidenceYesNo.error.required =
+businessSettlor.countryOfResidenceYesNo.hint =
+businessSettlor.countryOfResidenceInTheUkYesNo.title =
+businessSettlor.countryOfResidenceInTheUkYesNo.heading =
+businessSettlor.countryOfResidenceInTheUkYesNo.checkYourAnswersLabel =
+businessSettlor.countryOfResidenceInTheUkYesNo.error.required =
+businessSettlor.countryOfResidence.title =
+businessSettlor.countryOfResidence.heading =
+businessSettlor.countryOfResidence.checkYourAnswersLabel =
+businessSettlor.countryOfResidence.error.required =
+businessSettlor.countryOfResidence.error.length =
+businessSettlor.countryOfResidence.error.invalidCharacters =
+
 removeBusinessSettlor.title=A ydych yn siŵr eich bod am dynnu setlwr y busnes?
 removeBusinessSettlor.heading=A ydych yn siŵr eich bod am dynnu {0}?
 removeBusinessSettlor.error.required=Dewiswch ‘Iawn’ os ydych am dynnu setlwr y busnes
