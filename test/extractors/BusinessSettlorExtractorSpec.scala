@@ -123,7 +123,7 @@ class BusinessSettlorExtractorSpec extends SpecBase {
         "taxable" when {
           "underlying trust data is 4mld" when {
             val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true, isUnderlyingData5mld = false)
-            "has no country of residence" in {
+            "has no country of residence and no address" in {
 
               val business = BusinessSettlor(
                 name = name,
@@ -147,6 +147,34 @@ class BusinessSettlorExtractorSpec extends SpecBase {
               result.get(AddressYesNoPage).get mustBe false
               result.get(LiveInTheUkYesNoPage) mustBe None
               result.get(UkAddressPage) mustBe None
+              result.get(NonUkAddressPage) mustBe None
+              result.get(StartDatePage).get mustBe date
+            }
+
+            "has no country of residence but does have an address" in {
+              val business = BusinessSettlor(
+                name = name,
+                companyType = None,
+                companyTime = None,
+                utr = None,
+                countryOfResidence = None,
+                address = Some(address),
+                entityStart = date,
+                provisional = true
+              )
+
+              val result = extractor.apply(baseAnswers, business, index).get
+
+              result.get(IndexPage).get mustBe index
+              result.get(NamePage).get mustBe name
+              result.get(UtrYesNoPage).get mustBe false
+              result.get(UtrPage) mustBe None
+              result.get(CountryOfResidenceYesNoPage) mustBe None
+              result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
+              result.get(CountryOfResidencePage) mustBe None
+              result.get(AddressYesNoPage).get mustBe true
+              result.get(LiveInTheUkYesNoPage).get mustBe true
+              result.get(UkAddressPage).get mustBe address
               result.get(NonUkAddressPage) mustBe None
               result.get(StartDatePage).get mustBe date
             }
@@ -184,7 +212,7 @@ class BusinessSettlorExtractorSpec extends SpecBase {
               result.get(StartDatePage).get mustBe date
             }
 
-            "has no country of residence" in {
+            "has no country of residence and no address" in {
               val business = BusinessSettlor(
                 name = name,
                 companyType = None,
@@ -205,9 +233,37 @@ class BusinessSettlorExtractorSpec extends SpecBase {
               result.get(CountryOfResidenceYesNoPage).get mustBe false
               result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
               result.get(CountryOfResidencePage) mustBe None
-              result.get(AddressYesNoPage) mustBe None
+              result.get(AddressYesNoPage).get mustBe false
               result.get(LiveInTheUkYesNoPage) mustBe None
               result.get(UkAddressPage) mustBe None
+              result.get(NonUkAddressPage) mustBe None
+              result.get(StartDatePage).get mustBe date
+            }
+
+            "has no country of residence but does have an address" in {
+              val business = BusinessSettlor(
+                name = name,
+                companyType = None,
+                companyTime = None,
+                utr = None,
+                countryOfResidence = None,
+                address = Some(address),
+                entityStart = date,
+                provisional = true
+              )
+
+              val result = extractor.apply(baseAnswers, business, index).get
+
+              result.get(IndexPage).get mustBe index
+              result.get(NamePage).get mustBe name
+              result.get(UtrYesNoPage).get mustBe false
+              result.get(UtrPage) mustBe None
+              result.get(CountryOfResidenceYesNoPage).get mustBe false
+              result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
+              result.get(CountryOfResidencePage) mustBe None
+              result.get(AddressYesNoPage).get mustBe true
+              result.get(LiveInTheUkYesNoPage).get mustBe true
+              result.get(UkAddressPage).get mustBe address
               result.get(NonUkAddressPage) mustBe None
               result.get(StartDatePage).get mustBe date
             }

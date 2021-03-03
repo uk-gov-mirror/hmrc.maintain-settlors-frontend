@@ -44,9 +44,7 @@ class CountryOfResidenceYesNoPageSpec extends PageBehaviours {
 
       result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
       result.get(CountryOfResidencePage) mustBe None
-      result.get(AddressYesNoPage) mustBe None
-      result.get(LiveInTheUkYesNoPage) mustBe None
-      result.get(UkAddressPage) mustBe None
+      result.get(AddressYesNoPage) mustBe Some(false)
     }
   }
 }
