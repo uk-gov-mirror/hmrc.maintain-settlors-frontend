@@ -61,11 +61,7 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
     case UkAddressPage | NonUkAddressPage => ua =>
       navigateToEndPages(mode, trustType, ua)
     case CompanyTimePage => ua =>
-      if (mode == NormalMode) {
-        rts.StartDateController.onPageLoad()
-      } else {
-        checkDetailsRoute(ua)
-      }
+      navigateAwayFromCompanyTimePage(mode, ua)
   }
 
 
@@ -78,18 +74,17 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
   }
 
   private def navigateAwayFromUtrPages(mode: Mode, trustType: TypeOfTrust, answers: UserAnswers): Call = {
-    (answers.is5mldEnabled, answers.get(UtrYesNoPage)) match {
+    (answers.is5mldEnabled, isUtrDefined(answers)) match {
       case (true, _) => rts.CountryOfResidenceYesNoController.onPageLoad(mode)
-      case (false, Some(true)) => navigateToEndPages(mode, trustType, answers)
+      case (false, true) => navigateToEndPages(mode, trustType, answers)
       case (false, _) => rts.AddressYesNoController.onPageLoad(mode)
     }
   }
 
   private def navigateAwayFromResidencePages(mode: Mode, trustType: TypeOfTrust, answers: UserAnswers): Call = {
-    val hasUtr = answers.get(UtrYesNoPage).getOrElse(false)
     val isNonTaxable5mld = answers.is5mldEnabled && !answers.isTaxable
 
-    if (isNonTaxable5mld || hasUtr){
+    if (isNonTaxable5mld || isUtrDefined(answers)){
       navigateToEndPages(mode, trustType, answers)
     } else {
      rts.AddressYesNoController.onPageLoad(mode)
@@ -101,6 +96,14 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
       case (_, EmployeeRelated) => rts.CompanyTypeController.onPageLoad(mode)
       case (NormalMode, _) => rts.StartDateController.onPageLoad()
       case (CheckMode, _) => checkDetailsRoute(ua)
+    }
+  }
+
+  private def navigateAwayFromCompanyTimePage(mode: Mode, answers: UserAnswers) = {
+    if (mode == NormalMode) {
+      rts.StartDateController.onPageLoad()
+    } else {
+      checkDetailsRoute(answers)
     }
   }
 
@@ -116,5 +119,6 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
     simpleNavigation(mode) andThen (c => (_: UserAnswers) => c) orElse
       conditionalNavigation(mode, trustType)
 
+  private def isUtrDefined(answers: UserAnswers): Boolean = answers.get(UtrYesNoPage).getOrElse(false)
 }
 
