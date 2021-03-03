@@ -18,15 +18,13 @@ package extractors
 
 import java.time.LocalDate
 
-import generators.ModelGenerators
+import base.SpecBase
 import models.settlors.BusinessSettlor
 import models.{TypeOfTrust, UkAddress, UserAnswers}
-import org.scalatest.{FreeSpec, MustMatchers}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.business._
 import play.api.libs.json.Json
 
-class BusinessSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyChecks with ModelGenerators with MustMatchers {
+class BusinessSettlorExtractorSpec extends SpecBase {
 
   private val answers: UserAnswers = UserAnswers(
     "Id",
@@ -47,81 +45,90 @@ class BusinessSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyCheck
 
   private val extractor = new BusinessSettlorExtractor()
 
-  "should populate user answers when the business has a UTR" in {
+  "BusinessSettlorExtractor" must {
 
-    val business = BusinessSettlor(
-      name = name,
-      companyType = None,
-      companyTime = None,
-      utr = Some(utr),
-      address = None,
-      entityStart = date,
-      provisional = true
-    )
+    "Populate user answers" when {
 
-    val result = extractor(answers, business, index).get
+      "4mld" when {
+        val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = false, isTaxable = true, isUnderlyingData5mld = false)
 
-    result.get(IndexPage).get mustBe index
-    result.get(NamePage).get mustBe name
-    result.get(UtrYesNoPage).get mustBe true
-    result.get(UtrPage).get mustBe utr
-    result.get(AddressYesNoPage) mustNot be(defined)
-    result.get(LiveInTheUkYesNoPage) mustNot be(defined)
-    result.get(UkAddressPage) mustNot be(defined)
-    result.get(NonUkAddressPage) mustNot be(defined)
-    result.get(StartDatePage).get mustBe date
-  }
+        "should populate user answers when the business has a UTR" in {
 
+          val business = BusinessSettlor(
+            name = name,
+            companyType = None,
+            companyTime = None,
+            utr = Some(utr),
+            address = None,
+            entityStart = date,
+            provisional = true
+          )
 
-  "should populate user answers when the business has an address" in {
+          val result = extractor(baseAnswers, business, index).get
 
-    val business = BusinessSettlor(
-      name = name,
-      companyType = None,
-      companyTime = None,
-      utr = None,
-      address = Some(address),
-      entityStart = date,
-      provisional = true
-    )
+          result.get(IndexPage).get mustBe index
+          result.get(NamePage).get mustBe name
+          result.get(UtrYesNoPage).get mustBe true
+          result.get(UtrPage).get mustBe utr
+          result.get(AddressYesNoPage) mustNot be(defined)
+          result.get(LiveInTheUkYesNoPage) mustNot be(defined)
+          result.get(UkAddressPage) mustNot be(defined)
+          result.get(NonUkAddressPage) mustNot be(defined)
+          result.get(StartDatePage).get mustBe date
+        }
 
-    val result = extractor(answers, business, index).get
+        "should populate user answers when the business has an address" in {
 
-    result.get(IndexPage).get mustBe index
-    result.get(NamePage).get mustBe name
-    result.get(UtrYesNoPage).get mustBe false
-    result.get(UtrPage) mustNot be(defined)
-    result.get(AddressYesNoPage).get mustBe true
-    result.get(LiveInTheUkYesNoPage).get mustBe true
-    result.get(UkAddressPage).get mustBe address
-    result.get(NonUkAddressPage) mustNot be(defined)
-    result.get(StartDatePage).get mustBe date
+          val business = BusinessSettlor(
+            name = name,
+            companyType = None,
+            companyTime = None,
+            utr = None,
+            address = Some(address),
+            entityStart = date,
+            provisional = true
+          )
 
-  }
+          val result = extractor(baseAnswers, business, index).get
 
-  "should populate user answers when the business has no UTR or address" in {
+          result.get(IndexPage).get mustBe index
+          result.get(NamePage).get mustBe name
+          result.get(UtrYesNoPage).get mustBe false
+          result.get(UtrPage) mustNot be(defined)
+          result.get(AddressYesNoPage).get mustBe true
+          result.get(LiveInTheUkYesNoPage).get mustBe true
+          result.get(UkAddressPage).get mustBe address
+          result.get(NonUkAddressPage) mustNot be(defined)
+          result.get(StartDatePage).get mustBe date
 
-    val business = BusinessSettlor(
-      name = name,
-      companyType = None,
-      companyTime = None,
-      utr = None,
-      address = None,
-      entityStart = date,
-      provisional = true
-    )
+        }
 
-    val result = extractor(answers, business, index).get
+        "should populate user answers when the business has no UTR or address" in {
 
-    result.get(IndexPage).get mustBe index
-    result.get(NamePage).get mustBe name
-    result.get(UtrYesNoPage).get mustBe false
-    result.get(UtrPage) mustNot be(defined)
-    result.get(AddressYesNoPage).get mustBe false
-    result.get(LiveInTheUkYesNoPage) mustNot be(defined)
-    result.get(UkAddressPage) mustNot be(defined)
-    result.get(NonUkAddressPage) mustNot be(defined)
-    result.get(StartDatePage).get mustBe date
+          val business = BusinessSettlor(
+            name = name,
+            companyType = None,
+            companyTime = None,
+            utr = None,
+            address = None,
+            entityStart = date,
+            provisional = true
+          )
+
+          val result = extractor(baseAnswers, business, index).get
+
+          result.get(IndexPage).get mustBe index
+          result.get(NamePage).get mustBe name
+          result.get(UtrYesNoPage).get mustBe false
+          result.get(UtrPage) mustNot be(defined)
+          result.get(AddressYesNoPage).get mustBe false
+          result.get(LiveInTheUkYesNoPage) mustNot be(defined)
+          result.get(UkAddressPage) mustNot be(defined)
+          result.get(NonUkAddressPage) mustNot be(defined)
+          result.get(StartDatePage).get mustBe date
+        }
+      }
+    }
   }
 
 }

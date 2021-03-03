@@ -49,7 +49,8 @@ class IndexController @Inject()(
         def newUserAnswers(details: TrustDetails,
                            utr: String,
                            isDateOfDeathRecorded: Boolean,
-                           is5mldEnabled: Boolean
+                           is5mldEnabled: Boolean,
+                           isUnderlyingData5mld: Boolean
                           ) = UserAnswers(
             internalId = request.user.internalId,
             identifier = utr,
@@ -58,17 +59,19 @@ class IndexController @Inject()(
             deedOfVariation = details.deedOfVariation,
             isDateOfDeathRecorded = isDateOfDeathRecorded,
             is5mldEnabled = is5mldEnabled,
-            isTaxable = details.trustTaxable.getOrElse(true)
+            isTaxable = details.trustTaxable.getOrElse(true),
+             isUnderlyingData5mld = isUnderlyingData5mld
         )
 
         for {
           details <- connector.getTrustDetails(identifier)
           is5mldEnabled <- featureFlagService.is5mldEnabled()
+          isUnderlyingData5mld <- connector.isTrust5mld(identifier)
           allSettlors <- connector.getSettlors(identifier)
           isDateOfDeathRecorded <- connector.getIsDeceasedSettlorDateOfDeathRecorded(identifier)
           ua <- Future.successful {
             request.userAnswers.getOrElse {
-              newUserAnswers(details, identifier, isDateOfDeathRecorded.value, is5mldEnabled)
+              newUserAnswers(details, identifier, isDateOfDeathRecorded.value, is5mldEnabled, isUnderlyingData5mld)
             }
           }
           _ <- cacheRepository.set(ua)
