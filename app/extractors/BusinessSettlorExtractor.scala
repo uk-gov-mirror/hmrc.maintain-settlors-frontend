@@ -52,11 +52,15 @@ class BusinessSettlorExtractor @Inject()() {
   }
 
   private def extractUtr(utr: Option[String], answers: UserAnswers) : Try[UserAnswers] = {
-    utr match {
-      case Some(utr) =>
-        answers.set(UtrYesNoPage, true)
-        .flatMap(_.set(UtrPage, utr))
-      case _ => answers.set(UtrYesNoPage, false)
+    if (answers.isTaxable) {
+      utr match {
+        case Some(utr) =>
+          answers.set(UtrYesNoPage, true)
+          .flatMap(_.set(UtrPage, utr))
+        case _ => answers.set(UtrYesNoPage, false)
+      }
+    } else {
+      Success(answers)
     }
   }
 
@@ -79,17 +83,21 @@ class BusinessSettlorExtractor @Inject()() {
     }
   }
   private def extractAddress(address: Option[Address], answers: UserAnswers) : Try[UserAnswers] = {
-    address match {
-      case Some(uk: UkAddress) =>
-        answers.set(AddressYesNoPage, true)
-          .flatMap(_.set(LiveInTheUkYesNoPage, true))
-          .flatMap(_.set(UkAddressPage, uk))
-      case Some(nonUk: NonUkAddress) =>
-        answers.set(AddressYesNoPage, true)
-          .flatMap(_.set(LiveInTheUkYesNoPage, false))
-          .flatMap(_.set(NonUkAddressPage, nonUk))
-      case _ =>
-        answers.set(AddressYesNoPage, false)
+    if (answers.isTaxable) {
+      address match {
+        case Some(uk: UkAddress) =>
+          answers.set(AddressYesNoPage, true)
+            .flatMap(_.set(LiveInTheUkYesNoPage, true))
+            .flatMap(_.set(UkAddressPage, uk))
+        case Some(nonUk: NonUkAddress) =>
+          answers.set(AddressYesNoPage, true)
+            .flatMap(_.set(LiveInTheUkYesNoPage, false))
+            .flatMap(_.set(NonUkAddressPage, nonUk))
+        case _ =>
+          answers.set(AddressYesNoPage, false)
+      }
+    } else {
+      Success(answers)
     }
   }
 }
