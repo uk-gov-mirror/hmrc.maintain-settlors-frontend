@@ -50,7 +50,6 @@ class BusinessSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverte
 
     lazy val amend: Seq[AnswerRow] = answerRows(CheckMode).flatten
 
-
     AnswerSection(
       None,
       if (provisional) add else amend

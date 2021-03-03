@@ -19,7 +19,7 @@ package navigation
 import controllers.business.{routes => rts}
 import javax.inject.Inject
 import models.TypeOfTrust.EmployeeRelated
-import models.{CheckMode, Mode, NormalMode, TypeOfTrust, UserAnswers}
+import models.{Mode, NormalMode, TypeOfTrust, UserAnswers}
 import pages.Page
 import pages.business._
 import play.api.mvc.Call
@@ -61,7 +61,7 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
     case UkAddressPage | NonUkAddressPage => ua =>
       navigateToEndPages(mode, trustType, ua)
     case CompanyTimePage => ua =>
-      navigateAwayFromCompanyTimePage(mode, ua)
+      navigateToStartDateOrCheckDetails(mode, ua)
   }
 
 
@@ -92,14 +92,14 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
   }
 
   private def navigateToEndPages(mode:Mode, trustType: TypeOfTrust, ua: UserAnswers): Call = {
-    (mode, trustType) match {
-      case (_, EmployeeRelated) => rts.CompanyTypeController.onPageLoad(mode)
-      case (NormalMode, _) => rts.StartDateController.onPageLoad()
-      case (CheckMode, _) => checkDetailsRoute(ua)
+    if (trustType == EmployeeRelated) {
+      rts.CompanyTypeController.onPageLoad(mode)
+    } else {
+      navigateToStartDateOrCheckDetails(mode, ua)
     }
   }
 
-  private def navigateAwayFromCompanyTimePage(mode: Mode, answers: UserAnswers) = {
+  private def navigateToStartDateOrCheckDetails(mode: Mode, answers: UserAnswers) = {
     if (mode == NormalMode) {
       rts.StartDateController.onPageLoad()
     } else {
