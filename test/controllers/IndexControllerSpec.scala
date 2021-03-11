@@ -39,7 +39,7 @@ class IndexControllerSpec extends SpecBase {
   "Index Controller" must {
     val identifier = "1234567890"
     val startDate = "2019-06-01"
-    val typeOfTrust = TypeOfTrust.WillTrustOrIntestacyTrust
+    val typeOfTrust = Some(TypeOfTrust.WillTrustOrIntestacyTrust)
     val is5mldEnabled = false
     val isTaxable = false
     val isUnderlyingData5mld = false

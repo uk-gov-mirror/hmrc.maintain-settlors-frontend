@@ -21,7 +21,7 @@ import java.time.LocalDate
 import base.SpecBase
 import config.annotations.LivingSettlor
 import forms.YesNoFormProvider
-import models.{Name, TypeOfTrust, UserAnswers}
+import models.{Name, UserAnswers}
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -46,7 +46,7 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
     "id",
     "UTRUTRUTR",
     LocalDate.now(),
-    TypeOfTrust.DeedOfVariation,
+    None,
     None,
     isDateOfDeathRecorded = false
   ).set(NamePage, name).success.value

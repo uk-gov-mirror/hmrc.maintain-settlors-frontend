@@ -40,7 +40,7 @@ class DeceasedSettlorPrintHelperSpec extends SpecBase {
       userInternalId,
       "UTRUTRUTR",
       LocalDate.now(),
-      TypeOfTrust.WillTrustOrIntestacyTrust,
+      None,
       None,
       isDateOfDeathRecorded = isDateOfDeathRecorded
     )

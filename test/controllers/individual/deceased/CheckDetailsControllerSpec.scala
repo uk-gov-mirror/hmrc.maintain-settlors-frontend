@@ -79,7 +79,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       userInternalId,
       "UTRUTRUTR",
       LocalDate.now(),
-      TypeOfTrust.WillTrustOrIntestacyTrust,
+      None,
       None,
       isDateOfDeathRecorded = isDateOfDeathRecorded
     )

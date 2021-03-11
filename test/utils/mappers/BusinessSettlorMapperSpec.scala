@@ -154,7 +154,7 @@ class BusinessSettlorMapperSpec extends SpecBase {
 
     "non-employee-related trust" must {
 
-      val emptyUserAnswers = models.UserAnswers(userInternalId, "UTRUTRUTR", LocalDate.now(), TypeOfTrust.EmployeeRelated, None, isDateOfDeathRecorded = true)
+      val emptyUserAnswers = models.UserAnswers(userInternalId, "UTRUTRUTR", LocalDate.now(), Some(TypeOfTrust.EmployeeRelated), None, isDateOfDeathRecorded = true)
 
       "generate business settlor model with no utr and no address" in {
 

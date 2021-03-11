@@ -32,7 +32,7 @@ class IndividualSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyChe
     "Id",
     "UTRUTRUTR",
     LocalDate.of(1987, 12, 31),
-    TypeOfTrust.WillTrustOrIntestacyTrust,
+    None,
     None,
     isDateOfDeathRecorded = true,
     Json.obj()

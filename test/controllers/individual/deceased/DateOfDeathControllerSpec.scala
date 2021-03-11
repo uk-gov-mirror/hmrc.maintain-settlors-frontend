@@ -22,7 +22,7 @@ import base.SpecBase
 import config.annotations.DeceasedSettlor
 import connectors.TrustConnector
 import forms.DateOfDeathFormProvider
-import models.{Name, TrustDetails, TypeOfTrust}
+import models.{Name, TrustDetails}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -74,7 +74,7 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
       when(mockTrustConnector.getTrustDetails(any())(any(), any()))
         .thenReturn(Future.successful(TrustDetails(
           LocalDate.now,
-          TypeOfTrust.WillTrustOrIntestacyTrust,
+          None,
           None,
           Some(true)
         )))
@@ -106,7 +106,7 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
       when(mockTrustConnector.getTrustDetails(any())(any(), any()))
         .thenReturn(Future.successful(TrustDetails(
           LocalDate.now,
-          TypeOfTrust.WillTrustOrIntestacyTrust,
+          None,
           None,
           Some(true)
         )))
@@ -138,7 +138,7 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
       when(mockTrustConnector.getTrustDetails(any())(any(), any()))
         .thenReturn(Future.successful(TrustDetails(
           LocalDate.now,
-          TypeOfTrust.WillTrustOrIntestacyTrust,
+          None,
           None,
           Some(true)
         )))
@@ -165,7 +165,7 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
       when(mockTrustConnector.getTrustDetails(any())(any(), any()))
         .thenReturn(Future.successful(TrustDetails(
           LocalDate.now,
-          TypeOfTrust.WillTrustOrIntestacyTrust,
+          None,
           None,
           Some(true)
         )))
@@ -208,7 +208,7 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
       when(mockTrustConnector.getTrustDetails(any())(any(), any()))
         .thenReturn(Future.successful(TrustDetails(
           LocalDate.now,
-          TypeOfTrust.WillTrustOrIntestacyTrust,
+          None,
           None,
           Some(true)
         )))
@@ -262,7 +262,7 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
       when(mockTrustConnector.getTrustDetails(any())(any(), any()))
         .thenReturn(Future.successful(TrustDetails(
           LocalDate.now,
-          TypeOfTrust.WillTrustOrIntestacyTrust,
+          None,
           None,
           Some(true)
         )))

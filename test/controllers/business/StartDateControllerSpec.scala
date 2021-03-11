@@ -21,7 +21,7 @@ import java.time.{LocalDate, ZoneOffset}
 import base.SpecBase
 import config.annotations.BusinessSettlor
 import forms.DateAddedToTrustFormProvider
-import models.{TypeOfTrust, UserAnswers}
+import models.UserAnswers
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -51,7 +51,7 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
 
   val name = "Name"
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", date, TypeOfTrust.WillTrustOrIntestacyTrust, None, isDateOfDeathRecorded = true)
+  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", date, None, None, isDateOfDeathRecorded = true)
     .set(NamePage, name).success.value
 
   def getRequest(): FakeRequest[AnyContentAsEmpty.type] =

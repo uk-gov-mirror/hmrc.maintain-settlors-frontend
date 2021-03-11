@@ -27,11 +27,11 @@ import play.api.mvc.Call
 
 class BusinessSettlorNavigator @Inject()() extends Navigator {
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, trustType: TypeOfTrust): Call =
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, trustType: Option[TypeOfTrust]): Call =
     routes(mode, trustType)(page)(userAnswers)
 
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    nextPage(page, mode, userAnswers, EmployeeRelated)
+    nextPage(page, mode, userAnswers, None)
 
   override def nextPage(page: Page, userAnswers: UserAnswers): Call =
     nextPage(page, NormalMode, userAnswers)
@@ -41,7 +41,7 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
     case StartDatePage => controllers.business.add.routes.CheckDetailsController.onPageLoad()
   }
 
-  private def conditionalNavigation(mode: Mode, trustType: TypeOfTrust): PartialFunction[Page, UserAnswers => Call] = {
+  private def conditionalNavigation(mode: Mode, trustType: Option[TypeOfTrust]): PartialFunction[Page, UserAnswers => Call] = {
     case NamePage => ua =>
       navigateAwayFromNamePage(mode, ua)
     case UtrYesNoPage => ua =>
@@ -73,7 +73,7 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
     }
   }
 
-  private def navigateAwayFromUtrPages(mode: Mode, trustType: TypeOfTrust, answers: UserAnswers): Call = {
+  private def navigateAwayFromUtrPages(mode: Mode, trustType: Option[TypeOfTrust], answers: UserAnswers): Call = {
     (answers.is5mldEnabled, isUtrDefined(answers)) match {
       case (true, _) => rts.CountryOfResidenceYesNoController.onPageLoad(mode)
       case (false, true) => navigateToEndPages(mode, trustType, answers)
@@ -81,7 +81,7 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
     }
   }
 
-  private def navigateAwayFromResidencePages(mode: Mode, trustType: TypeOfTrust, answers: UserAnswers): Call = {
+  private def navigateAwayFromResidencePages(mode: Mode, trustType: Option[TypeOfTrust], answers: UserAnswers): Call = {
     val isNonTaxable5mld = answers.is5mldEnabled && !answers.isTaxable
 
     if (isNonTaxable5mld || isUtrDefined(answers)){
@@ -91,11 +91,10 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
     }
   }
 
-  private def navigateToEndPages(mode:Mode, trustType: TypeOfTrust, ua: UserAnswers): Call = {
-    if (trustType == EmployeeRelated) {
-      rts.CompanyTypeController.onPageLoad(mode)
-    } else {
-      navigateToStartDateOrCheckDetails(mode, ua)
+  private def navigateToEndPages(mode:Mode, trustType: Option[TypeOfTrust], ua: UserAnswers): Call = {
+    trustType match {
+      case Some(EmployeeRelated) | None => rts.CompanyTypeController.onPageLoad(mode)
+      case _ => navigateToStartDateOrCheckDetails(mode, ua)
     }
   }
 
@@ -115,7 +114,7 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
     }
   }
 
-  private def routes(mode: Mode, trustType: TypeOfTrust): PartialFunction[Page, UserAnswers => Call] =
+  private def routes(mode: Mode, trustType: Option[TypeOfTrust]): PartialFunction[Page, UserAnswers => Call] =
     simpleNavigation(mode) andThen (c => (_: UserAnswers) => c) orElse
       conditionalNavigation(mode, trustType)
 
