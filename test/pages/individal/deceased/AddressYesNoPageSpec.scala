@@ -18,7 +18,7 @@ package pages.individal.deceased
 
 import java.time.LocalDate
 
-import models.{NonUkAddress, TypeOfTrust, UkAddress, UserAnswers}
+import models.{NonUkAddress, UkAddress, UserAnswers}
 import pages.behaviours.PageBehaviours
 import pages.individual.deceased.{AddressYesNoPage, LivedInTheUkYesNoPage, NonUkAddressPage, UkAddressPage}
 

@@ -18,7 +18,7 @@ package pages.business
 
 import java.time.LocalDate
 
-import models.{TypeOfTrust, UserAnswers}
+import models.UserAnswers
 import pages.behaviours.PageBehaviours
 
 class CountryOfResidenceInTheUkYesNoPageSpec extends PageBehaviours {

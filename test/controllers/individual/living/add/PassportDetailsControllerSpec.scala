@@ -21,7 +21,7 @@ import java.time.LocalDate
 import base.SpecBase
 import config.annotations.LivingSettlor
 import forms.PassportDetailsFormProvider
-import models.{Name, Passport, TypeOfTrust, UserAnswers}
+import models.{Name, Passport, UserAnswers}
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when

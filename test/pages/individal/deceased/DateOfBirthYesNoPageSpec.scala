@@ -18,7 +18,7 @@ package pages.individal.deceased
 
 import java.time.LocalDate
 
-import models.{TypeOfTrust, UserAnswers}
+import models.UserAnswers
 import pages.behaviours.PageBehaviours
 import pages.individual.deceased.{DateOfBirthPage, DateOfBirthYesNoPage}
 

@@ -21,7 +21,7 @@ import java.time.LocalDate
 import base.SpecBase
 import config.annotations.LivingSettlor
 import forms.YesNoFormProvider
-import models.{Name, NormalMode, TypeOfTrust, UserAnswers}
+import models.{Name, NormalMode, UserAnswers}
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
