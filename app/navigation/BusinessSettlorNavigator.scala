@@ -91,10 +91,14 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
     }
   }
 
-  private def navigateToEndPages(mode:Mode, trustType: Option[TypeOfTrust], ua: UserAnswers): Call = {
-    trustType match {
-      case Some(EmployeeRelated) | None => rts.CompanyTypeController.onPageLoad(mode)
-      case _ => navigateToStartDateOrCheckDetails(mode, ua)
+  private def navigateToEndPages(mode:Mode, trustType: Option[TypeOfTrust], answers: UserAnswers): Call = {
+    val isNonTaxable5mld = answers.is5mldEnabled && !answers.isTaxable
+    val isNotEmployeeRelated = trustType.getOrElse(EmployeeRelated) != EmployeeRelated
+
+    if (isNonTaxable5mld || isNotEmployeeRelated) {
+      navigateToStartDateOrCheckDetails(mode, answers)
+    } else {
+      rts.CompanyTypeController.onPageLoad(mode)
     }
   }
 

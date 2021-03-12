@@ -680,12 +680,12 @@ class BusinessSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             .mustBe(controllers.business.routes.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode))
         }
 
-        "Do you know the country of residence -> No (Employee-related trust) -> Company type page" in {
+        "Do you know the country of residence -> No (Employee-related trust) -> Start date page" in {
           val answers = baseAnswers
             .set(CountryOfResidenceYesNoPage, false).success.value
 
           navigator.nextPage(CountryOfResidenceYesNoPage, mode, answers, Some(TypeOfTrust.EmployeeRelated))
-            .mustBe(controllers.business.routes.CompanyTypeController.onPageLoad(mode))
+            .mustBe(controllers.business.routes.StartDateController.onPageLoad())
         }
 
         "Do you know the country of residence -> No (Non-employee-related trust) -> Start date page" in {
@@ -696,12 +696,12 @@ class BusinessSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             .mustBe(controllers.business.routes.StartDateController.onPageLoad())
         }
 
-        "Is residence in UK page -> Yes (Employee-related trust) -> Company type page" in {
+        "Is residence in UK page -> Yes (Employee-related trust) -> Start date page" in {
           val answers = baseAnswers
             .set(CountryOfResidenceInTheUkYesNoPage, true).success.value
 
           navigator.nextPage(CountryOfResidenceInTheUkYesNoPage, mode, answers, Some(TypeOfTrust.EmployeeRelated))
-            .mustBe(controllers.business.routes.CompanyTypeController.onPageLoad(mode))
+            .mustBe(controllers.business.routes.StartDateController.onPageLoad())
         }
 
         "Is residence in UK page -> Yes (Non-employee-related trust) -> Start date page" in {
@@ -720,12 +720,12 @@ class BusinessSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             .mustBe(controllers.business.routes.CountryOfResidenceController.onPageLoad(mode))
         }
 
-        "Country of Residence page -> (Employee-related trust) -> Company type page" in {
+        "Country of Residence page -> (Employee-related trust) -> Start date page" in {
           val answers = baseAnswers
             .set(CountryOfResidencePage, "ES").success.value
 
           navigator.nextPage(CountryOfResidencePage, mode, answers, Some(TypeOfTrust.EmployeeRelated))
-            .mustBe(controllers.business.routes.CompanyTypeController.onPageLoad(mode))
+            .mustBe(controllers.business.routes.StartDateController.onPageLoad())
         }
 
         "Country of Residence page -> (Non-employee-related trust) -> Start date page" in {
@@ -733,16 +733,6 @@ class BusinessSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             .set(CountryOfResidencePage, "ES").success.value
 
           navigator.nextPage(CountryOfResidencePage, mode, answers, Some(TypeOfTrust.HeritageTrust))
-            .mustBe(controllers.business.routes.StartDateController.onPageLoad())
-        }
-
-        "Company type page -> Company time page" in {
-          navigator.nextPage(CompanyTypePage, mode, baseAnswers, Some(TypeOfTrust.EmployeeRelated))
-            .mustBe(controllers.business.routes.CompanyTimeController.onPageLoad(mode))
-        }
-
-        "Company time page -> Start date page" in {
-          navigator.nextPage(CompanyTimePage, mode, baseAnswers, Some(TypeOfTrust.EmployeeRelated))
             .mustBe(controllers.business.routes.StartDateController.onPageLoad())
         }
 
@@ -772,12 +762,12 @@ class BusinessSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             .mustBe(controllers.business.routes.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode))
         }
 
-        "Do you know the country of residence -> No (Employee-related trust) -> Company type page" in {
+        "Do you know the country of residence -> No (Employee-related trust) -> Check Details page" in {
           val answers = baseAnswers
             .set(CountryOfResidenceYesNoPage, false).success.value
 
           navigator.nextPage(CountryOfResidenceYesNoPage, mode, answers, Some(TypeOfTrust.EmployeeRelated))
-            .mustBe(controllers.business.routes.CompanyTypeController.onPageLoad(mode))
+            .mustBe(controllers.business.amend.routes.CheckDetailsController.renderFromUserAnswers(index))
         }
 
         "Do you know the country of residence -> No (Non-employee-related trust) -> Check Details page" in {
@@ -788,12 +778,12 @@ class BusinessSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             .mustBe(controllers.business.amend.routes.CheckDetailsController.renderFromUserAnswers(index))
         }
 
-        "Is residence in UK page-> Yes (Employee-related trust) -> Company type pages" in {
+        "Is residence in UK page-> Yes (Employee-related trust) -> Check Details page" in {
           val answers = baseAnswers
             .set(CountryOfResidenceInTheUkYesNoPage, true).success.value
 
           navigator.nextPage(CountryOfResidenceInTheUkYesNoPage, mode, answers, Some(TypeOfTrust.EmployeeRelated))
-            .mustBe(controllers.business.routes.CompanyTypeController.onPageLoad(mode))
+            .mustBe(controllers.business.amend.routes.CheckDetailsController.renderFromUserAnswers(index))
         }
 
         "Is residence in UK page-> Yes (Non-employee-related trust) -> Check Details page" in {
@@ -812,34 +802,21 @@ class BusinessSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
             .mustBe(controllers.business.routes.CountryOfResidenceController.onPageLoad(mode))
         }
 
-        "Country of Residence page -> (Employee-related trust) -> Company type pages" in {
+        "Country of Residence page -> (Employee-related trust) ->  Check Details page" in {
           val answers = baseAnswers
             .set(CountryOfResidencePage, "ES").success.value
 
           navigator.nextPage(CountryOfResidencePage, mode, answers, Some(TypeOfTrust.EmployeeRelated))
-            .mustBe(controllers.business.routes.CompanyTypeController.onPageLoad(mode))
+            .mustBe(controllers.business.amend.routes.CheckDetailsController.renderFromUserAnswers(index))
         }
 
-        "Country of Residence page -> (Non-employee-related trust) -> Check Details pag" in {
+        "Country of Residence page -> (Non-employee-related trust) -> Check Details page" in {
           val answers = baseAnswers
             .set(CountryOfResidencePage, "ES").success.value
             .set(UtrYesNoPage, true).success.value
             .set(UtrPage, "12345678").success.value
 
           navigator.nextPage(CountryOfResidencePage, mode, answers, Some(TypeOfTrust.HeritageTrust))
-            .mustBe(controllers.business.amend.routes.CheckDetailsController.renderFromUserAnswers(index))
-        }
-
-        "Company type page -> Company time page" in {
-          navigator.nextPage(CompanyTypePage, mode, baseAnswers, Some(TypeOfTrust.EmployeeRelated))
-            .mustBe(controllers.business.routes.CompanyTimeController.onPageLoad(mode))
-        }
-
-        "Company time page -> Check details page" in {
-          val answers = baseAnswers
-            .set(IndexPage, index).success.value
-
-          navigator.nextPage(CompanyTimePage, mode, answers, Some(TypeOfTrust.EmployeeRelated))
             .mustBe(controllers.business.amend.routes.CheckDetailsController.renderFromUserAnswers(index))
         }
       }
