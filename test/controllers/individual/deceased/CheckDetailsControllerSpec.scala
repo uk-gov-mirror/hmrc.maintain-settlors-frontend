@@ -23,7 +23,7 @@ import config.FrontendAppConfig
 import connectors.{TrustConnector, TrustStoreConnector}
 import models.BpMatchStatus.{FailedToMatch, FullyMatched}
 import models.settlors.{DeceasedSettlor, IndividualSettlor, Settlors}
-import models.{BpMatchStatus, Name, NationalInsuranceNumber, TypeOfTrust, UserAnswers}
+import models.{BpMatchStatus, Name, NationalInsuranceNumber, UserAnswers}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -79,7 +79,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       userInternalId,
       "UTRUTRUTR",
       LocalDate.now(),
-      TypeOfTrust.WillTrustOrIntestacyTrust,
+      None,
       None,
       isDateOfDeathRecorded = isDateOfDeathRecorded
     )

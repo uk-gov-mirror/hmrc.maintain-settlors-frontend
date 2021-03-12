@@ -50,7 +50,7 @@ trait UserAnswersGenerator extends TryValues {
         internalId = id,
         identifier = utr,
         whenTrustSetup = LocalDate.now(),
-        trustType = TypeOfTrust.WillTrustOrIntestacyTrust,
+        trustType = None,
         deedOfVariation = None,
         isDateOfDeathRecorded = true,
         data = data.foldLeft(Json.obj()) {

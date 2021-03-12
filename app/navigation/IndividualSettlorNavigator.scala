@@ -30,7 +30,7 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
     routes(mode)(page)(userAnswers)
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, trustType: TypeOfTrust): Call =
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, trustType: Option[TypeOfTrust]): Call =
     nextPage(page, mode, userAnswers)
 
   override def nextPage(page: Page, userAnswers: UserAnswers): Call =

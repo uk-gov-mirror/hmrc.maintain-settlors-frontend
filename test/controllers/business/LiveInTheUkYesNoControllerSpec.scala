@@ -21,7 +21,7 @@ import java.time.LocalDate
 import base.SpecBase
 import config.annotations.BusinessSettlor
 import forms.YesNoFormProvider
-import models.{NormalMode, TypeOfTrust, UserAnswers}
+import models.{NormalMode, UserAnswers}
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -45,7 +45,7 @@ class LiveInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
   val name = "Name"
 
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), TypeOfTrust.WillTrustOrIntestacyTrust, None, isDateOfDeathRecorded = true)
+  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), None, None, isDateOfDeathRecorded = true)
     .set(NamePage, name).success.value
 
   lazy val liveInTheUkYesNoControllerRoute = routes.LiveInTheUkYesNoController.onPageLoad(NormalMode).url

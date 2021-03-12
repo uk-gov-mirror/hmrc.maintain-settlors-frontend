@@ -27,7 +27,7 @@
 )
 
 @(form: Form[_],
-    trustDescription: String,
+    trustDescription: Option[String],
     inProgressSettlors: Seq[AddRow],
     completeSettlors: Seq[AddRow],
     heading: String)(implicit request: Request[_], messages: Messages)
@@ -42,8 +42,9 @@
 
         @components.heading(heading)
 
+        @if(trustDescription.nonEmpty){
         <p>@trustDescription</p>
-
+        }
         @components.data_list(inProgressSettlors, "inprogress")
 
         @components.data_list(completeSettlors, "complete")

@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import base.SpecBase
 import models.BpMatchStatus.{FailedToMatch, FullyMatched}
-import models.{BpMatchStatus, Name, NonUkAddress, TypeOfTrust, UkAddress, UserAnswers}
+import models.{BpMatchStatus, Name, NonUkAddress, UkAddress, UserAnswers}
 import pages.AdditionalSettlorsYesNoPage
 import pages.individual.deceased._
 import play.twirl.api.Html
@@ -40,7 +40,7 @@ class DeceasedSettlorPrintHelperSpec extends SpecBase {
       userInternalId,
       "UTRUTRUTR",
       LocalDate.now(),
-      TypeOfTrust.WillTrustOrIntestacyTrust,
+      None,
       None,
       isDateOfDeathRecorded = isDateOfDeathRecorded
     )

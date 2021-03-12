@@ -21,7 +21,7 @@ import java.time.LocalDate
 import base.SpecBase
 import config.annotations.BusinessSettlor
 import forms.UkAddressFormProvider
-import models.{NormalMode, TypeOfTrust, UkAddress, UserAnswers}
+import models.{NormalMode, UkAddress, UserAnswers}
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -44,7 +44,7 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
 
   val name = "Name"
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), TypeOfTrust.WillTrustOrIntestacyTrust, None, isDateOfDeathRecorded = true)
+  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), None, None, isDateOfDeathRecorded = true)
     .set(NamePage, name).success.value
 
   val validAnswer = UkAddress("value 1", "value 2", None, None, "AB1 1AB")

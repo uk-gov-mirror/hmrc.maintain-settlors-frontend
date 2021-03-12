@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import generators.ModelGenerators
 import models.settlors.IndividualSettlor
-import models.{CombinedPassportOrIdCard, Name, NationalInsuranceNumber, TypeOfTrust, UkAddress, UserAnswers}
+import models.{CombinedPassportOrIdCard, Name, NationalInsuranceNumber, UkAddress, UserAnswers}
 import pages.individual.living._
 import org.scalatest.{FreeSpec, MustMatchers}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -32,7 +32,7 @@ class IndividualSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyChe
     "Id",
     "UTRUTRUTR",
     LocalDate.of(1987, 12, 31),
-    TypeOfTrust.WillTrustOrIntestacyTrust,
+    None,
     None,
     isDateOfDeathRecorded = true,
     Json.obj()

@@ -18,7 +18,7 @@ package pages.business
 
 import java.time.LocalDate
 
-import models.{TypeOfTrust, UkAddress, UserAnswers}
+import models.{UkAddress, UserAnswers}
 import pages.behaviours.PageBehaviours
 
 class CountryOfResidenceYesNoPageSpec extends PageBehaviours {
@@ -32,7 +32,7 @@ class CountryOfResidenceYesNoPageSpec extends PageBehaviours {
     beRemovable[Boolean](CountryOfResidenceYesNoPage)
 
     "implement cleanup logic when NO selected" in {
-      val userAnswers = UserAnswers("id", "identifier", LocalDate.now, TypeOfTrust.WillTrustOrIntestacyTrust, None, isDateOfDeathRecorded = true)
+      val userAnswers = UserAnswers("id", "identifier", LocalDate.now, None, None, isDateOfDeathRecorded = true)
         .set(CountryOfResidencePage, "FR").success.value
         .set(CountryOfResidenceInTheUkYesNoPage, false).success.value
         .set(CountryOfResidencePage, "FR").success.value

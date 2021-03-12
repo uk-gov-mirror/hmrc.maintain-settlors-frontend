@@ -129,18 +129,21 @@ class AddASettlorController @Inject()(
       }
   }
 
-  private def trustDescription(implicit request: DataRequest[AnyContent]): String = {
-
-    val description = (request.userAnswers.trustType, request.userAnswers.deedOfVariation) match {
-      case (TypeOfTrust.WillTrustOrIntestacyTrust, _) => "willTrust"
-      case (TypeOfTrust.IntervivosSettlementTrust, _) => "intervivosTrust"
-      case (TypeOfTrust.DeedOfVariation, Some(AdditionToWillTrust)) => "deedOfVariationInAdditionToWill"
-      case (TypeOfTrust.DeedOfVariation, _) => "deedOfVariation"
-      case (TypeOfTrust.EmployeeRelated, _) => "employeeRelated"
-      case (TypeOfTrust.FlatManagementTrust, _) => "flatManagementTrust"
-      case (TypeOfTrust.HeritageTrust, _) => "heritageTrust"
+  private def trustDescription(implicit request: DataRequest[AnyContent]): Option[String] = {
+    def getDescription(trustType: TypeOfTrust) = {
+      val description = (trustType, request.userAnswers.deedOfVariation) match {
+        case (TypeOfTrust.WillTrustOrIntestacyTrust, _) => "willTrust"
+        case (TypeOfTrust.IntervivosSettlementTrust, _) => "intervivosTrust"
+        case (TypeOfTrust.DeedOfVariation, Some(AdditionToWillTrust)) => "deedOfVariationInAdditionToWill"
+        case (TypeOfTrust.DeedOfVariation, _) => "deedOfVariation"
+        case (TypeOfTrust.EmployeeRelated, _) => "employeeRelated"
+        case (TypeOfTrust.FlatManagementTrust, _) => "flatManagementTrust"
+        case (TypeOfTrust.HeritageTrust, _) => "heritageTrust"
+      }
+      request.messages(messagesApi)(s"trustDescription.$description")
     }
 
-    request.messages(messagesApi)(s"trustDescription.$description")
+    request.userAnswers.trustType.map(getDescription(_))
   }
+
 }

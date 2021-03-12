@@ -18,7 +18,7 @@ package pages.individal.deceased
 
 import java.time.LocalDate
 
-import models.{TypeOfTrust, UkAddress, UserAnswers}
+import models.{UkAddress, UserAnswers}
 import pages.behaviours.PageBehaviours
 import pages.individual.deceased.{AddressYesNoPage, LivedInTheUkYesNoPage, UkAddressPage}
 
@@ -34,7 +34,7 @@ class LivedInTheUkYesNoPageSpec extends PageBehaviours {
     beRemovable[Boolean](LivedInTheUkYesNoPage)
 
     "implement cleanup logic when NO selected" in {
-      val userAnswers = UserAnswers("id", "utr", LocalDate.now, TypeOfTrust.WillTrustOrIntestacyTrust, None, isDateOfDeathRecorded = true)
+      val userAnswers = UserAnswers("id", "utr", LocalDate.now, None, None, isDateOfDeathRecorded = true)
         .set(UkAddressPage, UkAddress("line1", "line2", None, None, "postcode")).success.value
         .set(LivedInTheUkYesNoPage, true)
         .flatMap(_.set(AddressYesNoPage, false))
