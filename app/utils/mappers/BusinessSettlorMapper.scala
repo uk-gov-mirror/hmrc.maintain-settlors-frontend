@@ -63,12 +63,12 @@ class BusinessSettlorMapper {
   }
 
   private def readAddress: Reads[Option[Address]] = {
-    UtrYesNoPage.path.read[Boolean].flatMap {
-      case true => Reads(_ => JsSuccess(None))
-      case false => AddressYesNoPage.path.read[Boolean].flatMap[Option[Address]] {
+    UtrYesNoPage.path.readNullable[Boolean].flatMap {
+      case Some(false) => AddressYesNoPage.path.read[Boolean].flatMap[Option[Address]] {
         case true => readUkOrNonUkAddress
         case false => Reads(_ => JsSuccess(None))
       }
+      case _ => Reads(_ => JsSuccess(None))
     }
   }
 
