@@ -163,7 +163,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
         contentAsString(result) mustEqual
           view(
             addTrusteeForm,
-            "This is a will trust. If the trust does not have a will settlor, you will need to change your answers.",
+            Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
             Nil,
             settlorRows,
             "The trust has 3 settlors"
@@ -240,7 +240,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
         contentAsString(result) mustEqual
           view(
             boundForm,
-            "This is a will trust. If the trust does not have a will settlor, you will need to change your answers.",
+            Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
             Nil,
             settlorRows,
             "The trust has 3 settlors"
@@ -276,7 +276,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
         content mustEqual
           view(
-            "This is a will trust. If the trust does not have a will settlor, you will need to change your answers.",
+            Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
             settlorRows.inProgress,
             settlorRows.complete,
             25
@@ -316,7 +316,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
         content mustEqual
           view(
-            "This is a will trust. If the trust does not have a will settlor, you will need to change your answers.",
+            Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
             settlorRows.inProgress,
             settlorRows.complete,
             26
@@ -383,7 +383,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
         content mustEqual
           view(
             addTrusteeForm,
-            "This is a will trust. If the trust does not have a will settlor, you will need to change your answers.",
+            Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
             Nil,
             settlorRows,
             "The trust has 2 settlors"

@@ -26,7 +26,7 @@
     config: FrontendAppConfig
 )
 
-@(trustDescription: String,
+@(trustDescription: Option[String],
     inProgressSettlors: Seq[AddRow],
     completeSettlors: Seq[AddRow],
     size: Int)(implicit request: Request[_], messages: Messages)
@@ -41,7 +41,9 @@
 
         @components.heading(messages("addASettlor.count.heading", size))
 
+        @if(trustDescription.nonEmpty){
         <p>@trustDescription</p>
+        }
 
         @components.data_list(inProgressSettlors, "inprogress")
 
