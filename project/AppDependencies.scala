@@ -42,4 +42,5 @@ object AppDependencies {
     "com.typesafe.akka" %% "akka-http-core_2.12" % akkaHttpVersion,
     "commons-codec"     % "commons-codec" % "1.12"
   )
+  
 }
