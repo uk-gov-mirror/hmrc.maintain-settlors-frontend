@@ -69,7 +69,10 @@ class IndividualSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
       }
 
       "NINO page -> Start Date page" in {
-        navigator.nextPage(NationalInsuranceNumberPage, mode, emptyUserAnswers)
+        val answers = emptyUserAnswers
+          .set(NationalInsuranceNumberYesNoPage, true).success.value
+
+        navigator.nextPage(NationalInsuranceNumberPage, mode, answers)
           .mustBe(addRts.StartDateController.onPageLoad())
       }
 
@@ -212,7 +215,10 @@ class IndividualSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
       }
 
       "NINO page -> Check details" in {
-        navigator.nextPage(NationalInsuranceNumberPage, mode, baseAnswers)
+        val answers = baseAnswers
+          .set(NationalInsuranceNumberYesNoPage, true).success.value
+
+        navigator.nextPage(NationalInsuranceNumberPage, mode, answers)
           .mustBe(controllers.individual.living.amend.routes.CheckDetailsController.renderFromUserAnswers(index))
       }
 
