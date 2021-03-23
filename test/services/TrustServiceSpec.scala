@@ -39,8 +39,11 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
   val individualSettlor = IndividualSettlor(
     name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
     dateOfBirth = Some(LocalDate.parse("1983-09-24")),
+    countryOfNationality = None,
+    countryOfResidence = None,
     identification = None,
     address = None,
+    mentalCapacityYesNo = None,
     entityStart = LocalDate.of(2012, 4, 15),
     provisional = false
   )

@@ -16,8 +16,9 @@
 
 package utils.mappers
 
-import java.time.LocalDate
+import models.Constant.GB
 
+import java.time.LocalDate
 import models.settlors.IndividualSettlor
 import models.{Address, CombinedPassportOrIdCard, IdCard, IndividualIdentification, Name, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers}
 import pages.individual.living._
@@ -34,8 +35,11 @@ class IndividualSettlorMapper {
       (
         NamePage.path.read[Name] and
         DateOfBirthPage.path.readNullable[LocalDate] and
+        readCountryOfNationality and
+        readCountryOfResidence and
         readIdentification and
         readAddress and
+        readMentalCapacity and
         StartDatePage.path.read[LocalDate] and
         Reads(_ => JsSuccess(true))
       ) (IndividualSettlor.apply _)
@@ -49,10 +53,31 @@ class IndividualSettlorMapper {
     }
   }
 
+  private def readCountryOfNationality: Reads[Option[String]] = {
+    CountryOfNationalityYesNoPage.path.readNullable[Boolean].flatMap[Option[String]] {
+      case Some(true) => CountryOfNationalityUkYesNoPage.path.read[Boolean].flatMap {
+        case true => Reads(_ => JsSuccess(Some(GB)))
+        case false => CountryOfNationalityPage.path.read[String].map(Some(_))
+      }
+      case _ => Reads(_ => JsSuccess(None))
+    }
+  }
+
+  private def readCountryOfResidence: Reads[Option[String]] = {
+    CountryOfResidenceYesNoPage.path.readNullable[Boolean].flatMap[Option[String]] {
+      case Some(true) => CountryOfResidenceUkYesNoPage.path.read[Boolean].flatMap {
+        case true => Reads(_ => JsSuccess(Some(GB)))
+        case false => CountryOfResidencePage.path.read[String].map(Some(_))
+      }
+      case _ => Reads(_ => JsSuccess(None))
+    }
+  }
+
   private def readIdentification: Reads[Option[IndividualIdentification]] = {
-    NationalInsuranceNumberYesNoPage.path.read[Boolean].flatMap[Option[IndividualIdentification]] {
-      case true => NationalInsuranceNumberPage.path.read[String].map(nino => Some(NationalInsuranceNumber(nino)))
-      case false => readPassportOrIdCard
+    NationalInsuranceNumberYesNoPage.path.readNullable[Boolean].flatMap[Option[IndividualIdentification]] {
+      case Some(true) => NationalInsuranceNumberPage.path.read[String].map(nino => Some(NationalInsuranceNumber(nino)))
+      case Some(false) => readPassportOrIdCard
+      case _ => Reads(_ => JsSuccess(None))
     }
   }
 
@@ -72,12 +97,13 @@ class IndividualSettlorMapper {
   }
 
   private def readAddress: Reads[Option[Address]] = {
-    NationalInsuranceNumberYesNoPage.path.read[Boolean].flatMap {
-      case true => Reads(_ => JsSuccess(None))
-      case false => AddressYesNoPage.path.read[Boolean].flatMap[Option[Address]] {
+    NationalInsuranceNumberYesNoPage.path.readNullable[Boolean].flatMap {
+      case Some(true) => Reads(_ => JsSuccess(None))
+      case Some(false) => AddressYesNoPage.path.read[Boolean].flatMap[Option[Address]] {
         case true => readUkOrNonUkAddress
         case false => Reads(_ => JsSuccess(None))
       }
+      case _ => Reads(_ => JsSuccess(None))
     }
   }
 
@@ -85,6 +111,13 @@ class IndividualSettlorMapper {
     LiveInTheUkYesNoPage.path.read[Boolean].flatMap[Option[Address]] {
       case true => UkAddressPage.path.read[UkAddress].map(Some(_))
       case false => NonUkAddressPage.path.read[NonUkAddress].map(Some(_))
+    }
+  }
+
+  private def readMentalCapacity: Reads[Option[Boolean]] = {
+    MentalCapacityYesNoPage.path.readNullable[Boolean].flatMap[Option[Boolean]] {
+      case Some(value) => Reads(_ => JsSuccess(Some(value)))
+      case _ => Reads(_ => JsSuccess(None))
     }
   }
 

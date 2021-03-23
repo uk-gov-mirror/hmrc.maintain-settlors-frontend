@@ -35,8 +35,14 @@ class IndividualSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConver
       bound.nameQuestion(NamePage, "livingSettlor.name", Some(rts.NameController.onPageLoad(NormalMode).url)),
       bound.yesNoQuestion(DateOfBirthYesNoPage, "livingSettlor.dateOfBirthYesNo", Some(rts.DateOfBirthYesNoController.onPageLoad(NormalMode).url)),
       bound.dateQuestion(DateOfBirthPage, "livingSettlor.dateOfBirth", Some(rts.DateOfBirthController.onPageLoad(NormalMode).url)),
+      bound.yesNoQuestion(CountryOfNationalityYesNoPage, "livingSettlor.countryOfNationalityYesNo", Some(rts.CountryOfNationalityYesNoController.onPageLoad(NormalMode).url)),
+      bound.yesNoQuestion(CountryOfNationalityUkYesNoPage, "livingSettlor.countryOfNationalityUkYesNo", Some(rts.CountryOfNationalityUkYesNoController.onPageLoad(NormalMode).url)),
+      bound.countryQuestion(CountryOfNationalityUkYesNoPage, CountryOfNationalityPage, "livingSettlor.countryOfNationality", Some(rts.CountryOfNationalityController.onPageLoad(NormalMode).url)),
       bound.yesNoQuestion(NationalInsuranceNumberYesNoPage, "livingSettlor.nationalInsuranceNumberYesNo", Some(rts.NationalInsuranceNumberYesNoController.onPageLoad(NormalMode).url)),
       bound.ninoQuestion(NationalInsuranceNumberPage, "livingSettlor.nationalInsuranceNumber", Some(rts.NationalInsuranceNumberController.onPageLoad(NormalMode).url)),
+      bound.yesNoQuestion(CountryOfResidenceYesNoPage, "livingSettlor.countryOfResidenceYesNo", Some(rts.CountryOfResidenceYesNoController.onPageLoad(NormalMode).url)),
+      bound.yesNoQuestion(CountryOfResidenceUkYesNoPage, "livingSettlor.countryOfResidenceUkYesNo", Some(rts.CountryOfResidenceUkYesNoController.onPageLoad(NormalMode).url)),
+      bound.countryQuestion(CountryOfResidenceUkYesNoPage, CountryOfResidencePage, "livingSettlor.countryOfResidence", Some(rts.CountryOfResidenceController.onPageLoad(NormalMode).url)),
       bound.yesNoQuestion(AddressYesNoPage, "livingSettlor.addressYesNo", Some(rts.AddressYesNoController.onPageLoad(NormalMode).url)),
       bound.yesNoQuestion(LiveInTheUkYesNoPage, "livingSettlor.liveInTheUkYesNo", Some(rts.LiveInTheUkYesNoController.onPageLoad(NormalMode).url)),
       bound.addressQuestion(UkAddressPage, "livingSettlor.ukAddress", Some(rts.UkAddressController.onPageLoad(NormalMode).url)),
@@ -45,6 +51,7 @@ class IndividualSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConver
       bound.passportDetailsQuestion(PassportDetailsPage, "livingSettlor.passportDetails", Some(addRts.PassportDetailsController.onPageLoad().url)),
       bound.yesNoQuestion(IdCardDetailsYesNoPage, "livingSettlor.idCardDetailsYesNo", Some(addRts.IdCardDetailsYesNoController.onPageLoad().url)),
       bound.idCardDetailsQuestion(IdCardDetailsPage, "livingSettlor.idCardDetails", Some(addRts.IdCardDetailsController.onPageLoad().url)),
+      bound.yesNoQuestion(MentalCapacityYesNoPage, "livingSettlor.mentalCapacityYesNo", Some(rts.MentalCapacityYesNoController.onPageLoad(NormalMode).url)),
       bound.dateQuestion(StartDatePage, "livingSettlor.startDate", Some(addRts.StartDateController.onPageLoad().url))
     ).flatten
 
@@ -52,14 +59,21 @@ class IndividualSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConver
       bound.nameQuestion(NamePage, "livingSettlor.name", Some(rts.NameController.onPageLoad(CheckMode).url)),
       bound.yesNoQuestion(DateOfBirthYesNoPage, "livingSettlor.dateOfBirthYesNo", Some(rts.DateOfBirthYesNoController.onPageLoad(CheckMode).url)),
       bound.dateQuestion(DateOfBirthPage, "livingSettlor.dateOfBirth", Some(rts.DateOfBirthController.onPageLoad(CheckMode).url)),
+      bound.yesNoQuestion(CountryOfNationalityYesNoPage, "livingSettlor.countryOfNationalityYesNo", Some(rts.CountryOfNationalityYesNoController.onPageLoad(CheckMode).url)),
+      bound.yesNoQuestion(CountryOfNationalityUkYesNoPage, "livingSettlor.countryOfNationalityUkYesNo", Some(rts.CountryOfNationalityUkYesNoController.onPageLoad(CheckMode).url)),
+      bound.countryQuestion(CountryOfNationalityUkYesNoPage, CountryOfNationalityPage, "livingSettlor.countryOfNationality", Some(rts.CountryOfNationalityController.onPageLoad(CheckMode).url)),
       bound.yesNoQuestion(NationalInsuranceNumberYesNoPage, "livingSettlor.nationalInsuranceNumberYesNo", Some(rts.NationalInsuranceNumberYesNoController.onPageLoad(CheckMode).url)),
       bound.ninoQuestion(NationalInsuranceNumberPage, "livingSettlor.nationalInsuranceNumber", Some(rts.NationalInsuranceNumberController.onPageLoad(CheckMode).url)),
+      bound.yesNoQuestion(CountryOfResidenceYesNoPage, "livingSettlor.countryOfResidenceYesNo", Some(rts.CountryOfResidenceYesNoController.onPageLoad(CheckMode).url)),
+      bound.yesNoQuestion(CountryOfResidenceUkYesNoPage, "livingSettlor.countryOfResidenceUkYesNo", Some(rts.CountryOfResidenceUkYesNoController.onPageLoad(CheckMode).url)),
+      bound.countryQuestion(CountryOfResidenceUkYesNoPage, CountryOfResidencePage, "livingSettlor.countryOfResidence", Some(rts.CountryOfResidenceController.onPageLoad(CheckMode).url)),
       bound.yesNoQuestion(AddressYesNoPage, "livingSettlor.addressYesNo", Some(rts.AddressYesNoController.onPageLoad(CheckMode).url)),
       bound.yesNoQuestion(LiveInTheUkYesNoPage, "livingSettlor.liveInTheUkYesNo", Some(rts.LiveInTheUkYesNoController.onPageLoad(CheckMode).url)),
       bound.addressQuestion(UkAddressPage, "livingSettlor.ukAddress", Some(rts.UkAddressController.onPageLoad(CheckMode).url)),
       bound.addressQuestion(NonUkAddressPage, "livingSettlor.nonUkAddress", Some(rts.NonUkAddressController.onPageLoad(CheckMode).url)),
       bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, "livingSettlor.passportOrIdCardDetailsYesNo", Some(amendRts.PassportOrIdCardDetailsYesNoController.onPageLoad().url)),
-      bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, "livingSettlor.passportOrIdCardDetails", Some(amendRts.PassportOrIdCardDetailsController.onPageLoad().url))
+      bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, "livingSettlor.passportOrIdCardDetails", Some(amendRts.PassportOrIdCardDetailsController.onPageLoad().url)),
+      bound.yesNoQuestion(MentalCapacityYesNoPage, "livingSettlor.mentalCapacityYesNo", Some(rts.MentalCapacityYesNoController.onPageLoad(CheckMode).url))
     ).flatten
 
     AnswerSection(

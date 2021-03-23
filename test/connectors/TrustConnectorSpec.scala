@@ -76,8 +76,11 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
   private val individual = IndividualSettlor(
     name = Name("Carmel", None, "Settlor"),
     dateOfBirth = None,
+    countryOfNationality = None,
+    countryOfResidence = None,
     identification = None,
     address = None,
+    mentalCapacityYesNo = None,
     entityStart = date,
     provisional = false
   )

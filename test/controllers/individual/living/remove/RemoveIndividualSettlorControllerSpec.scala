@@ -49,8 +49,11 @@ class RemoveIndividualSettlorControllerSpec extends SpecBase with ScalaCheckProp
   def individualSettlor(id: Int, provisional : Boolean): IndividualSettlor = IndividualSettlor(
     name = name,
     dateOfBirth = None,
+    countryOfNationality = None,
+    countryOfResidence = None,
     identification = None,
     address = None,
+    mentalCapacityYesNo = None,
     entityStart = LocalDate.parse("2019-02-28"),
     provisional = provisional
   )
