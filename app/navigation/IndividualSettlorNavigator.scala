@@ -45,7 +45,7 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
     case CountryOfResidencePage => ua => navigateAwayFromCountryOfResidenceQuestions(mode, ua)
     case UkAddressPage | NonUkAddressPage => ua => navigateToPassportDetails(mode, ua)
     case PassportDetailsPage | IdCardDetailsPage => ua => navigateToMentalCapacity(mode, ua)
-    case PassportOrIdCardDetailsPage => ua => checkDetailsRoute(ua)
+    case PassportOrIdCardDetailsPage => ua => navigateToMentalCapacity(mode, ua)
     case StartDatePage => _ => addRts.CheckDetailsController.onPageLoad()
   }
 
@@ -72,6 +72,8 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
       yesNoNav(ua, IdCardDetailsYesNoPage, addRts.IdCardDetailsController.onPageLoad(), navigateToMentalCapacity(mode, ua))
     case PassportOrIdCardDetailsYesNoPage => ua =>
       yesNoNav(ua, PassportOrIdCardDetailsYesNoPage, amendRts.PassportOrIdCardDetailsController.onPageLoad(), navigateToMentalCapacity(mode, ua))
+    case MentalCapacityYesNoPage => ua =>
+      yesNoNav(ua, MentalCapacityYesNoPage, navigateToStartDateOrCheckDetails(mode, ua), navigateToStartDateOrCheckDetails(mode, ua))
   }
 
   private def navigateToPassportDetails(mode: Mode, answers: UserAnswers) = {
@@ -116,7 +118,7 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
 
   private def navigateToMentalCapacity(mode: Mode, ua: UserAnswers): Call = {
     if (ua.is5mldEnabled) {
-      rts.MentalCapacityYesNoController.onPageLoad(NormalMode)
+      rts.MentalCapacityYesNoController.onPageLoad(mode)
     } else {
       navigateToStartDateOrCheckDetails(mode, ua)
     }
