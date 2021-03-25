@@ -17,11 +17,12 @@
 package extractors
 
 import com.google.inject.Inject
+import models.Constant.GB
 import models.settlors.IndividualSettlor
 import models.{Address, CombinedPassportOrIdCard, IdCard, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers}
 import pages.individual.living._
 
-import scala.util.Try
+import scala.util.{Success, Try}
 
 class IndividualSettlorExtractor @Inject()() {
 
@@ -29,11 +30,52 @@ class IndividualSettlorExtractor @Inject()() {
     answers.deleteAtPath(pages.individual.living.basePath)
       .flatMap(_.set(NamePage, individual.name))
       .flatMap(answers => extractDateOfBirth(individual, answers))
+      .flatMap(answers => extractCountryOfNationality(individual.countryOfNationality, answers))
+      .flatMap(answers => extractCountryOfResidence(individual.countryOfResidence, answers))
       .flatMap(answers => extractAddress(individual.address, answers))
       .flatMap(answers => extractIdentification(individual, answers))
+      .flatMap(_.set(MentalCapacityYesNoPage, individual.mentalCapacityYesNo))
       .flatMap(_.set(StartDatePage, individual.entityStart))
       .flatMap(_.set(IndexPage, index))
 
+  private def extractCountryOfNationality(countryOfNationality: Option[String], answers: UserAnswers): Try[UserAnswers] = {
+    if (answers.is5mldEnabled && answers.isUnderlyingData5mld) {
+      countryOfNationality match {
+        case Some(GB) => answers
+          .set(CountryOfNationalityYesNoPage, true)
+          .flatMap(_.set(CountryOfNationalityUkYesNoPage, true))
+          .flatMap(_.set(CountryOfNationalityPage, GB))
+        case Some(country) => answers
+          .set(CountryOfNationalityYesNoPage, true)
+          .flatMap(_.set(CountryOfNationalityUkYesNoPage, false))
+          .flatMap(_.set(CountryOfNationalityPage, country))
+        case None => answers
+          .set(CountryOfNationalityYesNoPage, false)
+      }
+    } else {
+      Success(answers)
+    }
+  }
+  
+  private def extractCountryOfResidence(countryOfResidence: Option[String], answers: UserAnswers): Try[UserAnswers] = {
+    if (answers.is5mldEnabled && answers.isUnderlyingData5mld) {
+      countryOfResidence match {
+        case Some(GB) => answers
+          .set(CountryOfResidenceYesNoPage, true)
+          .flatMap(_.set(CountryOfResidenceUkYesNoPage, true))
+          .flatMap(_.set(CountryOfResidencePage, GB))
+        case Some(country) => answers
+          .set(CountryOfResidenceYesNoPage, true)
+          .flatMap(_.set(CountryOfResidenceUkYesNoPage, false))
+          .flatMap(_.set(CountryOfResidencePage, country))
+        case None => answers
+          .set(CountryOfResidenceYesNoPage, false)
+      }
+    } else {
+      Success(answers)
+    }
+  }
+  
   private def extractAddress(address: Option[Address], answers: UserAnswers) : Try[UserAnswers] = {
     address match {
       case Some(uk: UkAddress) =>
@@ -44,8 +86,10 @@ class IndividualSettlorExtractor @Inject()() {
         answers.set(AddressYesNoPage, true)
           .flatMap(_.set(LiveInTheUkYesNoPage, false))
           .flatMap(_.set(NonUkAddressPage, nonUk))
-      case _ =>
+      case _ if answers.isTaxable =>
         answers.set(AddressYesNoPage, false)
+      case _ =>
+        Success(answers)
     }
   }
 
@@ -80,8 +124,10 @@ class IndividualSettlorExtractor @Inject()() {
         answers.set(NationalInsuranceNumberYesNoPage, false)
           .flatMap(_.set(PassportOrIdCardDetailsYesNoPage, true))
           .flatMap(_.set(PassportOrIdCardDetailsPage, combined))
-      case _ =>
+      case _ if answers.isTaxable =>
         answers.set(NationalInsuranceNumberYesNoPage, false)
+      case _ =>
+        Success(answers)
     }
   }
 }

@@ -17,8 +17,8 @@
 package utils.mappers
 
 import java.time.LocalDate
-
 import base.SpecBase
+import models.Constant.GB
 import models.{CombinedPassportOrIdCard, IdCard, Name, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress}
 import pages.individual.living._
 
@@ -195,4 +195,173 @@ class IndividualSettlorMapperSpec extends SpecBase {
     result.address mustBe Some(ukAddress)
     result.entityStart mustBe startDate
   }
+
+  "generate individual model with extra 5mld info" when {
+
+    "Uk country of nationality and residence" in {
+
+      val nino = "AA123456A"
+
+      val userAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isUnderlyingData5mld = true)
+        .set(NamePage, name).success.value
+        .set(DateOfBirthYesNoPage, true).success.value
+        .set(DateOfBirthPage, dateOfBirth).success.value
+        .set(CountryOfNationalityYesNoPage, true).success.value
+        .set(CountryOfNationalityUkYesNoPage, true).success.value
+        .set(NationalInsuranceNumberYesNoPage, true).success.value
+        .set(NationalInsuranceNumberPage, nino).success.value
+        .set(CountryOfResidenceYesNoPage, true).success.value
+        .set(CountryOfResidenceUkYesNoPage, true).success.value
+        .set(MentalCapacityYesNoPage, true).success.value
+        .set(StartDatePage, startDate).success.value
+
+      val result = mapper(userAnswers).get
+
+      result.name mustBe name
+      result.dateOfBirth mustBe Some(dateOfBirth)
+      result.countryOfNationality mustBe Some(GB)
+      result.identification mustBe Some(NationalInsuranceNumber(nino))
+      result.countryOfResidence mustBe Some(GB)
+      result.address mustBe None
+      result.mentalCapacityYesNo mustBe Some(true)
+      result.entityStart mustBe startDate
+    }
+
+    "Non Uk country of nationality and residence" in {
+
+      val nino = "AA123456A"
+
+      val userAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isUnderlyingData5mld = true)
+        .set(NamePage, name).success.value
+        .set(DateOfBirthYesNoPage, true).success.value
+        .set(DateOfBirthPage, dateOfBirth).success.value
+        .set(CountryOfNationalityYesNoPage, true).success.value
+        .set(CountryOfNationalityUkYesNoPage, false).success.value
+        .set(CountryOfNationalityPage, "FR").success.value
+        .set(NationalInsuranceNumberYesNoPage, true).success.value
+        .set(NationalInsuranceNumberPage, nino).success.value
+        .set(CountryOfResidenceYesNoPage, true).success.value
+        .set(CountryOfResidenceUkYesNoPage, false).success.value
+        .set(CountryOfResidencePage, "FR").success.value
+        .set(MentalCapacityYesNoPage, false).success.value
+        .set(StartDatePage, startDate).success.value
+
+      val result = mapper(userAnswers).get
+
+      result.name mustBe name
+      result.dateOfBirth mustBe Some(dateOfBirth)
+      result.countryOfNationality mustBe Some("FR")
+      result.identification mustBe Some(NationalInsuranceNumber(nino))
+      result.countryOfResidence mustBe Some("FR")
+      result.address mustBe None
+      result.mentalCapacityYesNo mustBe Some(false)
+      result.entityStart mustBe startDate
+    }
+
+    "No country of nationality and residence" in {
+
+      val nino = "AA123456A"
+
+      val userAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isUnderlyingData5mld = true)
+        .set(NamePage, name).success.value
+        .set(DateOfBirthYesNoPage, true).success.value
+        .set(DateOfBirthPage, dateOfBirth).success.value
+        .set(CountryOfNationalityYesNoPage, false).success.value
+        .set(NationalInsuranceNumberYesNoPage, true).success.value
+        .set(NationalInsuranceNumberPage, nino).success.value
+        .set(CountryOfResidenceYesNoPage, false).success.value
+        .set(MentalCapacityYesNoPage, true).success.value
+        .set(StartDatePage, startDate).success.value
+
+      val result = mapper(userAnswers).get
+
+      result.name mustBe name
+      result.dateOfBirth mustBe Some(dateOfBirth)
+      result.countryOfNationality mustNot be(defined)
+      result.identification mustBe Some(NationalInsuranceNumber(nino))
+      result.countryOfResidence  mustNot be(defined)
+      result.address mustBe None
+      result.mentalCapacityYesNo mustBe Some(true)
+      result.entityStart mustBe startDate
+    }
+  }
+
+  "generate individual model for a non taxable trust" when {
+
+    "Uk country of nationality and residence" in {
+
+      val userAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isUnderlyingData5mld = true, isTaxable = false)
+        .set(NamePage, name).success.value
+        .set(DateOfBirthYesNoPage, true).success.value
+        .set(DateOfBirthPage, dateOfBirth).success.value
+        .set(CountryOfNationalityYesNoPage, true).success.value
+        .set(CountryOfNationalityUkYesNoPage, true).success.value
+        .set(CountryOfResidenceYesNoPage, true).success.value
+        .set(CountryOfResidenceUkYesNoPage, true).success.value
+        .set(MentalCapacityYesNoPage, true).success.value
+        .set(StartDatePage, startDate).success.value
+
+      val result = mapper(userAnswers).get
+
+      result.name mustBe name
+      result.dateOfBirth mustBe Some(dateOfBirth)
+      result.countryOfNationality mustBe Some(GB)
+      result.identification mustBe None
+      result.countryOfResidence mustBe Some(GB)
+      result.address mustBe None
+      result.mentalCapacityYesNo mustBe Some(true)
+      result.entityStart mustBe startDate
+    }
+  }
+
+  "Non Uk country of nationality and residence" in {
+
+    val userAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isUnderlyingData5mld = true, isTaxable = false)
+      .set(NamePage, name).success.value
+      .set(DateOfBirthYesNoPage, true).success.value
+      .set(DateOfBirthPage, dateOfBirth).success.value
+      .set(CountryOfNationalityYesNoPage, true).success.value
+      .set(CountryOfNationalityUkYesNoPage, false).success.value
+      .set(CountryOfNationalityPage, "FR").success.value
+      .set(CountryOfResidenceYesNoPage, true).success.value
+      .set(CountryOfResidenceUkYesNoPage, false).success.value
+      .set(CountryOfResidencePage, "FR").success.value
+      .set(MentalCapacityYesNoPage, false).success.value
+      .set(StartDatePage, startDate).success.value
+
+    val result = mapper(userAnswers).get
+
+    result.name mustBe name
+    result.dateOfBirth mustBe Some(dateOfBirth)
+    result.countryOfNationality mustBe Some("FR")
+    result.identification mustBe None
+    result.countryOfResidence mustBe Some("FR")
+    result.address mustBe None
+    result.mentalCapacityYesNo mustBe Some(false)
+    result.entityStart mustBe startDate
+  }
+
+  "No country of nationality and residence" in {
+
+    val userAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isUnderlyingData5mld = true, isTaxable = false)
+      .set(NamePage, name).success.value
+      .set(DateOfBirthYesNoPage, true).success.value
+      .set(DateOfBirthPage, dateOfBirth).success.value
+      .set(CountryOfNationalityYesNoPage, false).success.value
+      .set(CountryOfResidenceYesNoPage, false).success.value
+      .set(MentalCapacityYesNoPage, true).success.value
+      .set(StartDatePage, startDate).success.value
+
+    val result = mapper(userAnswers).get
+
+    result.name mustBe name
+    result.dateOfBirth mustBe Some(dateOfBirth)
+    result.countryOfNationality mustNot be(defined)
+    result.identification mustBe None
+    result.countryOfResidence  mustNot be(defined)
+    result.address mustBe None
+    result.mentalCapacityYesNo mustBe Some(true)
+    result.entityStart mustBe startDate
+  }
+
 }

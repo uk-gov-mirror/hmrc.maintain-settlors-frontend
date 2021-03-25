@@ -66,7 +66,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
         val mockTrustService: TrustService = mock[TrustService]
 
         when(mockTrustService.getIndividualSettlor(any(), any())(any(), any()))
-          .thenReturn(Future.successful(IndividualSettlor(name, None, None, None, date, provisional = provisional)))
+          .thenReturn(Future.successful(IndividualSettlor(name, None, None, None, None, None, None, date, provisional = provisional)))
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[TrustService].toInstance(mockTrustService))

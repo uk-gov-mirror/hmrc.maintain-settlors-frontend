@@ -61,7 +61,7 @@ class IndexControllerSpec extends SpecBase {
       when(mockTrustConnector.getSettlors(any())(any(), any()))
         .thenReturn(Future.successful(
             Settlors(
-              settlor = List(IndividualSettlor(Name("Adam", None, "Test"), None, None, None, LocalDate.now, false)),
+              settlor = List(IndividualSettlor(Name("Adam", None, "Test"), None, None, None, None, None, None, LocalDate.now, false)),
               settlorCompany = Nil,
               deceased = Some(DeceasedSettlor(
                 None,

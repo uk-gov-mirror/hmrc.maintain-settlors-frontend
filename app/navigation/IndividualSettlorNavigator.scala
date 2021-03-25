@@ -16,14 +16,15 @@
 
 package navigation
 
-import controllers.individual.living.amend.{routes => amendRts}
 import controllers.individual.living.add.{routes => addRts}
+import controllers.individual.living.amend.{routes => amendRts}
 import controllers.individual.living.{routes => rts}
-import javax.inject.Inject
-import models.{CheckMode, Mode, NormalMode, TypeOfTrust, UserAnswers}
+import models.{Mode, NormalMode, TypeOfTrust, UserAnswers}
 import pages.Page
 import pages.individual.living._
 import play.api.mvc.Call
+
+import javax.inject.Inject
 
 class IndividualSettlorNavigator @Inject()() extends Navigator {
 
@@ -38,45 +39,100 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
 
   private def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case NamePage => _ => rts.DateOfBirthYesNoController.onPageLoad(mode)
-    case DateOfBirthPage => _ => rts.NationalInsuranceNumberYesNoController.onPageLoad(mode)
-    case PassportDetailsPage | IdCardDetailsPage => _ => addRts.StartDateController.onPageLoad()
-    case PassportOrIdCardDetailsPage => ua => checkDetailsRoute(ua)
+    case DateOfBirthPage => ua => navigateAwayFromDateOfBirthQuestions(ua.is5mldEnabled, mode)
+    case CountryOfNationalityPage => ua => navigateAwayFromCountryOfNationalityQuestions(mode, ua.isTaxable)
+    case NationalInsuranceNumberPage => ua => navigateAwayFromNinoPages(mode, ua)
+    case CountryOfResidencePage => ua => navigateAwayFromCountryOfResidenceQuestions(mode, ua)
+    case UkAddressPage | NonUkAddressPage => ua => navigateToPassportDetails(mode, ua)
+    case PassportDetailsPage | IdCardDetailsPage => ua => navigateToMentalCapacity(mode, ua)
+    case PassportOrIdCardDetailsPage => ua => navigateToMentalCapacity(mode, ua)
     case StartDatePage => _ => addRts.CheckDetailsController.onPageLoad()
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case DateOfBirthYesNoPage => ua =>
-      yesNoNav(ua, DateOfBirthYesNoPage, rts.DateOfBirthController.onPageLoad(mode), rts.NationalInsuranceNumberYesNoController.onPageLoad(mode))
+      yesNoNav(ua, DateOfBirthYesNoPage, rts.DateOfBirthController.onPageLoad(mode), navigateAwayFromDateOfBirthQuestions(ua.is5mldEnabled, mode))
+    case CountryOfNationalityYesNoPage => ua =>
+      yesNoNav(ua, CountryOfNationalityYesNoPage, rts.CountryOfNationalityUkYesNoController.onPageLoad(mode), navigateAwayFromCountryOfNationalityQuestions(mode, ua.isTaxable))
+    case CountryOfNationalityUkYesNoPage => ua =>
+      yesNoNav(ua, CountryOfNationalityUkYesNoPage, navigateAwayFromCountryOfNationalityQuestions(mode, ua.isTaxable), rts.CountryOfNationalityController.onPageLoad(mode))
     case NationalInsuranceNumberYesNoPage => ua =>
-      yesNoNav(ua, NationalInsuranceNumberYesNoPage, rts.NationalInsuranceNumberController.onPageLoad(mode), rts.AddressYesNoController.onPageLoad(mode))
+      yesNoNav(ua, NationalInsuranceNumberYesNoPage, rts.NationalInsuranceNumberController.onPageLoad(mode), navigateAwayFromNinoPages(mode, ua))
+    case CountryOfResidenceYesNoPage => ua =>
+      yesNoNav(ua, CountryOfResidenceYesNoPage, rts.CountryOfResidenceUkYesNoController.onPageLoad(mode), navigateAwayFromCountryOfResidenceQuestions(mode, ua))
+    case CountryOfResidenceUkYesNoPage => ua =>
+      yesNoNav(ua, CountryOfResidenceUkYesNoPage, navigateAwayFromCountryOfResidenceQuestions(mode, ua), rts.CountryOfResidenceController.onPageLoad(mode))
     case LiveInTheUkYesNoPage => ua =>
       yesNoNav(ua, LiveInTheUkYesNoPage, rts.UkAddressController.onPageLoad(mode), rts.NonUkAddressController.onPageLoad(mode))
+    case AddressYesNoPage => ua =>
+      yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(mode), navigateToMentalCapacity(mode, ua))
     case PassportDetailsYesNoPage => ua =>
       yesNoNav(ua, PassportDetailsYesNoPage, addRts.PassportDetailsController.onPageLoad(), addRts.IdCardDetailsYesNoController.onPageLoad())
     case IdCardDetailsYesNoPage => ua =>
-      yesNoNav(ua, IdCardDetailsYesNoPage, addRts.IdCardDetailsController.onPageLoad(), addRts.StartDateController.onPageLoad())
+      yesNoNav(ua, IdCardDetailsYesNoPage, addRts.IdCardDetailsController.onPageLoad(), navigateToMentalCapacity(mode, ua))
     case PassportOrIdCardDetailsYesNoPage => ua =>
-      yesNoNav(ua, PassportOrIdCardDetailsYesNoPage, amendRts.PassportOrIdCardDetailsController.onPageLoad(), checkDetailsRoute(ua))
+      yesNoNav(ua, PassportOrIdCardDetailsYesNoPage, amendRts.PassportOrIdCardDetailsController.onPageLoad(), navigateToMentalCapacity(mode, ua))
+    case MentalCapacityYesNoPage => ua =>
+      yesNoNav(ua, MentalCapacityYesNoPage, navigateToStartDateOrCheckDetails(mode, ua), navigateToStartDateOrCheckDetails(mode, ua))
   }
 
-  private def navigationWithCheck(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    mode match {
-      case NormalMode => {
-        case NationalInsuranceNumberPage => _ =>
-          addRts.StartDateController.onPageLoad()
-        case AddressYesNoPage => ua =>
-          yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(mode), addRts.StartDateController.onPageLoad())
-        case UkAddressPage | NonUkAddressPage => _ =>
-          addRts.PassportDetailsYesNoController.onPageLoad()
-      }
-      case CheckMode => {
-        case NationalInsuranceNumberPage => ua =>
-          checkDetailsRoute(ua)
-        case AddressYesNoPage => ua =>
-          yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(mode), checkDetailsRoute(ua))
-        case UkAddressPage | NonUkAddressPage => _ =>
-          amendRts.PassportOrIdCardDetailsYesNoController.onPageLoad()
-      }
+  private def navigateToPassportDetails(mode: Mode, answers: UserAnswers) = {
+    if (mode == NormalMode) {
+      addRts.PassportDetailsYesNoController.onPageLoad()
+    } else {
+      amendRts.PassportOrIdCardDetailsYesNoController.onPageLoad()
+    }
+  }
+
+  private def navigateAwayFromDateOfBirthQuestions(is5mldEnabled: Boolean, mode: Mode): Call = {
+    if (is5mldEnabled) {
+      rts.CountryOfNationalityYesNoController.onPageLoad(mode)
+    } else {
+      rts.NationalInsuranceNumberYesNoController.onPageLoad(mode)
+    }
+  }
+
+  private def navigateAwayFromNinoPages(mode: Mode, answers: UserAnswers): Call = {
+    (answers.is5mldEnabled, isNinoDefined(answers)) match {
+      case (true, _) => rts.CountryOfResidenceYesNoController.onPageLoad(mode)
+      case (false, true) => navigateToStartDateOrCheckDetails(mode, answers)
+      case (false, _) => rts.AddressYesNoController.onPageLoad(mode)
+    }
+  }
+
+  private def navigateAwayFromCountryOfNationalityQuestions(mode: Mode, isTaxable: Boolean): Call = {
+    if (isTaxable) {
+      rts.NationalInsuranceNumberYesNoController.onPageLoad(mode)
+    } else {
+      rts.CountryOfResidenceYesNoController.onPageLoad(mode)
+    }
+  }
+
+  private def navigateAwayFromCountryOfResidenceQuestions(mode: Mode, ua: UserAnswers): Call = {
+    if (isNinoDefined(ua) || !ua.isTaxable) {
+      rts.MentalCapacityYesNoController.onPageLoad(mode)
+    } else {
+      rts.AddressYesNoController.onPageLoad(mode)
+    }
+  }
+
+  private def navigateToMentalCapacity(mode: Mode, ua: UserAnswers): Call = {
+    if (ua.is5mldEnabled) {
+      rts.MentalCapacityYesNoController.onPageLoad(mode)
+    } else {
+      navigateToStartDateOrCheckDetails(mode, ua)
+    }
+  }
+
+  private def isNinoDefined(ua: UserAnswers): Boolean = {
+    ua.get(NationalInsuranceNumberYesNoPage).getOrElse(false)
+  }
+
+  private def navigateToStartDateOrCheckDetails(mode: Mode, answers: UserAnswers): Call = {
+    if (mode == NormalMode) {
+      addRts.StartDateController.onPageLoad()
+    } else {
+      checkDetailsRoute(answers)
     }
   }
 
@@ -91,8 +147,7 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
 
   def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
     simpleNavigation(mode) orElse
-      yesNoNavigation(mode) orElse
-      navigationWithCheck(mode)
+      yesNoNavigation(mode)
 
 }
 

@@ -58,8 +58,11 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
   private def individualSettlor(provisional: Boolean) = IndividualSettlor(
     name = Name(firstName = "First", middleName = None, lastName = "Last"),
     dateOfBirth = Some(LocalDate.parse("1983-09-24")),
+    countryOfNationality = None,
+    countryOfResidence = None,
     identification = Some(NationalInsuranceNumber("JS123456A")),
     address = None,
+    mentalCapacityYesNo = None,
     entityStart = LocalDate.parse("2019-02-28"),
     provisional = provisional
   )
