@@ -18,8 +18,7 @@ package pages.individal.living
 
 import models.{UkAddress, UserAnswers}
 import pages.behaviours.PageBehaviours
-import pages.business.CountryOfResidenceInTheUkYesNoPage
-import pages.individual.living.{AddressYesNoPage, CountryOfResidencePage, CountryOfResidenceUkYesNoPage, CountryOfResidenceYesNoPage, LiveInTheUkYesNoPage, UkAddressPage}
+import pages.individual.living._
 
 import java.time.LocalDate
 
@@ -44,7 +43,7 @@ class CountryOfResidenceYesNoPageSpec extends PageBehaviours {
 
       val result = userAnswers.set(CountryOfResidenceYesNoPage, false).success.value
 
-      result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
+      result.get(CountryOfResidenceUkYesNoPage) mustBe None
       result.get(CountryOfResidencePage) mustBe None
       result.get(AddressYesNoPage) mustBe Some(false)
     }
