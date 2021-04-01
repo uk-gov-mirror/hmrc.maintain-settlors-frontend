@@ -26,7 +26,7 @@ import scala.util.{Success, Try}
 
 class IndividualSettlorExtractor @Inject()() {
 
-  def apply(answers: UserAnswers, individual : IndividualSettlor, index: Int): Try[UserAnswers] =
+  def apply(answers: UserAnswers, individual: IndividualSettlor, index: Int): Try[UserAnswers] =
     answers.deleteAtPath(pages.individual.living.basePath)
       .flatMap(_.set(NamePage, individual.name))
       .flatMap(answers => extractDateOfBirth(individual, answers))
@@ -56,7 +56,7 @@ class IndividualSettlorExtractor @Inject()() {
       Success(answers)
     }
   }
-  
+
   private def extractCountryOfResidence(countryOfResidence: Option[String], answers: UserAnswers): Try[UserAnswers] = {
     if (answers.is5mldEnabled && answers.isUnderlyingData5mld) {
       countryOfResidence match {
@@ -75,8 +75,8 @@ class IndividualSettlorExtractor @Inject()() {
       Success(answers)
     }
   }
-  
-  private def extractAddress(address: Option[Address], answers: UserAnswers) : Try[UserAnswers] = {
+
+  private def extractAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
     address match {
       case Some(uk: UkAddress) =>
         answers.set(AddressYesNoPage, true)
@@ -93,8 +93,7 @@ class IndividualSettlorExtractor @Inject()() {
     }
   }
 
-  private def extractDateOfBirth(individual: IndividualSettlor, answers: UserAnswers) : Try[UserAnswers] =
-  {
+  private def extractDateOfBirth(individual: IndividualSettlor, answers: UserAnswers): Try[UserAnswers] = {
     individual.dateOfBirth match {
       case Some(dob) =>
         answers.set(DateOfBirthYesNoPage, true)
@@ -106,28 +105,39 @@ class IndividualSettlorExtractor @Inject()() {
   }
 
   private def extractIdentification(individual: IndividualSettlor,
-                                    answers: UserAnswers) : Try[UserAnswers] =
-  {
-    individual.identification match {
-      case Some(NationalInsuranceNumber(nino)) =>
-        answers.set(NationalInsuranceNumberYesNoPage, true)
+                                    answers: UserAnswers): Try[UserAnswers] = {
+    if (answers.isTaxable) {
+      individual.identification match {
+        case Some(NationalInsuranceNumber(nino)) => answers
+          .set(NationalInsuranceNumberYesNoPage, true)
           .flatMap(_.set(NationalInsuranceNumberPage, nino))
-      case Some(p : Passport) =>
-        answers.set(NationalInsuranceNumberYesNoPage, false)
+        case Some(p: Passport) => answers
+          .set(NationalInsuranceNumberYesNoPage, false)
           .flatMap(_.set(PassportOrIdCardDetailsYesNoPage, true))
           .flatMap(_.set(PassportOrIdCardDetailsPage, p.asCombined))
-      case Some(id: IdCard) =>
-        answers.set(NationalInsuranceNumberYesNoPage, false)
+        case Some(id: IdCard) => answers
+          .set(NationalInsuranceNumberYesNoPage, false)
           .flatMap(_.set(PassportOrIdCardDetailsYesNoPage, true))
           .flatMap(_.set(PassportOrIdCardDetailsPage, id.asCombined))
-      case Some(combined: CombinedPassportOrIdCard) =>
-        answers.set(NationalInsuranceNumberYesNoPage, false)
+        case Some(combined: CombinedPassportOrIdCard) => answers
+          .set(NationalInsuranceNumberYesNoPage, false)
           .flatMap(_.set(PassportOrIdCardDetailsYesNoPage, true))
           .flatMap(_.set(PassportOrIdCardDetailsPage, combined))
-      case _ if answers.isTaxable =>
-        answers.set(NationalInsuranceNumberYesNoPage, false)
-      case _ =>
-        Success(answers)
+        case _ => answers
+          .set(NationalInsuranceNumberYesNoPage, false)
+          .flatMap(answers => extractPassportOrIdCardDetailsYesNo(individual.address, answers))
+      }
+    } else {
+      Success(answers)
     }
   }
+
+  private def extractPassportOrIdCardDetailsYesNo(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
+    if (address.isDefined) {
+      answers.set(PassportOrIdCardDetailsYesNoPage, false)
+    } else {
+      Success(answers)
+    }
+  }
+  
 }

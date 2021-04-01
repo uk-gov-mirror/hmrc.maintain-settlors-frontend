@@ -156,7 +156,7 @@ class IndividualSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyChe
     result.get(LiveInTheUkYesNoPage).get mustBe true
     result.get(UkAddressPage).get mustBe address
     result.get(NonUkAddressPage) mustNot be(defined)
-    result.get(PassportOrIdCardDetailsYesNoPage) mustNot be(defined)
+    result.get(PassportOrIdCardDetailsYesNoPage).get mustBe false
     result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
     result.get(MentalCapacityYesNoPage) mustNot be(defined)
   }
