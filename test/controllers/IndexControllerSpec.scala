@@ -16,8 +16,6 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import base.SpecBase
 import connectors.TrustConnector
 import models.settlors.{DeceasedSettlor, IndividualSettlor, Settlors}
@@ -27,16 +25,17 @@ import org.mockito.Matchers.any
 import org.mockito.Mockito._
 import pages.AdditionalSettlorsYesNoPage
 import play.api.inject.bind
-import play.api.libs.json.JsBoolean
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.FeatureFlagService
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class IndexControllerSpec extends SpecBase {
 
   "Index Controller" must {
+
     val identifier = "1234567890"
     val startDate = "2019-06-01"
     val typeOfTrust = Some(TypeOfTrust.WillTrustOrIntestacyTrust)
@@ -61,7 +60,7 @@ class IndexControllerSpec extends SpecBase {
       when(mockTrustConnector.getSettlors(any())(any(), any()))
         .thenReturn(Future.successful(
             Settlors(
-              settlor = List(IndividualSettlor(Name("Adam", None, "Test"), None, None, None, None, None, None, LocalDate.now, false)),
+              settlor = List(IndividualSettlor(Name("Adam", None, "Test"), None, None, None, None, None, None, LocalDate.now, provisional = false)),
               settlorCompany = Nil,
               deceased = Some(DeceasedSettlor(
                 None,
@@ -73,7 +72,7 @@ class IndexControllerSpec extends SpecBase {
         ))
 
       when(mockTrustConnector.getIsDeceasedSettlorDateOfDeathRecorded(any())(any(), any()))
-        .thenReturn(Future.successful(JsBoolean(true)))
+        .thenReturn(Future.successful(true))
 
       val application = applicationBuilder(userAnswers = None)
         .overrides(
@@ -130,7 +129,7 @@ class IndexControllerSpec extends SpecBase {
         ))
 
       when(mockTrustConnector.getIsDeceasedSettlorDateOfDeathRecorded(any())(any(), any()))
-        .thenReturn(Future.successful(JsBoolean(true)))
+        .thenReturn(Future.successful(true))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.set(AdditionalSettlorsYesNoPage, true).success.value))
         .overrides(
@@ -163,7 +162,7 @@ class IndexControllerSpec extends SpecBase {
         .thenReturn(Future.successful(isUnderlyingData5mld))
 
       when(mockTrustConnector.getIsDeceasedSettlorDateOfDeathRecorded(any())(any(), any()))
-        .thenReturn(Future.successful(JsBoolean(true)))
+        .thenReturn(Future.successful(true))
 
       when(mockTrustConnector.getSettlors(any())(any(), any()))
         .thenReturn(Future.successful(

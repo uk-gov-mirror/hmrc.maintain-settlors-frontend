@@ -17,14 +17,13 @@
 package connectors
 
 import config.FrontendAppConfig
-import javax.inject.Inject
 import models.settlors.{BusinessSettlor, DeceasedSettlor, IndividualSettlor, Settlors}
 import models.{RemoveSettlor, TrustDetails}
-import play.api.libs.json.{JsBoolean, JsValue, Json}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.http.HttpClient
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HttpReads.Implicits.{readFromJson, readRaw}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TrustConnector @Inject()(http: HttpClient, config: FrontendAppConfig) {
@@ -45,9 +44,9 @@ class TrustConnector @Inject()(http: HttpClient, config: FrontendAppConfig) {
   }
 
   def getIsDeceasedSettlorDateOfDeathRecorded(identifier: String)
-                                             (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JsBoolean] = {
+                                             (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
     val url: String = s"$settlorsUrl/$identifier/transformed/deceased-settlor-death-recorded"
-    http.GET[JsBoolean](url)
+    http.GET[Boolean](url)
   }
 
   def addIndividualSettlor(identifier: String, settlor: IndividualSettlor)

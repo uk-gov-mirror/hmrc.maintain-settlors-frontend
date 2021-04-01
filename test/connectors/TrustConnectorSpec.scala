@@ -543,7 +543,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
         whenReady(processed) {
           result =>
-            result.value mustBe true
+            result mustBe true
         }
 
         application.stop()
