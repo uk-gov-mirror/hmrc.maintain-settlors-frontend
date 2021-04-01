@@ -77,30 +77,31 @@ class IndividualSettlorExtractor @Inject()() {
   }
 
   private def extractAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
-    address match {
-      case Some(uk: UkAddress) =>
-        answers.set(AddressYesNoPage, true)
+    if (answers.isTaxable) {
+      address match {
+        case Some(uk: UkAddress) => answers
+          .set(AddressYesNoPage, true)
           .flatMap(_.set(LiveInTheUkYesNoPage, true))
           .flatMap(_.set(UkAddressPage, uk))
-      case Some(nonUk: NonUkAddress) =>
-        answers.set(AddressYesNoPage, true)
+        case Some(nonUk: NonUkAddress) => answers
+          .set(AddressYesNoPage, true)
           .flatMap(_.set(LiveInTheUkYesNoPage, false))
           .flatMap(_.set(NonUkAddressPage, nonUk))
-      case _ if answers.isTaxable =>
-        answers.set(AddressYesNoPage, false)
-      case _ =>
-        Success(answers)
+        case _ => answers
+          .set(AddressYesNoPage, false)
+      }
+    } else {
+      Success(answers)
     }
   }
 
   private def extractDateOfBirth(individual: IndividualSettlor, answers: UserAnswers): Try[UserAnswers] = {
     individual.dateOfBirth match {
-      case Some(dob) =>
-        answers.set(DateOfBirthYesNoPage, true)
-          .flatMap(_.set(DateOfBirthPage, dob))
-      case None =>
-        // Assumption that user answered no as dob is not provided
-        answers.set(DateOfBirthYesNoPage, false)
+      case Some(dob) => answers
+        .set(DateOfBirthYesNoPage, true)
+        .flatMap(_.set(DateOfBirthPage, dob))
+      case None => answers
+        .set(DateOfBirthYesNoPage, false)
     }
   }
 
@@ -139,5 +140,5 @@ class IndividualSettlorExtractor @Inject()() {
       Success(answers)
     }
   }
-  
+
 }
