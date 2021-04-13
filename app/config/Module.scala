@@ -20,7 +20,7 @@ import com.google.inject.AbstractModule
 import config.annotations.{DeceasedSettlor, LivingSettlor, _}
 import controllers.actions._
 import navigation.{DeceasedSettlorNavigator, IndividualSettlorNavigator, Navigator, _}
-import repositories.{MongoDriver, PlaybackRepository, PlaybackRepositoryImpl, TrustsMongoDriver}
+import repositories.{ActiveSessionRepository, ActiveSessionRepositoryImpl, MongoDriver, PlaybackRepository, PlaybackRepositoryImpl, TrustsMongoDriver}
 import services.{AuthenticationService, AuthenticationServiceImpl}
 
 class Module extends AbstractModule {
