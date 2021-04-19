@@ -24,35 +24,30 @@ import viewmodels.{AnswerRow, AnswerSection}
 
 class BusinessSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
-  def apply(userAnswers: UserAnswers, provisional: Boolean, settlorName: String)(implicit messages: Messages): AnswerSection = {
+  def apply(userAnswers: UserAnswers, provisional: Boolean, settlorName: String)
+           (implicit messages: Messages): AnswerSection = {
 
     val bound = answerRowConverter.bind(userAnswers, settlorName)
 
-    def answerRows(mode: Mode): Seq[Option[AnswerRow]] = Seq(
-      bound.stringQuestion(NamePage, "businessSettlor.name", Some(controllers.business.routes.NameController.onPageLoad(mode).url)),
-      bound.yesNoQuestion(UtrYesNoPage, "businessSettlor.utrYesNo", Some(controllers.business.routes.UtrYesNoController.onPageLoad(mode).url)),
-      bound.stringQuestion(UtrPage, "businessSettlor.utr", Some(controllers.business.routes.UtrController.onPageLoad(mode).url)),
-      bound.yesNoQuestion(CountryOfResidenceYesNoPage, "businessSettlor.countryOfResidenceYesNo", Some(controllers.business.routes.CountryOfResidenceYesNoController.onPageLoad(mode).url)),
-      bound.yesNoQuestion(CountryOfResidenceInTheUkYesNoPage, "businessSettlor.countryOfResidenceInTheUkYesNo", Some(controllers.business.routes.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode).url)),
-      bound.countryQuestion(CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, "businessSettlor.countryOfResidence", Some(controllers.business.routes.CountryOfResidenceController.onPageLoad(mode).url)),
-      bound.yesNoQuestion(AddressYesNoPage, "businessSettlor.addressYesNo", Some(controllers.business.routes.AddressYesNoController.onPageLoad(mode).url)),
-      bound.yesNoQuestion(LiveInTheUkYesNoPage, "businessSettlor.liveInTheUkYesNo", Some(controllers.business.routes.LiveInTheUkYesNoController.onPageLoad(mode).url)),
-      bound.addressQuestion(UkAddressPage, "businessSettlor.ukAddress", Some(controllers.business.routes.UkAddressController.onPageLoad(mode).url)),
-      bound.addressQuestion(NonUkAddressPage, "businessSettlor.nonUkAddress", Some(controllers.business.routes.NonUkAddressController.onPageLoad(mode).url)),
-      bound.companyTypeQuestion(CompanyTypePage, "businessSettlor.companyType", Some(controllers.business.routes.CompanyTypeController.onPageLoad(mode).url)),
-      bound.yesNoQuestion(CompanyTimePage, "businessSettlor.companyTime", Some(controllers.business.routes.CompanyTimeController.onPageLoad(mode).url))
-    )
-
-    lazy val add: Seq[AnswerRow] = (
-      answerRows(NormalMode) :+
-        bound.dateQuestion(StartDatePage, "businessSettlor.startDate", Some(controllers.business.routes.StartDateController.onPageLoad().url))
+    def answerRows: Seq[AnswerRow] = {
+      val mode: Mode = if (provisional) NormalMode else CheckMode
+      Seq(
+        bound.stringQuestion(NamePage, "businessSettlor.name", Some(controllers.business.routes.NameController.onPageLoad(mode).url)),
+        bound.yesNoQuestion(UtrYesNoPage, "businessSettlor.utrYesNo", Some(controllers.business.routes.UtrYesNoController.onPageLoad(mode).url)),
+        bound.stringQuestion(UtrPage, "businessSettlor.utr", Some(controllers.business.routes.UtrController.onPageLoad(mode).url)),
+        bound.yesNoQuestion(CountryOfResidenceYesNoPage, "businessSettlor.countryOfResidenceYesNo", Some(controllers.business.routes.CountryOfResidenceYesNoController.onPageLoad(mode).url)),
+        bound.yesNoQuestion(CountryOfResidenceInTheUkYesNoPage, "businessSettlor.countryOfResidenceInTheUkYesNo", Some(controllers.business.routes.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode).url)),
+        bound.countryQuestion(CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, "businessSettlor.countryOfResidence", Some(controllers.business.routes.CountryOfResidenceController.onPageLoad(mode).url)),
+        bound.yesNoQuestion(AddressYesNoPage, "businessSettlor.addressYesNo", Some(controllers.business.routes.AddressYesNoController.onPageLoad(mode).url)),
+        bound.yesNoQuestion(LiveInTheUkYesNoPage, "businessSettlor.liveInTheUkYesNo", Some(controllers.business.routes.LiveInTheUkYesNoController.onPageLoad(mode).url)),
+        bound.addressQuestion(UkAddressPage, "businessSettlor.ukAddress", Some(controllers.business.routes.UkAddressController.onPageLoad(mode).url)),
+        bound.addressQuestion(NonUkAddressPage, "businessSettlor.nonUkAddress", Some(controllers.business.routes.NonUkAddressController.onPageLoad(mode).url)),
+        bound.companyTypeQuestion(CompanyTypePage, "businessSettlor.companyType", Some(controllers.business.routes.CompanyTypeController.onPageLoad(mode).url)),
+        bound.yesNoQuestion(CompanyTimePage, "businessSettlor.companyTime", Some(controllers.business.routes.CompanyTimeController.onPageLoad(mode).url)),
+        if (mode == NormalMode) bound.dateQuestion(StartDatePage, "businessSettlor.startDate", Some(controllers.business.routes.StartDateController.onPageLoad().url)) else None
       ).flatten
+    }
 
-    lazy val amend: Seq[AnswerRow] = answerRows(CheckMode).flatten
-
-    AnswerSection(
-      None,
-      if (provisional) add else amend
-    )
+    AnswerSection(headingKey = None, rows = answerRows)
   }
 }
