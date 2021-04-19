@@ -16,15 +16,16 @@
 
 package extractors
 
-import java.time.LocalDate
 import generators.ModelGenerators
 import models.Constant.GB
 import models.settlors.IndividualSettlor
 import models.{CombinedPassportOrIdCard, Name, NationalInsuranceNumber, UkAddress, UserAnswers}
-import pages.individual.living._
 import org.scalatest.{FreeSpec, MustMatchers}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.individual.living._
 import play.api.libs.json.Json
+
+import java.time.LocalDate
 
 class IndividualSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyChecks with ModelGenerators with MustMatchers {
 
@@ -62,7 +63,7 @@ class IndividualSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyChe
       provisional = true
     )
 
-    val result = extractor(answers, individual, index).get
+    val result = extractor(answers, individual, Some(index)).get
 
     result.get(IndexPage).get mustBe index
     result.get(NamePage).get mustBe name
@@ -101,7 +102,7 @@ class IndividualSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyChe
       provisional = true
     )
 
-    val result = extractor(answers, individual, index).get
+    val result = extractor(answers, individual, Some(index)).get
 
     result.get(IndexPage).get mustBe index
     result.get(NamePage).get mustBe name
@@ -138,7 +139,7 @@ class IndividualSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyChe
       provisional = true
     )
 
-    val result = extractor(answers, individual, index).get
+    val result = extractor(answers, individual, Some(index)).get
 
     result.get(IndexPage).get mustBe index
     result.get(NamePage).get mustBe name
@@ -175,7 +176,7 @@ class IndividualSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyChe
       provisional = true
     )
 
-    val result = extractor(answers, individual, index).get
+    val result = extractor(answers, individual, Some(index)).get
 
     result.get(IndexPage).get mustBe index
     result.get(NamePage).get mustBe name
@@ -218,7 +219,7 @@ class IndividualSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyChe
 
       val answers5mld = answers.copy(is5mldEnabled = true, isUnderlyingData5mld = true)
 
-      val result = extractor(answers5mld, individual, index).get
+      val result = extractor(answers5mld, individual, Some(index)).get
 
       result.get(IndexPage).get mustBe index
       result.get(NamePage).get mustBe name
@@ -259,7 +260,7 @@ class IndividualSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyChe
 
       val answers5mld = answers.copy(is5mldEnabled = true, isUnderlyingData5mld = true)
 
-      val result = extractor(answers5mld, individual, index).get
+      val result = extractor(answers5mld, individual, Some(index)).get
 
       result.get(IndexPage).get mustBe index
       result.get(NamePage).get mustBe name
@@ -300,7 +301,7 @@ class IndividualSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyChe
 
       val answers5mld = answers.copy(is5mldEnabled = true, isUnderlyingData5mld = true)
 
-      val result = extractor(answers5mld, individual, index).get
+      val result = extractor(answers5mld, individual, Some(index)).get
 
       result.get(IndexPage).get mustBe index
       result.get(NamePage).get mustBe name
@@ -342,7 +343,7 @@ class IndividualSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyChe
 
       val answers5mld = answers.copy(is5mldEnabled = true, isUnderlyingData5mld = true, isTaxable = false)
 
-      val result = extractor(answers5mld, individual, index).get
+      val result = extractor(answers5mld, individual, Some(index)).get
 
       result.get(IndexPage).get mustBe index
       result.get(NamePage).get mustBe name
@@ -381,7 +382,7 @@ class IndividualSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyChe
 
       val answers5mld = answers.copy(is5mldEnabled = true, isUnderlyingData5mld = true, isTaxable = false)
 
-      val result = extractor(answers5mld, individual, index).get
+      val result = extractor(answers5mld, individual, Some(index)).get
 
       result.get(IndexPage).get mustBe index
       result.get(NamePage).get mustBe name
@@ -420,7 +421,7 @@ class IndividualSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyChe
 
       val answers5mld = answers.copy(is5mldEnabled = true, isUnderlyingData5mld = true, isTaxable = false)
 
-      val result = extractor(answers5mld, individual, index).get
+      val result = extractor(answers5mld, individual, Some(index)).get
 
       result.get(IndexPage).get mustBe index
       result.get(NamePage).get mustBe name

@@ -18,9 +18,13 @@ package models.settlors
 
 import play.api.i18n.{Messages, MessagesProvider}
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{Reads, __}
+import play.api.libs.json.{JsPath, JsSuccess, Reads, __}
 
-trait Settlor
+import java.time.LocalDate
+
+trait Settlor {
+  val startDate: Option[LocalDate]
+}
 
 case class Settlors(settlor: List[IndividualSettlor],
                     settlorCompany: List[BusinessSettlor],
@@ -51,4 +55,13 @@ object Settlors {
       and (__ \ "settlors" \ "settlorCompany").readWithDefault[List[BusinessSettlor]](Nil)
       and (__ \ "settlors" \ "deceased").readNullable[DeceasedSettlor]
       ).apply(Settlors.apply _)
+}
+
+trait SettlorReads {
+  def readNullableAtSubPath[T: Reads](subPath: JsPath): Reads[Option[T]] = Reads (
+    _.transform(subPath.json.pick)
+      .flatMap(_.validate[T])
+      .map(Some(_))
+      .recoverWith(_ => JsSuccess(None))
+  )
 }

@@ -65,7 +65,7 @@ class CheckDetailsController @Inject()(
       service.getIndividualSettlor(request.userAnswers.identifier, index) flatMap {
         trust =>
           for {
-            extractedF <- Future.fromTry(extractor(request.userAnswers, trust, index))
+            extractedF <- Future.fromTry(extractor(request.userAnswers, trust, Some(index)))
             _ <- playbackRepository.set(extractedF)
           } yield {
               render(extractedF, index, trust.name.displayName)

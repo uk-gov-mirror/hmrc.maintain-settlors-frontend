@@ -29,26 +29,29 @@ final case class BusinessSettlor(name: String,
                                  countryOfResidence: Option[String] = None,
                                  address: Option[Address],
                                  entityStart: LocalDate,
-                                 provisional : Boolean) extends Settlor
+                                 provisional: Boolean) extends Settlor {
 
-object BusinessSettlor {
+  override val startDate: Option[LocalDate] = Some(entityStart)
+}
 
-  implicit val reads: Reads[BusinessSettlor] =
-    ((__ \ 'name).read[String] and
+object BusinessSettlor extends SettlorReads {
+
+  implicit val reads: Reads[BusinessSettlor] = (
+    (__ \ 'name).read[String] and
       (__ \ 'companyType).readNullable[CompanyType] and
       (__ \ 'companyTime).readNullable[Boolean] and
       __.lazyRead(readNullableAtSubPath[String](__ \ 'identification \ 'utr)) and
       (__ \ 'countryOfResidence).readNullable[String] and
       __.lazyRead(readNullableAtSubPath[Address](__ \ 'identification \ 'address)) and
       (__ \ "entityStart").read[LocalDate] and
-      (__ \ "provisional").readWithDefault(false)).tupled.map {
+      (__ \ "provisional").readWithDefault(false))
+    .tupled.map {
+    case (name, companyType, companyTime, identifier, countryOfResidence, address, entityStart, provisional) =>
+      BusinessSettlor(name, companyType, companyTime, identifier, countryOfResidence, address, entityStart, provisional)
+  }
 
-      case (name, companyType, companyTime, identifier, countryOfResidence, address, entityStart, provisional) =>
-        BusinessSettlor(name, companyType, companyTime, identifier, countryOfResidence, address, entityStart, provisional)
-    }
-
-  implicit val writes: Writes[BusinessSettlor] =
-    ((__ \ 'name).write[String] and
+  implicit val writes: Writes[BusinessSettlor] = (
+    (__ \ 'name).write[String] and
       (__ \ 'companyType).writeNullable[CompanyType] and
       (__ \ 'companyTime).writeNullable[Boolean] and
       (__ \ 'identification \ 'utr).writeNullable[String] and
@@ -56,12 +59,6 @@ object BusinessSettlor {
       (__ \ 'identification \ 'address).writeNullable[Address] and
       (__ \ "entityStart").write[LocalDate] and
       (__ \ "provisional").write[Boolean]
-      ).apply(unlift(BusinessSettlor.unapply))
+    ).apply(unlift(BusinessSettlor.unapply))
 
-  def readNullableAtSubPath[T:Reads](subPath : JsPath) : Reads[Option[T]] = Reads (
-    _.transform(subPath.json.pick)
-      .flatMap(_.validate[T])
-      .map(Some(_))
-      .recoverWith(_ => JsSuccess(None))
-  )
 }

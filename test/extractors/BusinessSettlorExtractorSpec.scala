@@ -16,13 +16,13 @@
 
 package extractors
 
-import java.time.LocalDate
-
 import base.SpecBase
 import models.Constant.GB
 import models.settlors.BusinessSettlor
 import models.{UkAddress, UserAnswers}
 import pages.business._
+
+import java.time.LocalDate
 
 class BusinessSettlorExtractorSpec extends SpecBase {
 
@@ -54,7 +54,7 @@ class BusinessSettlorExtractorSpec extends SpecBase {
             provisional = true
           )
 
-          val result = extractor(baseAnswers, business, index).get
+          val result = extractor(baseAnswers, business, Some(index)).get
 
           result.get(IndexPage).get mustBe index
           result.get(NamePage).get mustBe name
@@ -79,7 +79,7 @@ class BusinessSettlorExtractorSpec extends SpecBase {
             provisional = true
           )
 
-          val result = extractor(baseAnswers, business, index).get
+          val result = extractor(baseAnswers, business, Some(index)).get
 
           result.get(IndexPage).get mustBe index
           result.get(NamePage).get mustBe name
@@ -105,7 +105,7 @@ class BusinessSettlorExtractorSpec extends SpecBase {
             provisional = true
           )
 
-          val result = extractor(baseAnswers, business, index).get
+          val result = extractor(baseAnswers, business, Some(index)).get
 
           result.get(IndexPage).get mustBe index
           result.get(NamePage).get mustBe name
@@ -135,7 +135,7 @@ class BusinessSettlorExtractorSpec extends SpecBase {
                 provisional = true
               )
 
-              val result = extractor.apply(baseAnswers, business, index).get
+              val result = extractor.apply(baseAnswers, business, Some(index)).get
 
               result.get(IndexPage).get mustBe index
               result.get(NamePage).get mustBe name
@@ -163,7 +163,7 @@ class BusinessSettlorExtractorSpec extends SpecBase {
                 provisional = true
               )
 
-              val result = extractor.apply(baseAnswers, business, index).get
+              val result = extractor.apply(baseAnswers, business, Some(index)).get
 
               result.get(IndexPage).get mustBe index
               result.get(NamePage).get mustBe name
@@ -196,7 +196,7 @@ class BusinessSettlorExtractorSpec extends SpecBase {
                 provisional = true
               )
 
-              val result = extractor(baseAnswers, business, index).get
+              val result = extractor(baseAnswers, business, Some(index)).get
 
               result.get(IndexPage).get mustBe index
               result.get(NamePage).get mustBe name
@@ -224,7 +224,7 @@ class BusinessSettlorExtractorSpec extends SpecBase {
                 provisional = true
               )
 
-              val result = extractor.apply(baseAnswers, business, index).get
+              val result = extractor.apply(baseAnswers, business, Some(index)).get
 
               result.get(IndexPage).get mustBe index
               result.get(NamePage).get mustBe name
@@ -252,7 +252,7 @@ class BusinessSettlorExtractorSpec extends SpecBase {
                 provisional = true
               )
 
-              val result = extractor.apply(baseAnswers, business, index).get
+              val result = extractor.apply(baseAnswers, business, Some(index)).get
 
               result.get(IndexPage).get mustBe index
               result.get(NamePage).get mustBe name
@@ -280,7 +280,7 @@ class BusinessSettlorExtractorSpec extends SpecBase {
                 provisional = true
               )
 
-              val result = extractor.apply(baseAnswers, business, index).get
+              val result = extractor.apply(baseAnswers, business, Some(index)).get
 
               result.get(IndexPage).get mustBe index
               result.get(NamePage).get mustBe name
@@ -308,7 +308,7 @@ class BusinessSettlorExtractorSpec extends SpecBase {
                 provisional = true
               )
 
-              val result = extractor.apply(baseAnswers, business, index).get
+              val result = extractor.apply(baseAnswers, business, Some(index)).get
 
               result.get(IndexPage).get mustBe index
               result.get(NamePage).get mustBe name
@@ -342,7 +342,7 @@ class BusinessSettlorExtractorSpec extends SpecBase {
               provisional = true
             )
 
-            val result = extractor(baseAnswers, business, index).get
+            val result = extractor(baseAnswers, business, Some(index)).get
 
             result.get(IndexPage).get mustBe index
             result.get(NamePage).get mustBe name
@@ -370,7 +370,7 @@ class BusinessSettlorExtractorSpec extends SpecBase {
               provisional = true
             )
 
-            val result = extractor.apply(baseAnswers, business, index).get
+            val result = extractor.apply(baseAnswers, business, Some(index)).get
 
             result.get(IndexPage).get mustBe index
             result.get(NamePage).get mustBe name
@@ -398,7 +398,7 @@ class BusinessSettlorExtractorSpec extends SpecBase {
               provisional = true
             )
 
-            val result = extractor.apply(baseAnswers, business, index).get
+            val result = extractor.apply(baseAnswers, business, Some(index)).get
 
             result.get(IndexPage).get mustBe index
             result.get(NamePage).get mustBe name

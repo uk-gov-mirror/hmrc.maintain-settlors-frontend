@@ -16,18 +16,22 @@
 
 package extractors
 
-import com.google.inject.Inject
-import models.Constant.GB
 import models.settlors.IndividualSettlor
 import models.{Address, CombinedPassportOrIdCard, IdCard, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers}
+import pages.QuestionPage
 import pages.individual.living._
+import play.api.libs.json.JsPath
 
+import java.time.LocalDate
 import scala.util.{Success, Try}
 
-class IndividualSettlorExtractor @Inject()() {
+class IndividualSettlorExtractor extends SettlorExtractor[IndividualSettlor] {
 
-  def apply(answers: UserAnswers, individual: IndividualSettlor, index: Int): Try[UserAnswers] =
-    answers.deleteAtPath(pages.individual.living.basePath)
+  override def apply(answers: UserAnswers,
+                     individual: IndividualSettlor,
+                     index: Option[Int],
+                     hasAdditionalSettlors: Option[Boolean]): Try[UserAnswers] =
+    super.apply(answers, individual, index, hasAdditionalSettlors)
       .flatMap(_.set(NamePage, individual.name))
       .flatMap(answers => extractDateOfBirth(individual, answers))
       .flatMap(answers => extractCountryOfNationality(individual.countryOfNationality, answers))
@@ -35,78 +39,12 @@ class IndividualSettlorExtractor @Inject()() {
       .flatMap(answers => extractAddress(individual.address, answers))
       .flatMap(answers => extractIdentification(individual, answers))
       .flatMap(_.set(MentalCapacityYesNoPage, individual.mentalCapacityYesNo))
-      .flatMap(_.set(StartDatePage, individual.entityStart))
-      .flatMap(_.set(IndexPage, index))
-
-  private def extractCountryOfNationality(countryOfNationality: Option[String], answers: UserAnswers): Try[UserAnswers] = {
-    if (answers.is5mldEnabled && answers.isUnderlyingData5mld) {
-      countryOfNationality match {
-        case Some(GB) => answers
-          .set(CountryOfNationalityYesNoPage, true)
-          .flatMap(_.set(CountryOfNationalityUkYesNoPage, true))
-          .flatMap(_.set(CountryOfNationalityPage, GB))
-        case Some(country) => answers
-          .set(CountryOfNationalityYesNoPage, true)
-          .flatMap(_.set(CountryOfNationalityUkYesNoPage, false))
-          .flatMap(_.set(CountryOfNationalityPage, country))
-        case None => answers
-          .set(CountryOfNationalityYesNoPage, false)
-      }
-    } else {
-      Success(answers)
-    }
-  }
-
-  private def extractCountryOfResidence(countryOfResidence: Option[String], answers: UserAnswers): Try[UserAnswers] = {
-    if (answers.is5mldEnabled && answers.isUnderlyingData5mld) {
-      countryOfResidence match {
-        case Some(GB) => answers
-          .set(CountryOfResidenceYesNoPage, true)
-          .flatMap(_.set(CountryOfResidenceUkYesNoPage, true))
-          .flatMap(_.set(CountryOfResidencePage, GB))
-        case Some(country) => answers
-          .set(CountryOfResidenceYesNoPage, true)
-          .flatMap(_.set(CountryOfResidenceUkYesNoPage, false))
-          .flatMap(_.set(CountryOfResidencePage, country))
-        case None => answers
-          .set(CountryOfResidenceYesNoPage, false)
-      }
-    } else {
-      Success(answers)
-    }
-  }
-
-  private def extractAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
-    if (answers.isTaxable) {
-      address match {
-        case Some(uk: UkAddress) => answers
-          .set(AddressYesNoPage, true)
-          .flatMap(_.set(LiveInTheUkYesNoPage, true))
-          .flatMap(_.set(UkAddressPage, uk))
-        case Some(nonUk: NonUkAddress) => answers
-          .set(AddressYesNoPage, true)
-          .flatMap(_.set(LiveInTheUkYesNoPage, false))
-          .flatMap(_.set(NonUkAddressPage, nonUk))
-        case _ => answers
-          .set(AddressYesNoPage, false)
-      }
-    } else {
-      Success(answers)
-    }
-  }
 
   private def extractDateOfBirth(individual: IndividualSettlor, answers: UserAnswers): Try[UserAnswers] = {
-    individual.dateOfBirth match {
-      case Some(dob) => answers
-        .set(DateOfBirthYesNoPage, true)
-        .flatMap(_.set(DateOfBirthPage, dob))
-      case None => answers
-        .set(DateOfBirthYesNoPage, false)
-    }
+    extractConditionalAnswer(individual.dateOfBirth, answers, DateOfBirthYesNoPage, DateOfBirthPage)
   }
 
-  private def extractIdentification(individual: IndividualSettlor,
-                                    answers: UserAnswers): Try[UserAnswers] = {
+  private def extractIdentification(individual: IndividualSettlor, answers: UserAnswers): Try[UserAnswers] = {
     if (answers.isTaxable) {
       individual.identification match {
         case Some(NationalInsuranceNumber(nino)) => answers
@@ -140,5 +78,24 @@ class IndividualSettlorExtractor @Inject()() {
       Success(answers)
     }
   }
+
+  override def countryOfNationalityYesNoPage: QuestionPage[Boolean] = CountryOfNationalityYesNoPage
+  override def ukCountryOfNationalityYesNoPage: QuestionPage[Boolean] = CountryOfNationalityUkYesNoPage
+  override def countryOfNationalityPage: QuestionPage[String] = CountryOfNationalityPage
+
+  override def countryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceYesNoPage
+  override def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceUkYesNoPage
+  override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
+
+  override def addressYesNoPage: QuestionPage[Boolean] = AddressYesNoPage
+  override def ukAddressYesNoPage: QuestionPage[Boolean] = LiveInTheUkYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+  override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
+
+  override def startDatePage: QuestionPage[LocalDate] = StartDatePage
+
+  override def indexPage: QuestionPage[Int] = IndexPage
+
+  override def basePath: JsPath = pages.individual.living.basePath
 
 }

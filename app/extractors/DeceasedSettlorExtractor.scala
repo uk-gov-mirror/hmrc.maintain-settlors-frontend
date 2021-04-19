@@ -16,19 +16,21 @@
 
 package extractors
 
-import com.google.inject.Inject
 import models.settlors.DeceasedSettlor
-import models.{Address, BpMatchStatus, NationalInsuranceNumber, NonUkAddress, UkAddress, UserAnswers}
-import pages.AdditionalSettlorsYesNoPage
+import models.{BpMatchStatus, NationalInsuranceNumber, NonUkAddress, UkAddress, UserAnswers}
 import pages.individual.deceased._
+import pages.{AdditionalSettlorsYesNoPage, QuestionPage}
+import play.api.libs.json.JsPath
 
 import scala.util.{Success, Try}
 
-class DeceasedSettlorExtractor @Inject()() {
+class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
 
-  def apply(answers: UserAnswers, settlor: DeceasedSettlor, hasAdditionalSettlors: Boolean): Try[UserAnswers] =
-    answers
-      .deleteAtPath(pages.individual.deceased.basePath)
+  override def apply(answers: UserAnswers,
+                     settlor: DeceasedSettlor,
+                     index: Option[Int],
+                     hasAdditionalSettlors: Option[Boolean]): Try[UserAnswers] =
+    super.apply(answers, settlor, index, hasAdditionalSettlors)
       .flatMap(answers => extractBpMatchStatus(settlor.bpMatchStatus, answers))
       .flatMap(_.set(NamePage, settlor.name))
       .flatMap(answers => extractDateOfBirth(settlor, answers))
@@ -38,47 +40,15 @@ class DeceasedSettlorExtractor @Inject()() {
       .flatMap(answers => extractAdditionalSettlorsYesNo(hasAdditionalSettlors, answers))
 
   private def extractBpMatchStatus(bpMatchStatus: Option[BpMatchStatus], answers: UserAnswers): Try[UserAnswers] = {
-    bpMatchStatus match {
-      case Some(matchStatus) =>
-        answers.set(BpMatchStatusPage, matchStatus)
-      case _ =>
-        Success(answers)
-    }
-  }
-
-  private def extractAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
-    address match {
-      case Some(uk: UkAddress) =>
-        answers.set(AddressYesNoPage, true)
-          .flatMap(_.set(LivedInTheUkYesNoPage, true))
-          .flatMap(_.set(UkAddressPage, uk))
-      case Some(nonUk: NonUkAddress) =>
-        answers.set(AddressYesNoPage, true)
-          .flatMap(_.set(LivedInTheUkYesNoPage, false))
-          .flatMap(_.set(NonUkAddressPage, nonUk))
-      case _ =>
-        answers.set(AddressYesNoPage, false)
-    }
+    extractIfDefined(bpMatchStatus, BpMatchStatusPage, answers)
   }
 
   private def extractDateOfBirth(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
-    individual.dateOfBirth match {
-      case Some(dob) =>
-        answers.set(DateOfBirthYesNoPage, true)
-          .flatMap(_.set(DateOfBirthPage, dob))
-      case None =>
-        answers.set(DateOfBirthYesNoPage, false)
-    }
+    extractConditionalAnswer(individual.dateOfBirth, answers, DateOfBirthYesNoPage, DateOfBirthPage)
   }
 
   private def extractDateOfDeath(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
-    individual.dateOfDeath match {
-      case Some(dob) =>
-        answers.set(DateOfDeathYesNoPage, true)
-          .flatMap(_.set(DateOfDeathPage, dob))
-      case None =>
-        answers.set(DateOfDeathYesNoPage, false)
-    }
+    extractConditionalAnswer(individual.dateOfDeath, answers, DateOfDeathYesNoPage, DateOfDeathPage)
   }
 
   private def extractIdentification(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
@@ -91,12 +61,20 @@ class DeceasedSettlorExtractor @Inject()() {
     }
   }
 
-  private def extractAdditionalSettlorsYesNo(hasAdditionalSettlors: Boolean, answers: UserAnswers): Try[UserAnswers] = {
+  private def extractAdditionalSettlorsYesNo(hasAdditionalSettlors: Option[Boolean], answers: UserAnswers): Try[UserAnswers] = {
     (hasAdditionalSettlors, answers.get(AdditionalSettlorsYesNoPage)) match {
-      case (false, None) =>
+      case (Some(false), None) =>
         answers.set(AdditionalSettlorsYesNoPage, false)
       case _ =>
         Success(answers)
     }
   }
+
+  override def addressYesNoPage: QuestionPage[Boolean] = AddressYesNoPage
+  override def ukAddressYesNoPage: QuestionPage[Boolean] = LivedInTheUkYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+  override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
+
+  override def basePath: JsPath = pages.individual.deceased.basePath
+
 }
