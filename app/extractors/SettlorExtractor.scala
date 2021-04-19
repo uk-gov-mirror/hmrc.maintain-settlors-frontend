@@ -40,9 +40,6 @@ trait SettlorExtractor[T <: Settlor] {
 
   def utrPage: QuestionPage[String] = new EmptyPage[String]
 
-  def shareOfIncomeYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
-  def shareOfIncomePage: QuestionPage[Int] = new EmptyPage[Int]
-
   def countryOfNationalityYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
   def ukCountryOfNationalityYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
   def countryOfNationalityPage: QuestionPage[String] = new EmptyPage[String]
