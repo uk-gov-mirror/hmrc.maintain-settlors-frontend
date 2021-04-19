@@ -27,15 +27,18 @@ final case class IndividualSettlor(name: Name,
                                    countryOfNationality: Option[String],
                                    countryOfResidence: Option[String],
                                    identification: Option[IndividualIdentification],
-                                   address : Option[Address],
+                                   address: Option[Address],
                                    mentalCapacityYesNo: Option[Boolean],
                                    entityStart: LocalDate,
-                                   provisional : Boolean) extends Settlor
+                                   provisional: Boolean) extends Settlor {
 
-object IndividualSettlor {
+  override val startDate: Option[LocalDate] = Some(entityStart)
+}
 
-  implicit val reads: Reads[IndividualSettlor] =
-    ((__ \ 'name).read[Name] and
+object IndividualSettlor extends SettlorReads {
+
+  implicit val reads: Reads[IndividualSettlor] = (
+    (__ \ 'name).read[Name] and
       (__ \ 'dateOfBirth).readNullable[LocalDate] and
       (__ \ 'nationality).readNullable[String] and
       (__ \ 'countryOfResidence).readNullable[String] and
@@ -43,15 +46,14 @@ object IndividualSettlor {
       __.lazyRead(readNullableAtSubPath[Address](__ \ 'identification \ 'address)) and
       (__ \ 'legallyIncapable).readNullable[Boolean].map(_.map(!_)) and
       (__ \ "entityStart").read[LocalDate] and
-      (__ \ "provisional").readWithDefault(false)).tupled.map{
+      (__ \ "provisional").readWithDefault(false))
+    .tupled.map{
+    case (name, dob, countryOfNationality, countryOfResidence, nino, identification, mentalCapacity, entityStart, provisional) =>
+      IndividualSettlor(name, dob, countryOfNationality, countryOfResidence, nino, identification, mentalCapacity, entityStart, provisional)
+  }
 
-      case (name, dob, countryOfNationality, countryOfResidence, nino, identification, mentalCapacity, entityStart, provisional) =>
-        IndividualSettlor(name, dob, countryOfNationality, countryOfResidence, nino, identification, mentalCapacity, entityStart, provisional)
-
-    }
-
-  implicit val writes: Writes[IndividualSettlor] =
-    ((__ \ 'name).write[Name] and
+  implicit val writes: Writes[IndividualSettlor] = (
+    (__ \ 'name).write[Name] and
       (__ \ 'dateOfBirth).writeNullable[LocalDate] and
       (__ \ 'nationality).writeNullable[String] and
       (__ \ 'countryOfResidence).writeNullable[String] and
@@ -60,12 +62,6 @@ object IndividualSettlor {
       (__ \ 'legallyIncapable).writeNullable[Boolean](x => JsBoolean(!x)) and
       (__ \ "entityStart").write[LocalDate] and
       (__ \ "provisional").write[Boolean]
-      ).apply(unlift(IndividualSettlor.unapply))
+    ).apply(unlift(IndividualSettlor.unapply))
 
-  def readNullableAtSubPath[T:Reads](subPath : JsPath) : Reads[Option[T]] = Reads (
-    _.transform(subPath.json.pick)
-      .flatMap(_.validate[T])
-      .map(Some(_))
-      .recoverWith(_ => JsSuccess(None))
-  )
 }

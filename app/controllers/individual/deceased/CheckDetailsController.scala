@@ -21,7 +21,6 @@ import connectors.{TrustConnector, TrustStoreConnector}
 import controllers.actions._
 import controllers.actions.individual.deceased.NameRequiredAction
 import extractors.DeceasedSettlorExtractor
-import javax.inject.Inject
 import models.BpMatchStatus.FullyMatched
 import models.UserAnswers
 import models.settlors.Settlors
@@ -37,6 +36,7 @@ import utils.print.DeceasedSettlorPrintHelper
 import viewmodels.AnswerSection
 import views.html.individual.deceased.CheckDetailsView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CheckDetailsController @Inject()(
@@ -78,7 +78,7 @@ class CheckDetailsController @Inject()(
         case Settlors(individuals, businesses, Some(deceased)) =>
           for {
             hasAdditionalSettlors <- Future.successful(individuals.nonEmpty || businesses.nonEmpty)
-            extractedF <- Future.fromTry(extractor(request.userAnswers, deceased, hasAdditionalSettlors))
+            extractedF <- Future.fromTry(extractor(request.userAnswers, deceased, None, Some(hasAdditionalSettlors)))
             _ <- playbackRepository.set(extractedF)
           } yield {
             render(extractedF, deceased.name.displayName, hasAdditionalSettlors)

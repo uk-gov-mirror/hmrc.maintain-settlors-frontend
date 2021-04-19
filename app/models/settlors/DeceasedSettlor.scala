@@ -27,43 +27,39 @@ final case class DeceasedSettlor(bpMatchStatus: Option[BpMatchStatus],
                                  dateOfBirth: Option[LocalDate],
                                  dateOfDeath: Option[LocalDate],
                                  identification: Option[IndividualIdentification],
-                                 address : Option[Address]) extends Settlor
+                                 address: Option[Address]) extends Settlor {
 
-object DeceasedSettlor {
+  override val startDate: Option[LocalDate] = None
+}
 
-  implicit val reads: Reads[DeceasedSettlor] =
-    ((__ \ 'bpMatchStatus).readNullable[BpMatchStatus] and
+object DeceasedSettlor extends SettlorReads {
+
+  implicit val reads: Reads[DeceasedSettlor] = (
+    (__ \ 'bpMatchStatus).readNullable[BpMatchStatus] and
       (__ \ 'name).read[Name] and
       (__ \ 'dateOfBirth).readNullable[LocalDate] and
       (__ \ 'dateOfDeath).readNullable[LocalDate] and
       __.lazyRead(readNullableAtSubPath[IndividualIdentification](__ \ 'identification)) and
-      __.lazyRead(readNullableAtSubPath[Address](__ \ 'identification \ 'address))).tupled.map{
+      __.lazyRead(readNullableAtSubPath[Address](__ \ 'identification \ 'address)))
+    .tupled.map{
+    case (bpMatchStatus, name, dob, dod, nino, identification) =>
+      DeceasedSettlor(bpMatchStatus, name, dob, dod, nino, identification)
+  }
 
-      case (bpMatchStatus, name, dob, dod, nino, identification) =>
-        DeceasedSettlor(bpMatchStatus, name, dob, dod, nino, identification)
-
-    }
-
-  implicit val writes: Writes[DeceasedSettlor] =
-    ((__ \ 'bpMatchStatus).writeNullable[BpMatchStatus] and
+  implicit val writes: Writes[DeceasedSettlor] = (
+    (__ \ 'bpMatchStatus).writeNullable[BpMatchStatus] and
       (__ \ 'name).write[Name] and
       (__ \ 'dateOfBirth).writeNullable[LocalDate] and
       (__ \ 'dateOfDeath).writeNullable[LocalDate] and
       (__ \ 'identification).writeNullable[IndividualIdentification] and
       (__ \ 'identification \ 'address).writeNullable[Address]
-      ).apply(settlor => (
-      None,
-      settlor.name,
-      settlor.dateOfBirth,
-      settlor.dateOfDeath,
-      settlor.identification,
-      settlor.address
-    ))
+    ).apply(settlor => (
+    None,
+    settlor.name,
+    settlor.dateOfBirth,
+    settlor.dateOfDeath,
+    settlor.identification,
+    settlor.address
+  ))
 
-  def readNullableAtSubPath[T:Reads](subPath : JsPath) : Reads[Option[T]] = Reads (
-    _.transform(subPath.json.pick)
-      .flatMap(_.validate[T])
-      .map(Some(_))
-      .recoverWith(_ => JsSuccess(None))
-  )
 }

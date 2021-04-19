@@ -65,7 +65,7 @@ class CheckDetailsController @Inject()(
       service.getBusinessSettlor(request.userAnswers.identifier, index) flatMap {
         settlor =>
           for {
-            extractedF <- Future.fromTry(extractor(request.userAnswers, settlor, index))
+            extractedF <- Future.fromTry(extractor(request.userAnswers, settlor, Some(index)))
             _ <- playbackRepository.set(extractedF)
           } yield {
               render(extractedF, index, settlor.name)

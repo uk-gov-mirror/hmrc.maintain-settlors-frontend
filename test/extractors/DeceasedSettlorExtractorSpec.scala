@@ -16,8 +16,6 @@
 
 package extractors
 
-import java.time.LocalDate
-
 import base.SpecBase
 import models.BpMatchStatus.FullyMatched
 import models.settlors.DeceasedSettlor
@@ -25,6 +23,8 @@ import models.{Name, NationalInsuranceNumber, UkAddress}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.AdditionalSettlorsYesNoPage
 import pages.individual.deceased._
+
+import java.time.LocalDate
 
 class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChecks {
 
@@ -48,7 +48,7 @@ class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyCheck
       address = None
     )
 
-    val result = extractor(emptyUserAnswers, individual, hasAdditionalSettlors = false).get
+    val result = extractor(emptyUserAnswers, individual, None, hasAdditionalSettlors = Some(false)).get
 
     result.get(BpMatchStatusPage) mustNot be(defined)
     result.get(NamePage).get mustBe name
@@ -75,7 +75,7 @@ class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyCheck
       address = Some(address)
     )
 
-    val result = extractor(emptyUserAnswers, individual, hasAdditionalSettlors = false).get
+    val result = extractor(emptyUserAnswers, individual, None, hasAdditionalSettlors = Some(false)).get
 
     result.get(BpMatchStatusPage) mustNot be(defined)
     result.get(NamePage).get mustBe name
@@ -102,7 +102,7 @@ class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyCheck
       address = None
     )
 
-    val result = extractor(emptyUserAnswers, individual, hasAdditionalSettlors = false).get
+    val result = extractor(emptyUserAnswers, individual, None, hasAdditionalSettlors = Some(false)).get
 
     result.get(BpMatchStatusPage).get mustBe FullyMatched
     result.get(NamePage).get mustBe name
@@ -127,14 +127,14 @@ class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyCheck
 
   "there are no other settlors" in {
 
-    val result = extractor(emptyUserAnswers, settlor, hasAdditionalSettlors = false).get
+    val result = extractor(emptyUserAnswers, settlor, None, hasAdditionalSettlors = Some(false)).get
 
     result.get(AdditionalSettlorsYesNoPage).get mustBe false
   }
 
   "there are other settlors" in {
 
-    val result = extractor(emptyUserAnswers, settlor, hasAdditionalSettlors = true).get
+    val result = extractor(emptyUserAnswers, settlor, None, hasAdditionalSettlors = Some(true)).get
 
     result.get(AdditionalSettlorsYesNoPage) mustNot be(defined)
   }
@@ -144,7 +144,8 @@ class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyCheck
     val result = extractor(
       emptyUserAnswers.set(AdditionalSettlorsYesNoPage, true).success.value,
       settlor,
-      hasAdditionalSettlors = false
+      None,
+      hasAdditionalSettlors = Some(false)
     ).get
 
     result.get(AdditionalSettlorsYesNoPage).get mustBe true
@@ -155,7 +156,8 @@ class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyCheck
     val result = extractor(
       emptyUserAnswers.set(AdditionalSettlorsYesNoPage, false).success.value,
       settlor,
-      hasAdditionalSettlors = false
+      None,
+      hasAdditionalSettlors = Some(false)
     ).get
 
     result.get(AdditionalSettlorsYesNoPage).get mustBe false
@@ -166,7 +168,8 @@ class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyCheck
     val result = extractor(
       emptyUserAnswers.set(AdditionalSettlorsYesNoPage, true).success.value,
       settlor,
-      hasAdditionalSettlors = true
+      None,
+      hasAdditionalSettlors = Some(true)
     ).get
 
     result.get(AdditionalSettlorsYesNoPage).get mustBe true
@@ -177,7 +180,8 @@ class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyCheck
     val result = extractor(
       emptyUserAnswers.set(AdditionalSettlorsYesNoPage, false).success.value,
       settlor,
-      hasAdditionalSettlors = true
+      None,
+      hasAdditionalSettlors = Some(true)
     ).get
 
     result.get(AdditionalSettlorsYesNoPage).get mustBe false
