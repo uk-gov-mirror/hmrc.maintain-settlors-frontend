@@ -16,38 +16,25 @@
 
 package utils.mappers
 
+import models.settlors.DeceasedSettlor
+import models.{BpMatchStatus, IndividualIdentification, Name, NationalInsuranceNumber, NonUkAddress, UkAddress}
+import pages.QuestionPage
+import pages.individual.deceased._
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsSuccess, Reads}
+
 import java.time.LocalDate
 
-import models.settlors.DeceasedSettlor
-import models.{Address, BpMatchStatus, IndividualIdentification, Name, NationalInsuranceNumber, NonUkAddress, UkAddress, UserAnswers}
-import pages.individual.deceased._
-import play.api.Logger
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsError, JsSuccess, Reads}
+class DeceasedSettlorMapper extends SettlorMapper[DeceasedSettlor] {
 
-class DeceasedSettlorMapper {
-
-  private val logger: Logger = Logger(getClass)
-
-  def apply(answers: UserAnswers): Option[DeceasedSettlor] = {
-    val readFromUserAnswers: Reads[DeceasedSettlor] =
-      (
-        BpMatchStatusPage.path.readNullable[BpMatchStatus] and
-        NamePage.path.read[Name] and
-        DateOfBirthPage.path.readNullable[LocalDate] and
-        DateOfDeathPage.path.readNullable[LocalDate] and
-        readIdentification and
-        readAddress
-      ) (DeceasedSettlor.apply _)
-
-    answers.data.validate[DeceasedSettlor](readFromUserAnswers) match {
-      case JsSuccess(value, _) =>
-        Some(value)
-      case JsError(errors) =>
-        logger.error(s"[UTR: ${answers.identifier}] Failed to rehydrate DeceasedSettlor from UserAnswers due to $errors")
-        None
-    }
-  }
+  override val reads: Reads[DeceasedSettlor] = (
+    BpMatchStatusPage.path.readNullable[BpMatchStatus] and
+      NamePage.path.read[Name] and
+      DateOfBirthPage.path.readNullable[LocalDate] and
+      DateOfDeathPage.path.readNullable[LocalDate] and
+      readIdentification and
+      readAddress
+    )(DeceasedSettlor.apply _)
 
   private def readIdentification: Reads[Option[IndividualIdentification]] = {
     NationalInsuranceNumberYesNoPage.path.read[Boolean].flatMap[Option[IndividualIdentification]] {
@@ -56,21 +43,8 @@ class DeceasedSettlorMapper {
     }
   }
 
-  private def readAddress: Reads[Option[Address]] = {
-    NationalInsuranceNumberYesNoPage.path.read[Boolean].flatMap {
-      case true => Reads(_ => JsSuccess(None))
-      case false => AddressYesNoPage.path.read[Boolean].flatMap[Option[Address]] {
-        case true => readUkOrNonUkAddress
-        case false => Reads(_ => JsSuccess(None))
-      }
-    }
-  }
-
-  private def readUkOrNonUkAddress: Reads[Option[Address]] = {
-    LivedInTheUkYesNoPage.path.read[Boolean].flatMap[Option[Address]] {
-      case true => UkAddressPage.path.read[UkAddress].map(Some(_))
-      case false => NonUkAddressPage.path.read[NonUkAddress].map(Some(_))
-    }
-  }
+  override def ukAddressYesNoPage: QuestionPage[Boolean] = LivedInTheUkYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+  override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
 
 }

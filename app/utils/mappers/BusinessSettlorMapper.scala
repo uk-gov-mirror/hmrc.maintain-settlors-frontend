@@ -16,67 +16,34 @@
 
 package utils.mappers
 
+import models.settlors.BusinessSettlor
+import models.{CompanyType, NonUkAddress, UkAddress}
+import pages.QuestionPage
+import pages.business._
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsSuccess, Reads}
+
 import java.time.LocalDate
 
-import models.Constant.GB
-import models.settlors.BusinessSettlor
-import models.{Address, CompanyType, NonUkAddress, UkAddress, UserAnswers}
-import pages.business._
-import play.api.Logger
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsError, JsSuccess, Reads}
+class BusinessSettlorMapper extends SettlorMapper[BusinessSettlor] {
 
-class BusinessSettlorMapper {
+  override val reads: Reads[BusinessSettlor] = (
+    NamePage.path.read[String] and
+      CompanyTypePage.path.readNullable[CompanyType] and
+      CompanyTimePage.path.readNullable[Boolean] and
+      UtrPage.path.readNullable[String] and
+      readCountryOfResidence and
+      readAddress and
+      StartDatePage.path.read[LocalDate] and
+      Reads(_ => JsSuccess(true))
+    )(BusinessSettlor.apply _)
 
-  private val logger: Logger = Logger(getClass)
+  override def ukAddressYesNoPage: QuestionPage[Boolean] = LiveInTheUkYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+  override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
 
-  def apply(answers: UserAnswers): Option[BusinessSettlor] = {
-    val readFromUserAnswers: Reads[BusinessSettlor] =
-      (
-        NamePage.path.read[String] and
-        CompanyTypePage.path.readNullable[CompanyType] and
-        CompanyTimePage.path.readNullable[Boolean] and
-        UtrPage.path.readNullable[String] and
-        readCountryOfResidence and
-        readAddress and
-        StartDatePage.path.read[LocalDate] and
-        Reads(_ => JsSuccess(true))
-      ) (BusinessSettlor.apply _)
-
-    answers.data.validate[BusinessSettlor](readFromUserAnswers) match {
-      case JsSuccess(value, _) =>
-        Some(value)
-      case JsError(errors) =>
-        logger.error(s"[Identifier: ${answers.identifier}] Failed to rehydrate BusinessSettlor from UserAnswers due to $errors")
-        None
-    }
-  }
-
-  private def readCountryOfResidence: Reads[Option[String]] = {
-    CountryOfResidenceYesNoPage.path.readNullable[Boolean].flatMap[Option[String]] {
-      case Some(true) => CountryOfResidenceInTheUkYesNoPage.path.read[Boolean].flatMap {
-        case true => Reads(_ => JsSuccess(Some(GB)))
-        case false => CountryOfResidencePage.path.read[String].map(Some(_))
-      }
-      case _ => Reads(_ => JsSuccess(None))
-    }
-  }
-
-  private def readAddress: Reads[Option[Address]] = {
-    UtrYesNoPage.path.readNullable[Boolean].flatMap {
-      case Some(false) => AddressYesNoPage.path.read[Boolean].flatMap[Option[Address]] {
-        case true => readUkOrNonUkAddress
-        case false => Reads(_ => JsSuccess(None))
-      }
-      case _ => Reads(_ => JsSuccess(None))
-    }
-  }
-
-  private def readUkOrNonUkAddress: Reads[Option[Address]] = {
-    LiveInTheUkYesNoPage.path.read[Boolean].flatMap[Option[Address]] {
-      case true => UkAddressPage.path.read[UkAddress].map(Some(_))
-      case false => NonUkAddressPage.path.read[NonUkAddress].map(Some(_))
-    }
-  }
+  override def countryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceYesNoPage
+  override def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceInTheUkYesNoPage
+  override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
 
 }
